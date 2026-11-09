@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Labmeter Flight CRM | Simuladores & Salas de Instrucción</title>
+  <title>Hangar D35 CRM | IFR LabTraining · Labmeter Training Center</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -19,32 +19,52 @@
     }
     * { font-family: 'Montserrat', sans-serif; box-sizing: border-box; }
     body { background-color: var(--bg-deep); color: var(--text-main); margin: 0; }
-    .card { background: rgba(10, 31, 36, 0.94); border: 1px solid var(--border-passive); border-radius: 16px; }
-    .inp { width: 100%; background: var(--bg-deep); border: 1px solid var(--border-passive); border-radius: 10px; padding: 10px 14px; color: var(--text-main); font-size: 13px; outline: none; }
-    .inp:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 2px rgba(184, 242, 230, 0.35); }
+    .card { background: rgba(10, 31, 36, 0.95); border: 1px solid var(--border-passive); border-radius: 16px; }
+    .inp { width: 100%; background: var(--bg-deep); border: 1px solid var(--border-passive); border-radius: 10px; padding: 10px 12px; color: var(--text-main); font-size: 12px; outline: none; }
+    .inp:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 2px rgba(184, 242, 230, 0.3); }
     .btn-cta { background: var(--accent-primary); color: var(--bg-deep); font-weight: 800; border-radius: 10px; transition: 0.2s; cursor: pointer; }
     .btn-cta:hover:not(:disabled) { background: var(--accent-secondary); color: #fff; }
-    .btn-cta:disabled { opacity: 0.4; cursor: not-allowed; }
-    .tab-btn { padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid var(--border-passive); background: rgba(7,16,20,0.8); color: var(--text-main); cursor: pointer; transition: 0.2s; }
+    .btn-sec { background: var(--bg-deep); color: var(--accent-primary); border: 1px solid var(--border-passive); font-weight: 700; border-radius: 10px; transition: 0.2s; cursor: pointer; }
+    .btn-sec:hover { background: var(--accent-secondary); color: #fff; border-color: var(--accent-primary); }
+    .tab-btn { padding: 8px 13px; border-radius: 8px; font-size: 11px; font-weight: 700; border: 1px solid var(--border-passive); background: rgba(7,16,20,0.85); color: var(--text-main); cursor: pointer; transition: 0.2s; }
     .tab-btn.active { background: var(--accent-secondary); color: var(--accent-primary); border-color: var(--accent-primary); }
-    .res-item { background: rgba(7, 16, 20, 0.85); border: 1px solid var(--border-passive); border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
-    .res-item:hover, .res-item.selected { border-color: var(--accent-primary); background: rgba(28, 107, 106, 0.3); }
+    .role-badge { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; border: 1px solid var(--border-passive); }
+    .role-badge.active { background: var(--accent-primary); color: var(--bg-deep); border-color: #fff; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col relative">
 
-  <!-- FONDO CABINA A320 FTD -->
-  <div class="fixed inset-0 pointer-events-none z-0 opacity-25 bg-cover bg-center" style="background-image: url('./A320%20FTD.jpeg');"></div>
-  <div class="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#071014]/80 via-[#071014]/90 to-[#071014]"></div>
+  <!-- FONDO AMBIENTAL CABINA A320 FTD -->
+  <div class="fixed inset-0 pointer-events-none z-0 opacity-20 bg-cover bg-center" style="background-image: url('./A320%20FTD.jpeg');"></div>
+  <div class="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#071014]/85 via-[#071014]/92 to-[#071014]"></div>
 
-  <!-- TOAST DE NOTIFICACIÓN -->
+  <!-- NOTIFICACIÓN TOAST -->
   <div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-md bg-[#0A1F24] border-2 border-[#B8F2E6] text-[#E2E8F0] px-5 py-3.5 rounded-xl shadow-2xl items-center gap-3">
     <span class="w-2.5 h-2.5 rounded-full bg-[#B8F2E6] shrink-0"></span>
     <p id="toast-msg" class="text-xs font-semibold"></p>
   </div>
 
-  <!-- HEADER CORPORATIVO -->
-  <header id="main-header" class="relative z-10 bg-[#0A1F24]/95 border-b border-[#0F3A3F] sticky top-0">
+  <!-- BARRA SUPERIOR DE CONTROL DE FRONTENDS (ROLES) -->
+  <div id="role-switcher-bar" class="relative z-20 bg-[#071014] border-b border-[#0F3A3F] px-4 py-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#B8F2E6]">📍 Hangar D35 (Horario Base: 08:00 a 18:00 hrs)</span>
+        <span class="text-[#E2E8F0]/40">|</span>
+        <span id="active-admin-label" class="text-[11px] text-emerald-400 font-bold">🔑 Admin Activo: Matías Eliecer Quiroz / Valezca Ríos Letelier</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <span class="text-[11px] text-[#E2E8F0]/70 mr-1">Vista Frontend:</span>
+        <button type="button" onclick="setRoleView('admin')" id="role-admin" class="role-badge active">👑 Admin (Matías & Valezca)</button>
+        <button type="button" onclick="setRoleView('operator')" id="role-operator" class="role-badge bg-[#0A1F24] text-[#E2E8F0]">🎧 Frontend Operador / Instructor</button>
+        <button type="button" onclick="setRoleView('client')" id="role-client" class="role-badge bg-[#0A1F24] text-[#E2E8F0]">✈️ Frontend Cliente</button>
+        <button type="button" onclick="copyShareLink('cliente')" class="px-2.5 py-1 rounded bg-[#1C6B6A] text-[#B8F2E6] text-[10px] font-bold hover:bg-[#B8F2E6] hover:text-[#071014]">🔗 Link Cliente</button>
+        <button type="button" onclick="copyShareLink('operador')" class="px-2.5 py-1 rounded bg-[#1C6B6A] text-[#B8F2E6] text-[10px] font-bold hover:bg-[#B8F2E6] hover:text-[#071014]">🔗 Link Operador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER CORPORATIVO PRINCIPAL -->
+  <header class="relative z-10 bg-[#0A1F24]/95 border-b border-[#0F3A3F] sticky top-0">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
       <div class="flex flex-wrap items-center gap-2.5">
         <div class="bg-[#E2E8F0] px-2.5 py-1 rounded-lg flex items-center border border-[#B8F2E6]/40">
@@ -57,376 +77,395 @@
           <img src="./LogoNormal.jpg" alt="LabMeter" class="h-8 object-contain" onerror="this.outerHTML='<b class=\'text-[#0095d9] text-xs\'>LabMeter</b>'" />
         </div>
         <div class="pl-2 border-l border-[#0F3A3F]">
-          <div class="text-[11px] font-extrabold tracking-wider text-[#B8F2E6] uppercase">Flight Simulation & Training CRM</div>
-          <div class="text-[11px] text-[#E2E8F0]/70">Gestión Operativa & Comercial</div>
+          <div class="text-[11px] font-extrabold tracking-wider text-[#B8F2E6] uppercase">Hangar D35 · IFR LabTraining CRM</div>
+          <div id="role-subtitle" class="text-[11px] text-[#E2E8F0]/70">Panel de Administración: Matías Eliecer Quiroz & Valezca Ríos Letelier</div>
         </div>
       </div>
 
-      <!-- NAVEGACIÓN COMPLETA PARA ADMINISTRADOR + ACCESO SUTIL DE OPERADOR -->
-      <nav class="flex flex-wrap gap-1.5 items-center">
-        <button type="button" onclick="openTab('booking')" id="btn-booking" class="tab-btn active">1. Reserva Pilotos & Salas</button>
-        <button type="button" onclick="openTab('shifts')" id="btn-shifts" class="tab-btn">2. Turnos, Uber & Reloj</button>
-        <button type="button" onclick="openTab('crm')" id="btn-crm" class="tab-btn">3. CRM Clientes & Reservas</button>
-        <button type="button" onclick="openTab('marketing')" id="btn-marketing" class="tab-btn">4. Email Marketing (Imágenes)</button>
-        <button type="button" onclick="openTab('operator')" id="btn-operator" class="tab-btn bg-[#1C6B6A]/50 text-[#B8F2E6] border-[#B8F2E6]/40">📱 Portal Operador (Asistencia)</button>
-        <button type="button" onclick="copyClientLink()" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-[#B8F2E6] text-[#071014] hover:bg-white transition-all">🔗 Copiar Link Cliente</button>
+      <!-- PESTAÑAS DE NAVEGACIÓN (SE ADAPTAN SEGÚN EL FRONTEND ACTIVO) -->
+      <nav id="main-nav" class="flex flex-wrap gap-1.5 items-center">
+        <button type="button" onclick="openTab('booking')" id="btn-booking" class="tab-btn active">1. Reserva & Calendario Hangar D35</button>
+        <button type="button" onclick="openTab('shifts')" id="btn-shifts" class="tab-btn admin-only">2. Turnos Hangar, Fechas & Permisos</button>
+        <button type="button" onclick="openTab('crm')" id="btn-crm" class="tab-btn admin-only">3. Base de Datos Clientes & Pagos POS</button>
+        <button type="button" onclick="openTab('marketing')" id="btn-marketing" class="tab-btn admin-only">4. Vista Previa Gift Cards & Emails</button>
+        <button type="button" onclick="openTab('operator')" id="btn-operator" class="tab-btn op-only">📱 Reloj Asistencia & Agenda Operador</button>
       </nav>
     </div>
   </header>
 
   <!-- CONTENEDOR PRINCIPAL -->
-  <main class="relative z-10 max-w-7xl w-full mx-auto px-4 py-6 flex-1">
+  <main class="relative z-10 max-w-7xl w-full mx-auto px-4 py-6 flex-1 space-y-8">
 
     <!-- ===================================================================
-         PESTAÑA 1: RESERVA DE SIMULADORES Y SALAS DE CLASES
+         PESTAÑA 1: FORMULARIO DE RESERVA + CALENDARIO MAESTRO HANGAR D35
          =================================================================== -->
-    <section id="tab-booking" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      <div id="client-sidebar" class="lg:col-span-5 space-y-5">
-        <!-- Banner Cabina A320 -->
-        <div class="card overflow-hidden">
-          <div class="h-48 bg-cover bg-center relative" style="background-image: url('./A320%20FTD.jpeg');">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#071014] via-[#071014]/40 to-transparent"></div>
-            <div class="absolute top-3 left-3">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-[#B8F2E6] text-[#071014] uppercase">Portal Público de Autoatención</span>
-            </div>
-            <div class="absolute bottom-3 left-3 right-3">
-              <h1 class="text-lg font-extrabold text-white">Reserva de Simuladores y Salas de Instrucción</h1>
-              <p class="text-xs text-[#E2E8F0]/85">Selecciona el simulador o sala a la izquierda o directo en el formulario.</p>
-            </div>
-          </div>
-        </div>
+    <section id="tab-booking" class="space-y-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-        <!-- Los 4 Simuladores Oficiales -->
-        <div class="card p-4 space-y-3">
-          <div class="flex justify-between items-center">
-            <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#B8F2E6]">4 Simuladores de Vuelo</h2>
-            <span class="text-[11px] text-emerald-400 font-bold">● Clic para elegir</span>
+        <!-- Columna Izquierda: Tarjeta Hangar D35 + Flota de Simuladores y Salas -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="card overflow-hidden">
+            <div class="h-44 bg-cover bg-center relative" style="background-image: url('./A320%20FTD.jpeg');">
+              <div class="absolute inset-0 bg-gradient-to-t from-[#071014] via-[#071014]/40 to-transparent"></div>
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-[#B8F2E6] text-[#071014] uppercase">Hangar D35 · 08:00 a 18:00 hrs</span>
+              </div>
+              <div class="absolute bottom-3 left-3 right-3">
+                <h1 class="text-lg font-extrabold text-white">Reserva de Simuladores y Salas</h1>
+                <p class="text-xs text-[#E2E8F0]/85">Al agendar, el cliente queda guardado en el CRM, se actualiza el Calendario D35 y recibe su invitación para Google Calendar.</p>
+              </div>
+            </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div onclick="pickResource('A320 FTD NIVEL 4 (LAB-CH-134)')" class="res-item selected">
-              <div class="flex justify-between items-center">
+
+          <!-- 4 Simuladores Oficiales -->
+          <div class="card p-4 space-y-2.5">
+            <div class="flex justify-between items-center">
+              <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#B8F2E6]">4 Simuladores de Vuelo</h2>
+              <span class="text-[10px] text-emerald-400 font-bold">● Clic para seleccionar</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div onclick="pickResource('A320 FTD NIVEL 4 (LAB-CH-134)')" class="res-item">
                 <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">LAB-CH-134</span>
-                <span class="text-[10px] text-emerald-400 font-bold">Nivel 4</span>
+                <div class="font-bold text-xs text-white mt-1">A320 FTD NIVEL 4</div>
+                <div class="text-[10px] text-[#E2E8F0]/70">Certificado Nivel 4</div>
               </div>
-              <div class="font-bold text-xs text-white mt-1.5">A320 FTD NIVEL 4</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Matrícula LAB-CH-134</div>
-            </div>
-
-            <div onclick="pickResource('PC-ATD A320 (PC-LAB-70)')" class="res-item">
-              <div class="flex justify-between items-center">
+              <div onclick="pickResource('PC-ATD A320 (PC-LAB-70)')" class="res-item">
                 <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">PC-LAB-70</span>
-                <span class="text-[10px] text-emerald-400 font-bold">Certificado</span>
+                <div class="font-bold text-xs text-white mt-1">PC-ATD A320</div>
+                <div class="text-[10px] text-[#E2E8F0]/70">Entrenador A320</div>
               </div>
-              <div class="font-bold text-xs text-white mt-1.5">PC-ATD A320</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Matrícula PC-LAB-70</div>
-            </div>
-
-            <div onclick="pickResource('PC-ATD C172 Análogo (PC-LAB-64)')" class="res-item">
-              <div class="flex justify-between items-center">
+              <div onclick="pickResource('PC-ATD C172 Análogo (PC-LAB-64)')" class="res-item">
                 <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">PC-LAB-64</span>
-                <span class="text-[10px] text-emerald-400 font-bold">Análogo</span>
+                <div class="font-bold text-xs text-white mt-1">PC-ATD C172 Análogo</div>
+                <div class="text-[10px] text-[#E2E8F0]/70">Instrumental Análogo</div>
               </div>
-              <div class="font-bold text-xs text-white mt-1.5">PC-ATD C172 Análogo</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Matrícula PC-LAB-64</div>
-            </div>
-
-            <div onclick="pickResource('AATD C172 G1000 (No certificado)')" class="res-item">
-              <div class="flex justify-between items-center">
+              <div onclick="pickResource('AATD C172 G1000 (No certificado)')" class="res-item">
                 <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-amber-300 text-[#071014]">G1000</span>
-                <span class="text-[10px] text-amber-300 font-bold">No Cert.</span>
+                <div class="font-bold text-xs text-white mt-1">AATD C172 G1000</div>
+                <div class="text-[10px] text-[#E2E8F0]/70">No certificado</div>
               </div>
-              <div class="font-bold text-xs text-white mt-1.5">AATD C172 G1000</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Entrenador Glass Cockpit</div>
+            </div>
+          </div>
+
+          <!-- 4 Salas de Clases y Reuniones -->
+          <div class="card p-4 space-y-2.5">
+            <div class="flex justify-between items-center">
+              <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#B8F2E6]">4 Salas del Hangar & Puente Alto</h2>
+              <span class="text-[10px] text-[#E2E8F0]/70">Cubiertas por Op. de Hangar</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div onclick="pickResource('SALA 2 (15 personas)')" class="res-item">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">15 Personas</span>
+                <div class="font-bold text-xs text-white mt-1">SALA 2 (Clases)</div>
+              </div>
+              <div onclick="pickResource('SALA 3 Clases (6 personas)')" class="res-item">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">6 Personas</span>
+                <div class="font-bold text-xs text-white mt-1">SALA 3 (Clases)</div>
+              </div>
+              <div onclick="pickResource('SALA 3 Reuniones (Multifuncional)')" class="res-item">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">Multifuncional</span>
+                <div class="font-bold text-xs text-white mt-1">SALA 3 (Reuniones)</div>
+              </div>
+              <div onclick="pickResource('SALA LM Puente Alto (9 personas)')" class="res-item">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">9 Personas</span>
+                <div class="font-bold text-xs text-white mt-1">SALA LM Puente Alto</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Las 4 Salas de Clases y Reuniones -->
-        <div class="card p-4 space-y-3">
-          <div class="flex justify-between items-center">
-            <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#B8F2E6]">4 Salas de Clases & Reuniones</h2>
-            <span class="text-[11px] text-[#E2E8F0]/70">Instrucción / Briefing</span>
+        <!-- Columna Derecha: Formulario Oficial de Reserva + Pago Transferencia / Smart POS -->
+        <div class="lg:col-span-7 card p-6 sm:p-7 shadow-2xl">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[#0F3A3F]">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#B8F2E6]">Formulario Oficial de Reserva</span>
+              <h2 class="text-xl font-extrabold text-white">Solicitud de Bloque de Simulador o Sala</h2>
+            </div>
+            <span class="text-[11px] bg-[#071014] border border-[#B8F2E6]/50 px-3 py-1 rounded-lg text-[#B8F2E6] font-bold">
+              🎁 Bienvenida: 30% Desc. 1ª Sesión (Máx 2 hrs)
+            </span>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div onclick="pickResource('SALA 2 - Sala para 15 personas')" class="res-item">
-              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">15 Personas</span>
-              <div class="font-bold text-xs text-white mt-1.5">SALA 2</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Sala de Clases (15 pers.)</div>
+
+          <div id="booking-ok" class="hidden my-4 p-4 rounded-xl bg-[#1C6B6A]/30 border-2 border-[#B8F2E6] text-xs space-y-2"></div>
+
+          <form onsubmit="handleBooking(event)" class="space-y-4 mt-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold uppercase mb-1">Nombre Completo *</label>
+                <input type="text" id="b-name" required placeholder="Ej: Cap. Sebastián Morales" class="inp" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase mb-1">RUT o Pasaporte *</label>
+                <input type="text" id="b-rut" required placeholder="Ej: 16.482.910-K" class="inp" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase mb-1">Correo Electrónico *</label>
+                <input type="email" id="b-email" required placeholder="piloto@correo.cl" class="inp" />
+              </div>
             </div>
 
-            <div onclick="pickResource('SALA 3 - Sala para 6 personas')" class="res-item">
-              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">6 Personas</span>
-              <div class="font-bold text-xs text-white mt-1.5">SALA 3 (Clases)</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Sala de Clases (6 pers.)</div>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold uppercase mb-1">Teléfono / WhatsApp *</label>
+                <input type="text" id="b-phone" required placeholder="+56 9 8412 3301" class="inp" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#B8F2E6] mb-1">Fecha Nacimiento *</label>
+                <input type="date" id="b-birth" required class="inp" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#E2E8F0]/80 mb-1">Segmento / Licencia</label>
+                <select id="b-segment" class="inp">
+                  <option value="Piloto Comercial">Piloto Comercial (PCA)</option>
+                  <option value="Piloto Privado">Piloto Privado (PPA)</option>
+                  <option value="Instructor de Vuelo">Instructor de Vuelo</option>
+                  <option value="Aficionado">Aficionado / Entusiasta</option>
+                  <option value="Visita Pedagógica">Visita Pedagógica</option>
+                  <option value="Visita Comercial">Visita Comercial</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#E2E8F0]/80 mb-1">Horas Bitácora (Opc.)</label>
+                <input type="number" id="b-hrs" min="0" placeholder="Ej: 450" class="inp" />
+              </div>
             </div>
 
-            <div onclick="pickResource('SALA 3 - Sala de Reuniones (Multifuncional)')" class="res-item">
-              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">Multifuncional</span>
-              <div class="font-bold text-xs text-white mt-1.5">SALA 3 (Reuniones)</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Reuniones & Briefing</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold uppercase mb-1">Simulador o Sala Requerida *</label>
+                <select id="b-resource" class="inp"></select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase mb-1">Fecha Solicitada *</label>
+                <input type="date" id="b-date" value="2026-11-09" required onchange="renderMasterCalendar()" class="inp" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase mb-1">Bloque Horario (Hangar D35) *</label>
+                <select id="b-slot" class="inp">
+                  <option value="08:00 - 10:00">08:00 - 10:00 (Horario Hangar)</option>
+                  <option value="10:00 - 12:00">10:00 - 12:00 (Horario Hangar)</option>
+                  <option value="12:00 - 14:00" selected>12:00 - 14:00 (Horario Hangar)</option>
+                  <option value="14:00 - 16:00">14:00 - 16:00 (Horario Hangar)</option>
+                  <option value="16:00 - 18:00">16:00 - 18:00 (Horario Hangar)</option>
+                  <option value="18:00 - 20:00 (Extensión)">18:00 - 20:00 (Extensión &gt;18h)</option>
+                  <option value="20:00 - 22:00 (Extensión + Uber)">20:00 - 22:00 (Extensión + Uber)</option>
+                </select>
+              </div>
             </div>
 
-            <div onclick="pickResource('SALA LM Puente Alto (9 personas)')" class="res-item">
-              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">9 Personas</span>
-              <div class="font-bold text-xs text-white mt-1.5">SALA LM Puente Alto</div>
-              <div class="text-[11px] text-[#E2E8F0]/70">Sala para 9 personas</div>
+            <!-- Modalidad de Pago actual (Transferencia o Smart POS Mercado Pago) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-[#B8F2E6] mb-1">Modalidad de Pago Seleccionada *</label>
+                <select id="b-payment" class="inp">
+                  <option value="Transferencia Bancaria">🏦 Transferencia Bancaria Electrónica</option>
+                  <option value="Smart POS Mercado Pago (Presencial)">💳 Pago Presencial en Smart POS Mercado Pago (Hangar D35)</option>
+                  <option value="Link Mercado Pago (Próximamente)" disabled>🔗 Link de Pago Web Mercado Pago (Próximamente)</option>
+                </select>
+              </div>
+              <div class="text-[11px] text-[#E2E8F0]/80 flex flex-col justify-center">
+                <b class="text-white">Información de Pago Hangar D35:</b>
+                <span>Puedes abonar vía transferencia o pagar presencialmente con tarjeta en nuestro <b>Smart POS de Mercado Pago</b> al llegar a tu sesión.</span>
+              </div>
             </div>
-          </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase text-[#E2E8F0]/80 mb-1">Comentarios / Maniobras o Requerimiento</label>
+              <textarea id="b-notes" rows="2" placeholder="Ej: Práctica aproximaciones ILS en LAB-CH-134 o reserva de SALA 2..." class="inp"></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button type="submit" class="btn-cta flex-1 py-3.5 text-xs sm:text-sm uppercase tracking-wider">
+                ✓ Guardar Cliente en CRM, Agendar en Calendario y Enviar Correo
+              </button>
+              <a id="gcal-link" href="#" target="_blank" class="hidden items-center justify-center px-4 py-3.5 rounded-xl bg-[#1C6B6A] text-[#B8F2E6] font-extrabold text-xs uppercase border border-[#B8F2E6]/40 hover:bg-[#071014] transition-all">
+                📅 Agregar a Google Calendar
+              </a>
+            </div>
+          </form>
         </div>
       </div>
 
-      <!-- Formulario de Reserva -->
-      <div id="client-form-container" class="lg:col-span-7 card p-6 sm:p-8 shadow-2xl">
-        <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[#0F3A3F]">
+      <!-- =================================================================
+           CALENDARIO MAESTRO DE CONCENTRACIÓN DE TURNOS Y RESERVAS (D35)
+           ================================================================= -->
+      <div class="card p-6 space-y-4 shadow-2xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#0F3A3F] pb-4">
           <div>
-            <span class="text-xs font-bold uppercase tracking-widest text-[#B8F2E6]">Formulario Oficial de Reserva</span>
-            <h2 class="text-xl font-extrabold text-white">Solicitud de Bloque de Simulador o Sala</h2>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6]">Concentración Operativa Hangar D35 (08:00 a 18:00 + Extensión)</span>
+            <h2 class="text-xl font-extrabold text-white">Calendario Maestro de Reservas y Cobertura de Operadores</h2>
+            <p class="text-xs text-[#E2E8F0]/75 mt-0.5">
+              El operador titular está a cargo del <b>Hangar D35 (Todas las Salas + 1 Simulador)</b>. Si se agendan <b>2 o más simuladores en el mismo bloque</b>, el calendario alerta automáticamente la activación de un <b>2° Operador</b>.
+            </p>
           </div>
-          <span class="text-[11px] bg-[#071014] border border-[#0F3A3F] px-3 py-1 rounded-lg text-[#B8F2E6] font-bold">
-            🎁 Gift Card 30% Desc. en 1ª Sesión (Máx 2 hrs)
-          </span>
-        </div>
-
-        <div id="booking-ok" class="hidden my-4 p-4 rounded-xl bg-[#1C6B6A]/30 border-2 border-[#B8F2E6] text-xs space-y-2"></div>
-
-        <form onsubmit="handleBooking(event)" class="space-y-4 mt-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold uppercase mb-1">Nombre Completo (Piloto / Cliente) *</label>
-              <input type="text" id="b-name" required placeholder="Ej: Cap. Matías Quiroz G." class="inp" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase mb-1">RUT o Pasaporte *</label>
-              <input type="text" id="b-rut" required placeholder="Ej: 18.450.210-K" class="inp" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-bold uppercase text-[#B8F2E6] mb-1">Fecha Nacimiento * (Giftcard)</label>
-              <input type="date" id="b-birth" required class="inp" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase text-[#E2E8F0]/80 mb-1">Licencia (Opcional)</label>
-              <input type="text" id="b-lic" placeholder="PPA / PCA / IFR / Curso" class="inp" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase text-[#E2E8F0]/80 mb-1">Horas de Vuelo (Opcional)</label>
-              <input type="number" id="b-hrs" min="0" placeholder="Ej: 350" class="inp" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-xs font-bold uppercase mb-1">Simulador o Sala Requerida *</label>
-              <select id="b-resource" class="inp">
-                <optgroup label="Simuladores de Vuelo">
-                  <option value="A320 FTD NIVEL 4 (LAB-CH-134)">A320 FTD NIVEL 4 (LAB-CH-134)</option>
-                  <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
-                  <option value="PC-ATD C172 Análogo (PC-LAB-64)">PC-ATD C172 Análogo (PC-LAB-64)</option>
-                  <option value="AATD C172 G1000 (No certificado)">AATD C172 G1000 (No certificado)</option>
-                </optgroup>
-                <optgroup label="Salas de Clases y Reuniones">
-                  <option value="SALA 2 - Sala para 15 personas">SALA 2 - Sala para 15 personas</option>
-                  <option value="SALA 3 - Sala para 6 personas">SALA 3 - Sala para 6 personas</option>
-                  <option value="SALA 3 - Sala de Reuniones (Multifuncional)">SALA 3 - Sala de Reuniones (Multifuncional)</option>
-                  <option value="SALA LM Puente Alto (9 personas)">SALA LM Puente Alto (9 personas)</option>
-                </optgroup>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase mb-1">Fecha Solicitada *</label>
-              <input type="date" id="b-date" value="2026-11-09" required class="inp" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase mb-1">Bloque Horario *</label>
-              <select id="b-slot" class="inp">
-                <option value="08:00 - 10:00">08:00 - 10:00</option>
-                <option value="10:00 - 12:00">10:00 - 12:00</option>
-                <option value="12:00 - 14:00" selected>12:00 - 14:00</option>
-                <option value="14:00 - 16:00">14:00 - 16:00</option>
-                <option value="16:00 - 18:00">16:00 - 18:00</option>
-                <option value="18:00 - 20:00 (Extensión)">18:00 - 20:00 (Extensión)</option>
-                <option value="20:00 - 22:00 (Extensión Nocturna)">20:00 - 22:00 (Extensión Nocturna)</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold uppercase text-[#E2E8F0]/80 mb-1">Comentarios / Maniobras o Requerimiento</label>
-            <textarea id="b-notes" rows="2" placeholder="Ej: Práctica aproximaciones ILS en LAB-CH-134 o uso de SALA 2..." class="inp"></textarea>
-          </div>
-
-          <div class="flex flex-col sm:flex-row gap-3">
-            <button type="submit" class="btn-cta flex-1 py-3.5 text-sm uppercase tracking-wider">
-              Confirmar Reserva y Notificar a Administración
-            </button>
-            <a id="gcal-link" href="#" target="_blank" class="hidden items-center justify-center px-4 py-3.5 rounded-xl bg-[#1C6B6A] text-[#B8F2E6] font-extrabold text-xs uppercase border border-[#B8F2E6]/40 hover:bg-[#071014] transition-all">
-              📅 Añadir a Google Calendar
-            </a>
-          </div>
-
-          <p class="text-[11px] text-center text-[#E2E8F0]/60">
-            Envío automático de Bienvenida + Gift Card 30% y aviso a: <span class="text-[#B8F2E6]">mquiroz@labmeter.cl</span> · <span class="text-[#B8F2E6]">arios@labmeter.cl</span> · <span class="text-[#B8F2E6]">vrios@labmeter.cl</span>
-          </p>
-        </form>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         PORTAL LIMITADO PARA OPERADORES (MARCAR ASISTENCIA SUTIL)
-         =================================================================== -->
-    <section id="tab-operator" class="hidden max-w-2xl mx-auto space-y-6">
-      <div class="card p-6 sm:p-8 space-y-5 shadow-2xl border-2 border-[#B8F2E6]/30">
-        <div class="text-center space-y-2 pb-4 border-b border-[#0F3A3F]">
-          <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-[#B8F2E6] text-[#071014] uppercase">Portal Exclusivo Operadores</span>
-          <h2 class="text-xl font-extrabold text-white">Registro Diario de Asistencia</h2>
-          <p class="text-xs text-[#E2E8F0]/70">Selecciona tu nombre, verifica el reloj dinámico y registra tu ingreso o salida.</p>
-        </div>
-
-        <div class="p-4 bg-[#071014] border border-[#0F3A3F] rounded-xl flex items-center justify-between gap-4">
-          <div>
-            <span class="text-[10px] uppercase text-[#E2E8F0]/60 block">Reloj Dinámico Activo:</span>
-            <div id="op-qr-token" class="font-mono text-sm font-extrabold text-[#B8F2E6]">LBM-2026-A9F4-8821</div>
-          </div>
-          <div class="text-right">
-            <span id="op-timer" class="text-xs font-bold text-[#B8F2E6]">Actualiza en 30s</span>
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-bold text-[#B8F2E6]">Ver Fecha:</label>
+            <input type="date" id="cal-filter-date" value="2026-11-09" onchange="syncDateAndRender(this.value)" class="inp w-auto" />
           </div>
         </div>
 
-        <form onsubmit="handleOperatorCheckIn(event)" class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold uppercase mb-1">Selecciona tu Nombre (Operador / Instructor) *</label>
-            <select id="op-selected-name" class="inp" required>
-              <option value="">-- Elige tu Nombre --</option>
-              <option value="Matías Quiroz">Matías Quiroz (Jefe de Operaciones)</option>
-              <option value="Jorge Sinconegui">Jorge Sinconegui (Operador / Coord. Académico)</option>
-              <option value="Romina Armoa">Romina Armoa (Instructora / Operadora)</option>
-              <option value="Diego Calderón">Diego Calderón (Operador de Simuladores)</option>
-              <option value="Ignacio Oillataguerre">Ignacio Oillataguerre (Piloto Operador / Instructor)</option>
-              <option value="Federico Figueroa">Federico Figueroa (Instructor / Operador)</option>
-              <option value="Erico">Erico (Operador Senior)</option>
-            </select>
-          </div>
+        <!-- Cinta de Operador Titular del Día en Hangar D35 -->
+        <div id="hangar-day-banner" class="p-3.5 rounded-xl bg-[#071014] border border-[#B8F2E6]/40 flex flex-wrap items-center justify-between gap-2 text-xs"></div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold uppercase mb-1">Acción *</label>
-              <select id="op-action" class="inp">
-                <option value="ENTRADA">Registrar ENTRADA</option>
-                <option value="SALIDA">Registrar SALIDA</option>
-                <option value="SALIDA + UBER">SALIDA Nocturna (Requiere Uber)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold uppercase mb-1">Dispositivo o Sala Asignada *</label>
-              <select id="op-device" class="inp">
-                <option value="A320 FTD NIVEL 4 (LAB-CH-134)">A320 FTD (LAB-CH-134)</option>
-                <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
-                <option value="PC-ATD C172 Análogo (PC-LAB-64)">C172 Análogo (PC-LAB-64)</option>
-                <option value="AATD C172 G1000">AATD C172 G1000</option>
-                <option value="SALA 2">SALA 2</option>
-                <option value="SALA LM Puente Alto">SALA LM Puente Alto</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="submit" class="btn-cta w-full py-3.5 text-sm uppercase tracking-wider">
-            ✓ Registrar Asistencia (Enviar Notificación a Administración)
-          </button>
-        </form>
-
-        <div id="op-success-box" class="hidden p-4 rounded-xl bg-[#1C6B6A]/30 border border-[#B8F2E6] text-xs space-y-2 text-center"></div>
+        <!-- Grilla Visual de Concentración Horaria (4 Simuladores + 4 Salas) -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-[11px] border-collapse">
+            <thead>
+              <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase bg-[#071014]">
+                <th class="py-3 px-2.5">Bloque Horario</th>
+                <th class="py-3 px-2.5">A320 FTD (LAB-CH-134)</th>
+                <th class="py-3 px-2.5">PC-ATD A320 (PC-LAB-70)</th>
+                <th class="py-3 px-2.5">C172 Análogo (PC-LAB-64)</th>
+                <th class="py-3 px-2.5">AATD C172 G1000</th>
+                <th class="py-3 px-2.5">Salas Hangar D35 / PA</th>
+                <th class="py-3 px-2.5">Estado Operadores Hangar</th>
+              </tr>
+            </thead>
+            <tbody id="master-calendar-tbody" class="divide-y divide-[#0F3A3F]"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
     <!-- ===================================================================
-         PESTAÑA 2: TURNOS DE OPERADORES, CÁLCULO UBER & RELOJ DINÁMICO (ADMIN)
+         PESTAÑA 2 (SOLO ADMIN): TURNOS HANGAR D35, FECHAS, REEMPLAZOS Y PERMISOS
          =================================================================== -->
     <section id="tab-shifts" class="hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Reloj Dinámico Admin -->
-        <div class="lg:col-span-5 card p-6 space-y-4">
-          <div class="flex justify-between items-center">
-            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">Reloj Dinámico para Registro de Horas</span>
-            <span id="qr-timer" class="text-xs font-bold text-[#B8F2E6]">Cambia en 30s</span>
-          </div>
-          <h2 class="text-lg font-extrabold text-white">Monitoreo General de Asistencia de Turnos</h2>
-          <p class="text-xs text-[#E2E8F0]/75">Vista exclusiva de administrador para supervisar las entradas y salidas registradas por el equipo.</p>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr class="border-b border-[#0F3A3F] text-[#B8F2E6]">
-                  <th class="py-2 px-2">Operador</th>
-                  <th class="py-2 px-2">Marcación</th>
-                  <th class="py-2 px-2">Hora</th>
-                  <th class="py-2 px-2">Token</th>
-                </tr>
-              </thead>
-              <tbody id="qr-logs-body" class="divide-y divide-[#0F3A3F]">
-                <tr><td class="py-2 px-2 font-bold">Matías Quiroz</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">07:55</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-7C12</td></tr>
-                <tr><td class="py-2 px-2 font-bold">Jorge Sinconegui</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">08:00</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-4B89</td></tr>
-                <tr><td class="py-2 px-2 font-bold">Romina Armoa</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">08:02</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-9E31</td></tr>
-                <tr><td class="py-2 px-2 font-bold">Diego Calderón</td><td class="py-2 px-2 text-emerald-300">SALIDA + UBER</td><td class="py-2 px-2 font-mono">22:31</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-1D77</td></tr>
-              </tbody>
-            </table>
+      <!-- Explicación Regla Operativa Hangar D35 + Patrón Semanal -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase text-[#B8F2E6]">Configuración Base Mensual</span>
+            <span class="text-[11px] px-2.5 py-1 rounded bg-[#071014] border border-[#0F3A3F] text-[#B8F2E6]">Hangar D35: 08:00 a 18:00 hrs</span>
+          </div>
+          <h2 class="text-lg font-extrabold text-white">1. Asignación de Operador Titular de Hangar por Día de la Semana</h2>
+          <p class="text-xs text-[#E2E8F0]/75">
+            Asigna qué operador es dueño de cada día (todos los lunes, todos los martes, etc.). El operador a cargo cubre <b>todas las salas del hangar + su simulador asignado</b>. Abajo puedes modificar cualquier <b>fecha específica</b> si se cambian o cubren un turno entre ellos.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <label class="font-bold text-[#B8F2E6] block mb-1">Todos los Lunes:</label>
+              <select id="pat-1" onchange="updatePattern(1, this.value)" class="inp py-1.5">
+                <option value="Romina Armoa" selected>Romina Armoa</option>
+                <option value="Jorge Sinconegui">Jorge Sinconegui</option>
+                <option value="Diego Calderón">Diego Calderón</option>
+                <option value="Ignacio Oillataguerre">Ignacio Oillataguerre</option>
+                <option value="Federico Figueroa">Federico Figueroa</option>
+                <option value="Matías Quiroz">Matías Quiroz</option>
+              </select>
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <label class="font-bold text-[#B8F2E6] block mb-1">Todos los Martes:</label>
+              <select id="pat-2" onchange="updatePattern(2, this.value)" class="inp py-1.5">
+                <option value="Jorge Sinconegui" selected>Jorge Sinconegui</option>
+                <option value="Romina Armoa">Romina Armoa</option>
+                <option value="Diego Calderón">Diego Calderón</option>
+                <option value="Ignacio Oillataguerre">Ignacio Oillataguerre</option>
+                <option value="Federico Figueroa">Federico Figueroa</option>
+              </select>
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <label class="font-bold text-[#B8F2E6] block mb-1">Todos los Miércoles:</label>
+              <select id="pat-3" onchange="updatePattern(3, this.value)" class="inp py-1.5">
+                <option value="Diego Calderón" selected>Diego Calderón</option>
+                <option value="Romina Armoa">Romina Armoa</option>
+                <option value="Jorge Sinconegui">Jorge Sinconegui</option>
+                <option value="Ignacio Oillataguerre">Ignacio Oillataguerre</option>
+              </select>
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <label class="font-bold text-[#B8F2E6] block mb-1">Todos los Jueves:</label>
+              <select id="pat-4" onchange="updatePattern(4, this.value)" class="inp py-1.5">
+                <option value="Ignacio Oillataguerre" selected>Ignacio Oillataguerre</option>
+                <option value="Romina Armoa">Romina Armoa</option>
+                <option value="Jorge Sinconegui">Jorge Sinconegui</option>
+                <option value="Diego Calderón">Diego Calderón</option>
+              </select>
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <label class="font-bold text-[#B8F2E6] block mb-1">Todos los Viernes:</label>
+              <select id="pat-5" onchange="updatePattern(5, this.value)" class="inp py-1.5">
+                <option value="Federico Figueroa" selected>Federico Figueroa</option>
+                <option value="Jorge Sinconegui">Jorge Sinconegui</option>
+                <option value="Romina Armoa">Romina Armoa</option>
+                <option value="Matías Quiroz">Matías Quiroz</option>
+              </select>
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <label class="font-bold text-amber-300 block mb-1">Sáb / Dom (Activación):</label>
+              <select id="pat-6" onchange="updatePattern(6, this.value)" class="inp py-1.5">
+                <option value="Federico Figueroa" selected>Federico Figueroa (Turno Extra)</option>
+                <option value="Diego Calderón">Diego Calderón (Turno Extra)</option>
+                <option value="Ignacio Oillataguerre">Ignacio Oillataguerre (Turno Extra)</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <!-- Reglas de Horas & Turnos Mensuales -->
-        <div class="lg:col-span-7 card p-6 space-y-4">
-          <h2 class="text-lg font-extrabold text-white">Reglas de Turnos Fijos Mensuales, Cambios y Coberturas</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <b class="text-[#B8F2E6] block">1. Turnos Fijos por Día</b>
-              Si a un operador (ej. Romina A.) le toca un día (ej. lunes), se repite todos los lunes del mes.
-            </div>
-            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <b class="text-amber-300 block">2. Coberturas y Cambios</b>
-              Los operadores pueden cambiarse turnos entre ellos registrando el respaldo en el CRM.
-            </div>
-            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <b class="text-emerald-300 block">3. Alertas Automáticas</b>
-              Aviso instantáneo por correo/WhatsApp a administración y al operador al asignar o cambiar turnos.
-            </div>
-          </div>
+        <!-- Autorización de Simuladores por Operador (Controlado por Matías y Valezca) -->
+        <div class="lg:col-span-5 card p-6 space-y-3">
+          <span class="text-xs font-bold uppercase text-[#B8F2E6]">Permisos de Agendamiento (Admin)</span>
+          <h2 class="text-lg font-extrabold text-white">2. Simuladores Autorizados por Operador</h2>
+          <p class="text-xs text-[#E2E8F0]/75">
+            Marca qué simuladores puede agendar cada operador cuando ingresa a su <b>Frontend de Operador</b>:
+          </p>
+          <div id="operator-permissions-box" class="space-y-2 max-h-56 overflow-y-auto pr-1 text-xs"></div>
         </div>
       </div>
 
-      <!-- Matriz de Turnos Mensual -->
+      <!-- Asignación por Fecha Específica, Reemplazos entre Operadores y 2° Operador -->
       <div class="card p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#0F3A3F] pb-3">
-          <h3 class="text-base font-extrabold text-white">Matriz de Asignación Mensual de Turnos x Simuladores y Salas</h3>
-          <form onsubmit="addShiftRow(event)" class="flex flex-wrap gap-2 items-center">
-            <select id="s-day" class="inp w-auto py-1.5 text-xs">
-              <option value="Todos los Lunes del Mes">Todos los Lunes del Mes</option>
-              <option value="Todos los Martes del Mes">Todos los Martes del Mes</option>
-              <option value="Todos los Miércoles del Mes">Todos los Miércoles del Mes</option>
-              <option value="Todos los Jueves del Mes">Todos los Jueves del Mes</option>
-              <option value="Todos los Viernes del Mes">Todos los Viernes del Mes</option>
-              <option value="Fines de Semana (Activación)">Fines de Semana (Activación)</option>
-            </select>
-            <select id="s-res" class="inp w-auto py-1.5 text-xs">
-              <option value="A320 FTD NIVEL 4 (LAB-CH-134)">A320 FTD (LAB-CH-134)</option>
-              <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
-              <option value="PC-ATD C172 Análogo (PC-LAB-64)">C172 Análogo (PC-LAB-64)</option>
-              <option value="AATD C172 G1000">AATD C172 G1000</option>
-              <option value="SALA 2 (15 personas)">SALA 2 (15p)</option>
-              <option value="SALA LM Puente Alto">SALA LM Puente Alto</option>
-            </select>
-            <select id="s-op" class="inp w-auto py-1.5 text-xs">
-              <option>Romina Armoa (5d)</option>
-              <option>Matías Quiroz (5d)</option>
-              <option>Jorge Sinconegui (5d)</option>
-              <option>Diego Calderón (5d)</option>
-              <option>Ignacio Oillataguerre (4d)</option>
-              <option>Federico Figueroa (3d)</option>
-              <option>Erico (5d)</option>
-            </select>
-            <input type="time" id="s-in" value="08:00" class="inp w-auto py-1.5 text-xs" />
-            <input type="time" id="s-out" value="21:30" class="inp w-auto py-1.5 text-xs" />
-            <button type="submit" class="btn-cta px-3 py-2 text-xs uppercase">+ Asignar Turno Mensual</button>
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#0F3A3F] pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase text-[#B8F2E6]">Gestión por Fecha Calendario + Coberturas + 2° Operador</span>
+            <h3 class="text-lg font-extrabold text-white">3. Calendario de Turnos por Fecha Específica (Hangar D35: Salas + Simuladores)</h3>
+          </div>
+
+          <!-- Formulario para agregar o modificar una fecha puntual o cubrir turno -->
+          <form onsubmit="addOrUpdateDateShift(event)" class="flex flex-wrap gap-2 items-end">
+            <div>
+              <label class="block text-[10px] uppercase text-[#B8F2E6] font-bold">Fecha Exacta</label>
+              <input type="date" id="ds-date" value="2026-11-16" required class="inp w-auto py-1.5 text-xs" />
+            </div>
+            <div>
+              <label class="block text-[10px] uppercase text-[#B8F2E6] font-bold">Op. Titular Hangar (Salas + Sim 1)</label>
+              <select id="ds-op1" class="inp w-auto py-1.5 text-xs">
+                <option value="Romina Armoa">Romina Armoa</option>
+                <option value="Jorge Sinconegui">Jorge Sinconegui</option>
+                <option value="Diego Calderón">Diego Calderón</option>
+                <option value="Ignacio Oillataguerre">Ignacio Oillataguerre</option>
+                <option value="Federico Figueroa">Federico Figueroa</option>
+                <option value="Matías Quiroz">Matías Quiroz</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] uppercase text-amber-300 font-bold">Reemplazo / Cubre Turno (Opc.)</label>
+              <select id="ds-cover" class="inp w-auto py-1.5 text-xs">
+                <option value="Sin cambio (Asiste Titular)">Sin cambio (Asiste Titular)</option>
+                <option value="Cubierto por: Jorge Sinconegui">Cubierto por: Jorge Sinconegui</option>
+                <option value="Cubierto por: Romina Armoa">Cubierto por: Romina Armoa</option>
+                <option value="Cubierto por: Diego Calderón">Cubierto por: Diego Calderón</option>
+                <option value="Cubierto por: Ignacio Oillataguerre">Cubierto por: Ignacio Oillataguerre</option>
+                <option value="Cubierto por: Federico Figueroa">Cubierto por: Federico Figueroa</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] uppercase text-emerald-300 font-bold">2° Operador (Si hay 2° Simulador)</label>
+              <select id="ds-op2" class="inp w-auto py-1.5 text-xs">
+                <option value="No requerido (1 Sim activo)">No requerido (1 Sim activo)</option>
+                <option value="2° Op Activo: Ignacio Oillataguerre">2° Op: Ignacio Oillataguerre</option>
+                <option value="2° Op Activo: Diego Calderón">2° Op: Diego Calderón</option>
+                <option value="2° Op Activo: Federico Figueroa">2° Op: Federico Figueroa</option>
+                <option value="2° Op Activo: Jorge Sinconegui">2° Op: Jorge Sinconegui</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] uppercase text-[#E2E8F0] font-bold">Salida</label>
+              <input type="time" id="ds-end" value="18:00" class="inp w-auto py-1.5 text-xs" />
+            </div>
+            <button type="submit" class="btn-cta px-3.5 py-2 text-xs uppercase">+ Guardar Fecha / Cambio</button>
           </form>
         </div>
 
@@ -434,43 +473,40 @@
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase">
-                <th class="py-2.5 px-3">Frecuencia Mensual</th>
-                <th class="py-2.5 px-3">Simulador / Sala</th>
-                <th class="py-2.5 px-3">Operador Asignado</th>
-                <th class="py-2.5 px-3">Horario</th>
-                <th class="py-2.5 px-3">Normales (08-18h)</th>
-                <th class="py-2.5 px-3">Extensión (&gt;18h)</th>
+                <th class="py-2.5 px-3">Fecha / Día</th>
+                <th class="py-2.5 px-3">Responsabilidad Base</th>
+                <th class="py-2.5 px-3">Operador Titular</th>
+                <th class="py-2.5 px-3">Cobertura / Cambio de Turno</th>
+                <th class="py-2.5 px-3">2° Operador (Simulador Simultáneo)</th>
+                <th class="py-2.5 px-3">Horario & Extensión</th>
                 <th class="py-2.5 px-3">Movilización Uber</th>
               </tr>
             </thead>
-            <tbody id="shifts-body" class="divide-y divide-[#0F3A3F]">
-              <tr>
-                <td class="py-2.5 px-3 font-bold">Todos los Lunes del Mes</td>
-                <td class="py-2.5 px-3">A320 FTD NIVEL 4 (LAB-CH-134)</td>
-                <td class="py-2.5 px-3">Romina Armoa (5d)</td>
-                <td class="py-2.5 px-3 font-mono">08:00 - 18:00</td>
-                <td class="py-2.5 px-3 font-bold">10.0 hrs</td>
-                <td class="py-2.5 px-3">0.0 hrs</td>
-                <td class="py-2.5 px-3 text-[#E2E8F0]/50">Diurno Normal</td>
+            <tbody id="date-shifts-tbody" class="divide-y divide-[#0F3A3F]"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bitácora Completa de Asistencia y Tokens QR (Visible solo para Matías y Valezca) -->
+      <div class="card p-6 space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-base font-extrabold text-white">4. Auditoría de Asistencia y Códigos del Reloj Dinámico (Solo Administradores)</h3>
+          <span class="text-xs text-[#B8F2E6] font-mono" id="admin-token-view">Token Actual: LBM-2026-A9F4-8821</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#0F3A3F] text-[#B8F2E6]">
+                <th class="py-2 px-3">Operador</th>
+                <th class="py-2 px-3">Acción / Cobertura</th>
+                <th class="py-2 px-3">Hora Marcada</th>
+                <th class="py-2 px-3">Código Reloj Dinámico Validado</th>
               </tr>
-              <tr>
-                <td class="py-2.5 px-3 font-bold">Todos los Martes del Mes</td>
-                <td class="py-2.5 px-3">PC-ATD C172 Análogo (PC-LAB-64)</td>
-                <td class="py-2.5 px-3">Jorge Sinconegui (5d)</td>
-                <td class="py-2.5 px-3 font-mono">08:00 - 19:30</td>
-                <td class="py-2.5 px-3 font-bold">10.0 hrs</td>
-                <td class="py-2.5 px-3 text-amber-300 font-bold">+1.5 hrs Ext.</td>
-                <td class="py-2.5 px-3 text-[#E2E8F0]/50">Diurno Normal</td>
-              </tr>
-              <tr>
-                <td class="py-2.5 px-3 font-bold">Todos los Miércoles del Mes</td>
-                <td class="py-2.5 px-3">PC-ATD A320 (PC-LAB-70)</td>
-                <td class="py-2.5 px-3">Diego Calderón (5d)</td>
-                <td class="py-2.5 px-3 font-mono">12:00 - 22:30</td>
-                <td class="py-2.5 px-3 font-bold">6.0 hrs</td>
-                <td class="py-2.5 px-3 text-amber-300 font-bold">+4.5 hrs Ext.</td>
-                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span></td>
-              </tr>
+            </thead>
+            <tbody id="qr-logs-body" class="divide-y divide-[#0F3A3F]">
+              <tr><td class="py-2 px-3 font-bold">Romina Armoa</td><td class="py-2 px-3 text-[#B8F2E6]">ENTRADA (Hangar D35: Salas + LAB-CH-134)</td><td class="py-2 px-3 font-mono">07:58</td><td class="py-2 px-3 font-mono text-[#B8F2E6]">LBM-2026-9E31-5540</td></tr>
+              <tr><td class="py-2 px-3 font-bold">Jorge Sinconegui</td><td class="py-2 px-3 text-[#B8F2E6]">ENTRADA (Hangar D35: Salas + PC-LAB-64)</td><td class="py-2 px-3 font-mono">08:00</td><td class="py-2 px-3 font-mono text-[#B8F2E6]">LBM-2026-4B89-1102</td></tr>
+              <tr><td class="py-2 px-3 font-bold">Diego Calderón</td><td class="py-2 px-3 text-emerald-300">SALIDA Nocturna (Uber Asignado &gt;21:00h)</td><td class="py-2 px-3 font-mono">22:15</td><td class="py-2 px-3 font-mono text-[#B8F2E6]">LBM-2026-1D77-3098</td></tr>
             </tbody>
           </table>
         </div>
@@ -478,131 +514,319 @@
     </section>
 
     <!-- ===================================================================
-         PESTAÑA 3: CRM DE CLIENTES Y LISTADO DE RESERVAS
+         PESTAÑA 3 (SOLO ADMIN): BASE DE DATOS DE CLIENTES & PAGOS SMART POS
          =================================================================== -->
     <section id="tab-crm" class="hidden space-y-6">
       <div class="card p-6 space-y-4">
-        <h2 class="text-lg font-extrabold text-white">Reservas Recientes (Simuladores & Salas de Clases)</h2>
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#0F3A3F] pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase text-[#B8F2E6]">Dónde se guardan tus clientes: Base de Datos CRM Activa</span>
+            <h2 class="text-xl font-extrabold text-white">Directorio Histórico de Clientes y Pilotos Registrados</h2>
+            <p class="text-xs text-[#E2E8F0]/75">Cada reserva nueva del formulario se guarda automáticamente en esta tabla y puedes descargarla en Excel/CSV.</p>
+          </div>
+          <button type="button" onclick="exportClientsCSV()" class="btn-cta px-4 py-2.5 text-xs uppercase">
+            📥 Exportar Base de Datos Clientes (CSV / Excel)
+          </button>
+        </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase">
-                <th class="py-2.5 px-3">Código</th>
-                <th class="py-2.5 px-3">Piloto / Solicitante</th>
-                <th class="py-2.5 px-3">RUT / Licencia</th>
-                <th class="py-2.5 px-3">Simulador / Sala</th>
-                <th class="py-2.5 px-3">Fecha y Bloque</th>
-                <th class="py-2.5 px-3">Estado</th>
+                <th class="py-2.5 px-3">ID</th>
+                <th class="py-2.5 px-3">Nombre Cliente / Piloto</th>
+                <th class="py-2.5 px-3">RUT / Pasaporte</th>
+                <th class="py-2.5 px-3">Contacto (Email & Tel)</th>
+                <th class="py-2.5 px-3">Cumpleaños</th>
+                <th class="py-2.5 px-3">Segmento</th>
+                <th class="py-2.5 px-3">Último Simulador / Sala</th>
+                <th class="py-2.5 px-3">Medio de Pago</th>
+                <th class="py-2.5 px-3">Acción Gift Card</th>
               </tr>
             </thead>
-            <tbody id="bookings-body" class="divide-y divide-[#0F3A3F]">
-              <tr>
-                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9041</td>
-                <td class="py-2.5 px-3 font-bold">Cap. Sebastián Morales</td>
-                <td class="py-2.5 px-3">16.482.910-K (PCA #8841)</td>
-                <td class="py-2.5 px-3">A320 FTD NIVEL 4 (LAB-CH-134)</td>
-                <td class="py-2.5 px-3 font-mono">2026-11-09 · 10:00 - 12:00</td>
-                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">Confirmada</span></td>
-              </tr>
-            </tbody>
+            <tbody id="crm-clients-tbody" class="divide-y divide-[#0F3A3F]"></tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- Fichas CRM de Clientes con Contactos Reales -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="card p-5 space-y-2">
-          <div class="flex justify-between">
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Piloto Comercial</span>
-            <span class="text-xs text-[#B8F2E6] font-bold">🎂 09 Nov</span>
-          </div>
-          <h3 class="font-extrabold text-base text-white">Cap. Sebastián Morales</h3>
-          <p class="text-xs text-[#E2E8F0]/70">smorales@vuelochile.cl · +56 9 8412 3301</p>
-          <p class="text-xs text-[#B8F2E6]">• LAB-CH-134: 44 hrs | Gift Card 30% Activa</p>
-          <button type="button" onclick="notify('🎁 Giftcard 30% enviada a Cap. Sebastián Morales')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Gift Card 30% Desc.</button>
-        </div>
-
-        <div class="card p-5 space-y-2">
-          <div class="flex justify-between">
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Piloto Privado</span>
-            <span class="text-xs text-[#E2E8F0]/60">Nac: 15 Nov</span>
-          </div>
-          <h3 class="font-extrabold text-base text-white">Valentina Echeverría</h3>
-          <p class="text-xs text-[#E2E8F0]/70">vecheverria@clubvuelo.cl · +56 9 7112 9082</p>
-          <p class="text-xs text-[#B8F2E6]">• PC-LAB-64: 32 hrs | Gift Card 30% Activa</p>
-          <button type="button" onclick="notify('🎁 Giftcard 30% enviada a Valentina Echeverría')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Gift Card 30% Desc.</button>
-        </div>
-
-        <div class="card p-5 space-y-2">
-          <div class="flex justify-between">
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Instructor de Vuelo</span>
-            <span class="text-xs text-[#E2E8F0]/60">Convenio Salas + Sim</span>
-          </div>
-          <h3 class="font-extrabold text-base text-white">Andrés Valdivieso</h3>
-          <p class="text-xs text-[#E2E8F0]/70">avaldivieso@instruccion.cl · +56 9 9301 4450</p>
-          <p class="text-xs text-[#B8F2E6]">• LAB-CH-134: 60 hrs | SALA 2 y SALA LM PA</p>
-          <button type="button" onclick="notify('📩 Resumen enviado a Andrés Valdivieso')" class="btn-cta w-full py-2 text-xs mt-2">Enviar Resumen de Horas</button>
         </div>
       </div>
     </section>
 
     <!-- ===================================================================
-         PESTAÑA 4: EMAIL MARKETING CON IMAGEN DESTACADA Y DISEÑO GRÁFICO
+         PESTAÑA 4 (SOLO ADMIN): VISTA PREVIA DE GIFT CARDS & EMAIL MARKETING
          =================================================================== -->
-    <section id="tab-marketing" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-7 card p-6 space-y-4">
-        <span class="text-xs font-bold uppercase text-[#B8F2E6]">Email Marketing Visual (Imágenes & Banner)</span>
-        <h2 class="text-xl font-extrabold text-white">Redacción de Campañas con Banner Gráfico</h2>
-        <form onsubmit="sendCampaign(event)" class="space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <section id="tab-marketing" class="hidden space-y-8">
+
+      <!-- SECCIÓN A: DISEÑADOR Y VISTA PREVIA EN VIVO DE LAS GIFT CARDS CON FONDO A320 FTD -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-5 card p-6 space-y-4">
+          <span class="text-xs font-bold uppercase text-[#B8F2E6]">Generador Gráfico de Beneficios</span>
+          <h2 class="text-xl font-extrabold text-white">Personalizar Vista Previa de Gift Card</h2>
+          <p class="text-xs text-[#E2E8F0]/75">
+            Revisa con Valezca cómo se ve la tarjeta gráfica con la cabina del <b>A320 FTD</b> de fondo que recibirá el piloto en su correo de bienvenida o cumpleaños.
+          </p>
+
+          <div class="space-y-3">
             <div>
-              <label class="block text-xs font-bold uppercase mb-1">Empresa Remitente</label>
-              <select id="m-brand" class="inp">
-                <option>Labmeter Training Center</option>
-                <option>IFR LabTraining</option>
-                <option>LabMeter</option>
+              <label class="block text-[11px] font-bold uppercase mb-1">Tipo de Gift Card</label>
+              <select id="gc-type" onchange="updateGiftCardPreview()" class="inp">
+                <option value="BIENVENIDA">🎁 Bienvenida Comunidad: 30% DESCUENTO (1ª Sesión · Máx 2 hrs)</option>
+                <option value="CUMPLEANOS">🎂 Beneficio Cumpleaños: PASE DE CORTESÍA / DESCUENTO ESPECIAL</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold uppercase mb-1">Segmento de Clientes</label>
-              <select id="m-seg" class="inp">
-                <option>Todos los Segmentos</option>
-                <option>Piloto Privado</option>
-                <option>Piloto Comercial</option>
-                <option>Instructor de Vuelo</option>
-                <option>Aficionado</option>
-                <option>Visita Pedagógica</option>
+              <label class="block text-[11px] font-bold uppercase mb-1">Nombre del Piloto / Beneficiario</label>
+              <input type="text" id="gc-pilot" value="Cap. Sebastián Morales" oninput="updateGiftCardPreview()" class="inp" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase mb-1">Simulador Elegible</label>
+              <select id="gc-sim" onchange="updateGiftCardPreview()" class="inp">
+                <option value="A320 FTD NIVEL 4 (LAB-CH-134) o Flota Completa">A320 FTD NIVEL 4 (LAB-CH-134) o Flota Completa</option>
+                <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
+                <option value="PC-ATD C172 Análogo (PC-LAB-64)">PC-ATD C172 Análogo (PC-LAB-64)</option>
+                <option value="AATD C172 G1000">AATD C172 G1000</option>
               </select>
             </div>
+            <button type="button" onclick="notify('🎁 Gift Card enviada por correo al piloto seleccionado')" class="btn-cta w-full py-3 text-xs uppercase">
+              ✉️ Enviar esta Gift Card al Correo del Cliente
+            </button>
           </div>
-          <div>
-            <label class="block text-xs font-bold uppercase mb-1">Asunto de la Campaña</label>
-            <input type="text" id="m-subj" value="✈️ Nuevos Bloques en A320 FTD (LAB-CH-134) & Salas de Instrucción" class="inp" />
+        </div>
+
+        <!-- TARJETA VISUAL DE LA GIFT CARD CON LA FOTO A320 FTD DE FONDO -->
+        <div class="lg:col-span-7">
+          <div class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6] mb-2">
+            👁️ Vista Previa Oficial de la Gift Card (Así la ve el cliente):
           </div>
-          <div>
-            <label class="block text-xs font-bold uppercase mb-1">Mensaje Principal con Imagen Banner</label>
-            <div class="p-3 bg-[#071014] border border-[#0F3A3F] rounded-xl mb-2 text-center">
-              <span class="text-xs text-[#B8F2E6] font-bold">🖼️ Imagen adjunta al correo: [ Banner de Cabina A320 & Flota de Simuladores ]</span>
+          <div class="relative rounded-3xl overflow-hidden border-2 border-[#B8F2E6] shadow-2xl min-h-[320px] flex flex-col justify-between p-6 sm:p-8 bg-cover bg-center" style="background-image: url('./A320%20FTD.jpeg');">
+            <!-- Velo oscuro elegante para resaltar tipografía -->
+            <div class="absolute inset-0 bg-gradient-to-r from-[#071014]/95 via-[#071014]/75 to-[#071014]/40"></div>
+
+            <!-- Cabecera de la Gift Card con los 3 Logos -->
+            <div class="relative z-10 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <div class="bg-[#E2E8F0] px-2 py-1 rounded-md">
+                  <img src="./LABMETER%20training%20Center%20LOGO%20PNG%20.png" alt="Labmeter" class="h-6 object-contain" onerror="this.outerHTML='<b class=\'text-[#071014] text-[10px]\'>LABMETER</b>'" />
+                </div>
+                <div class="bg-[#E2E8F0] px-2 py-1 rounded-md">
+                  <img src="./IFR_LT_fnl.png" alt="IFR LabTraining" class="h-6 object-contain" onerror="this.outerHTML='<b class=\'text-[#0077a8] text-[10px]\'>IFR LabTraining</b>'" />
+                </div>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-[#B8F2E6] text-[#071014] shadow-lg">
+                GIFT CARD OFICIAL · HANGAR D35
+              </span>
             </div>
-            <textarea rows="4" class="inp">Estimado piloto, te invitamos a revisar los nuevos bloques disponibles en nuestro centro de entrenamiento. Reserva tus horas en A320 FTD Nivel 4 (LAB-CH-134), PC-ATD A320 (PC-LAB-70), PC-ATD C172 Análogo (PC-LAB-64) y nuestras Salas de Clases y Reuniones.</textarea>
+
+            <!-- Cuerpo Central con Texto Destacado sobre la Cabina A320 -->
+            <div class="relative z-10 my-6 max-w-lg space-y-2">
+              <div id="gc-preview-tag" class="text-xs font-extrabold uppercase tracking-widest text-[#B8F2E6]">
+                BIENVENIDO A NUESTRA COMUNIDAD DE AVIADORES
+              </div>
+              <h3 id="gc-preview-title" class="text-3xl sm:text-4xl font-black text-white tracking-tight leading-none drop-shadow-lg">
+                30% DE DESCUENTO
+              </h3>
+              <p id="gc-preview-desc" class="text-xs sm:text-sm text-[#E2E8F0] font-medium leading-relaxed">
+                Canjeable en tu <b>primera sesión de simulación de vuelo (máximo 2 horas)</b> en el dispositivo que elijas de nuestro centro de entrenamiento.
+              </p>
+            </div>
+
+            <!-- Pie de la Gift Card con Nombre, Simulador y Código Único -->
+            <div class="relative z-10 pt-4 border-t border-[#B8F2E6]/30 flex flex-wrap items-center justify-between gap-4 text-xs">
+              <div>
+                <span class="text-[10px] uppercase text-[#E2E8F0]/70 block">Otorgada a:</span>
+                <strong id="gc-preview-pilot" class="text-sm text-white font-extrabold">Cap. Sebastián Morales</strong>
+                <span id="gc-preview-sim" class="block text-[11px] text-[#B8F2E6]">Válido en: A320 FTD NIVEL 4 (LAB-CH-134) o Flota Completa</span>
+              </div>
+              <div class="bg-[#071014]/90 border border-[#B8F2E6] px-4 py-2 rounded-xl text-right">
+                <span class="text-[9px] uppercase text-[#E2E8F0]/60 block">Código Canjeable</span>
+                <span id="gc-preview-code" class="font-mono text-sm font-black text-[#B8F2E6]">WELCOME-30-D35</span>
+              </div>
+            </div>
           </div>
-          <button type="submit" class="btn-cta w-full py-3 text-xs uppercase tracking-wider">Disparar Campaña con Banner Visual</button>
-        </form>
+        </div>
       </div>
 
-      <div class="lg:col-span-5 card p-6 space-y-3">
-        <h3 class="text-base font-extrabold text-white">Campañas Visuales Enviadas</h3>
-        <div id="campaign-logs" class="space-y-2.5 text-xs">
-          <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">IFR LabTraining</span>
-            <p class="font-bold text-white mt-1">✈️ Campaña Visual: A320 FTD (LAB-CH-134) & PC-LAB-70</p>
-            <p class="text-[#E2E8F0]/70">Segmento: Piloto Comercial · 48 envíos (Con Banner)</p>
+      <!-- SECCIÓN B: REDACTOR DE CAMPAÑAS MASIVAS + VISTA PREVIA DEL CORREO DEL CLIENTE -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-5 card p-6 space-y-4">
+          <span class="text-xs font-bold uppercase text-[#B8F2E6]">Comunicaciones Masivas</span>
+          <h2 class="text-xl font-extrabold text-white">Editor de Campaña de Email Marketing</h2>
+          <p class="text-xs text-[#E2E8F0]/75">Escribe el asunto y el texto: a la derecha verás en vivo cómo le llegará el correo maquetado con imagen al cliente.</p>
+
+          <form onsubmit="sendCampaign(event)" class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold uppercase mb-1">Empresa Remitente</label>
+              <select id="m-brand" onchange="updateEmailPreview()" class="inp">
+                <option value="IFR LabTraining · Hangar D35">IFR LabTraining · Hangar D35</option>
+                <option value="Labmeter Training Center">Labmeter Training Center</option>
+                <option value="LabMeter Aeronautical">LabMeter Aeronautical</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase mb-1">Segmento Destinatario</label>
+              <select id="m-seg" onchange="updateEmailPreview()" class="inp">
+                <option value="Todos los Clientes Registrados">Todos los Clientes Registrados</option>
+                <option value="Pilotos Comerciales (PCA)">Pilotos Comerciales (PCA)</option>
+                <option value="Pilotos Privados (PPA)">Pilotos Privados (PPA)</option>
+                <option value="Instructores de Vuelo">Instructores de Vuelo</option>
+                <option value="Aficionados & Visitas">Aficionados & Visitas</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase mb-1">Título del Banner Fotográfico</label>
+              <input type="text" id="m-headline" value="ENTRENA EN CABINA A320 FTD NIVEL 4 (LAB-CH-134)" oninput="updateEmailPreview()" class="inp" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase mb-1">Asunto del Correo</label>
+              <input type="text" id="m-subj" value="✈️ Bloques Disponibles en Hangar D35: A320 FTD, C172 & Salas" oninput="updateEmailPreview()" class="inp" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase mb-1">Cuerpo del Mensaje</label>
+              <textarea id="m-body" rows="4" oninput="updateEmailPreview()" class="inp">Hola aviador, te invitamos a agendar tus próximas sesiones en el Hangar D35 (horario continuado 08:00 a 18:00 hrs y bloques de extensión). Contamos con nuestros simuladores A320 FTD Nivel 4 (LAB-CH-134), PC-ATD A320 (PC-LAB-70), PC-ATD C172 Análogo (PC-LAB-64), AATD C172 G1000 y nuestras Salas de Clases. Puedes abonar vía transferencia o presencialmente en nuestro Smart POS de Mercado Pago.</textarea>
+            </div>
+            <button type="submit" class="btn-cta w-full py-3.5 text-xs uppercase tracking-wider">
+              🚀 Disparar Campaña Visual a este Segmento
+            </button>
+          </form>
+        </div>
+
+        <!-- VISTA PREVIA DEL CORREO ELECTRÓNICO (COMO LO VE EL CLIENTE EN SU BANDEJA) -->
+        <div class="lg:col-span-7 space-y-2">
+          <div class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6]">
+            📧 Vista Previa en Vivo del Correo (Revisión para Valezca y Matías):
           </div>
-          <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Labmeter Training Center</span>
-            <p class="font-bold text-white mt-1">🎁 Gift Card 30% Bienvenida Nueva Comunidad</p>
-            <p class="text-[#E2E8F0]/70">Segmento: Nuevos Registros · 14 envíos</p>
+          <div class="rounded-2xl overflow-hidden border-2 border-[#0F3A3F] shadow-2xl bg-[#050C0F]">
+            <!-- Cabecera Simulador Bandeja de Entrada (Gmail/Outlook) -->
+            <div class="bg-[#0A1F24] px-5 py-3 border-b border-[#0F3A3F] text-xs space-y-1">
+              <div class="flex justify-between">
+                <span class="text-[#E2E8F0]/70">De: <strong id="ep-from" class="text-white">IFR LabTraining · Hangar D35 &lt;contacto@labmeter.cl&gt;</strong></span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]" id="ep-seg">Para: Todos los Clientes Registrados</span>
+              </div>
+              <div class="text-white font-bold text-sm" id="ep-subj">Asunto: ✈️ Bloques Disponibles en Hangar D35: A320 FTD, C172 & Salas</div>
+            </div>
+
+            <!-- Cuerpo Gráfico del Email HTML -->
+            <div class="p-5 sm:p-6 space-y-5">
+              <!-- Banner Fotográfico con Texto Superpuesto -->
+              <div class="relative rounded-2xl overflow-hidden h-56 bg-cover bg-center border border-[#0F3A3F] flex flex-col justify-end p-6" style="background-image: url('./A320%20FTD.jpeg');">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#071014] via-[#071014]/50 to-transparent"></div>
+                <div class="relative z-10 space-y-1">
+                  <span class="px-2.5 py-0.5 rounded bg-[#B8F2E6] text-[#071014] text-[10px] font-black uppercase">Centro de Entrenamiento Hangar D35</span>
+                  <h4 id="ep-headline" class="text-xl sm:text-2xl font-black text-white drop-shadow">ENTRENA EN CABINA A320 FTD NIVEL 4 (LAB-CH-134)</h4>
+                </div>
+              </div>
+
+              <!-- Texto del Correo -->
+              <div class="bg-[#0A1F24] border border-[#0F3A3F] rounded-xl p-5 space-y-4">
+                <p id="ep-body" class="text-xs sm:text-sm text-[#E2E8F0] leading-relaxed whitespace-pre-line"></p>
+
+                <div class="p-3.5 rounded-xl bg-[#071014] border border-[#B8F2E6]/40 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div>
+                    <b class="text-[#B8F2E6] block">🎁 Beneficio Nuevos Miembros: 30% OFF en tu 1ª Sesión (Máx. 2 hrs)</b>
+                    <span class="text-[11px] text-[#E2E8F0]/75">Pago vía Transferencia o Presencial con Tarjeta en Smart POS Mercado Pago.</span>
+                  </div>
+                  <span class="px-4 py-2 rounded-lg bg-[#B8F2E6] text-[#071014] font-extrabold text-xs uppercase">Reservar Bloque Ahora →</span>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         PESTAÑA 5 (FRONTEND OPERADOR): RELOJ ASISTENCIA & AGENDAMIENTO AUTORIZADO
+         =================================================================== -->
+    <section id="tab-operator" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Reloj de Asistencia Individual del Operador (Sin ver a los demás) -->
+        <div class="lg:col-span-5 card p-6 space-y-4 border-2 border-[#B8F2E6]/30">
+          <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-[#B8F2E6] text-[#071014] uppercase">Frontend Operador / Instructor</span>
+          <h2 class="text-xl font-extrabold text-white">1. Reloj Dinámico para Registro de Horas</h2>
+          <p class="text-xs text-[#E2E8F0]/75">Selecciona tu nombre para cargar tus permisos de simulador y registrar tu entrada o salida del Hangar D35.</p>
+
+          <div class="p-3.5 bg-[#071014] border border-[#0F3A3F] rounded-xl flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-[#E2E8F0]/60 block">Reloj Dinámico Activo:</span>
+              <div id="op-qr-token" class="font-mono text-sm font-extrabold text-[#B8F2E6]">LBM-2026-A9F4-8821</div>
+            </div>
+            <span id="op-timer" class="text-xs font-bold text-[#B8F2E6]">Actualiza en 30s</span>
+          </div>
+
+          <form onsubmit="handleOperatorCheckIn(event)" class="space-y-3">
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">Tu Nombre (Operador / Instructor) *</label>
+              <select id="op-selected-name" onchange="updateOperatorAllowedSimulators()" class="inp" required>
+                <option value="Romina Armoa">Romina Armoa</option>
+                <option value="Jorge Sinconegui">Jorge Sinconegui</option>
+                <option value="Diego Calderón">Diego Calderón</option>
+                <option value="Ignacio Oillataguerre">Ignacio Oillataguerre</option>
+                <option value="Federico Figueroa">Federico Figueroa</option>
+                <option value="Matías Quiroz">Matías Quiroz</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold uppercase mb-1">Registro *</label>
+                <select id="op-action" class="inp">
+                  <option value="ENTRADA Turno Hangar D35">ENTRADA Turno Hangar</option>
+                  <option value="SALIDA Turno Hangar D35">SALIDA Turno Hangar</option>
+                  <option value="SALIDA Nocturna (Solicita Uber)">SALIDA Nocturna (Uber)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase mb-1">Modalidad *</label>
+                <select id="op-mode" class="inp">
+                  <option value="Turno Titular">Turno Titular</option>
+                  <option value="Cubriendo / Reemplazo de Compañero">Cobertura / Reemplazo</option>
+                  <option value="Activado como 2° Operador">2° Operador Simultáneo</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn-cta w-full py-3 text-xs uppercase tracking-wider">
+              ✓ Marcar Hora en Reloj Dinámico
+            </button>
+          </form>
+          <div id="op-success-box" class="hidden p-3.5 rounded-xl bg-[#1C6B6A]/30 border border-[#B8F2E6] text-xs text-center"></div>
+        </div>
+
+        <!-- Agendamiento Interno solo para Simuladores Autorizados por Matías/Valezca -->
+        <div class="lg:col-span-7 card p-6 space-y-4">
+          <span class="text-xs font-bold uppercase text-[#B8F2E6]">Agendamiento Autorizado por Administración</span>
+          <h2 class="text-xl font-extrabold text-white">2. Agendar Bloque en Simuladores Autorizados</h2>
+          <p class="text-xs text-[#E2E8F0]/75">
+            Solo aparecen en la lista los dispositivos que <b>Matías Eliecer Quiroz o Valezca Ríos Letelier</b> te han autorizado en tu perfil.
+          </p>
+
+          <form onsubmit="handleOperatorBooking(event)" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold uppercase mb-1">Simulador / Sala Autorizada *</label>
+                <select id="op-allowed-sim" class="inp"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase mb-1">Nombre del Alumno / Piloto *</label>
+                <input type="text" id="op-b-pilot" required placeholder="Ej: Alumno Instrucción IFR" class="inp" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold uppercase mb-1">Fecha *</label>
+                <input type="date" id="op-b-date" value="2026-11-09" required class="inp" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase mb-1">Bloque Horario (08:00 - 18:00) *</label>
+                <select id="op-b-slot" class="inp">
+                  <option value="08:00 - 10:00">08:00 - 10:00</option>
+                  <option value="10:00 - 12:00">10:00 - 12:00</option>
+                  <option value="12:00 - 14:00">12:00 - 14:00</option>
+                  <option value="14:00 - 16:00">14:00 - 16:00</option>
+                  <option value="16:00 - 18:00">16:00 - 18:00</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn-cta w-full py-3 text-xs uppercase tracking-wider">
+              📅 Agendar en Calendario Hangar D35
+            </button>
+          </form>
         </div>
       </div>
     </section>
@@ -610,10 +834,80 @@
   </main>
 
   <footer class="relative z-10 bg-[#0A1F24] border-t border-[#0F3A3F] py-3 px-4 text-center text-[11px] text-[#E2E8F0]/60">
-    Labmeter Training Center · IFR LabTraining · LabMeter — LAB-CH-134 · PC-LAB-70 · PC-LAB-64 · AATD C172 G1000 · Salas 2, 3 y LM Puente Alto
+    Hangar D35 (08:00 - 18:00 hrs) · IFR LabTraining · Labmeter Training Center — Administración: Matías Eliecer Quiroz & Valezca Ríos Letelier
   </footer>
 
   <script>
+    // =========================================================================
+    // DATOS MAESTROS DEL HANGAR D35, PERMISOS DE OPERADORES Y CLIENTES
+    // =========================================================================
+    var ALL_RESOURCES = [
+      "A320 FTD NIVEL 4 (LAB-CH-134)",
+      "PC-ATD A320 (PC-LAB-70)",
+      "PC-ATD C172 Análogo (PC-LAB-64)",
+      "AATD C172 G1000 (No certificado)",
+      "SALA 2 (15 personas)",
+      "SALA 3 Clases (6 personas)",
+      "SALA 3 Reuniones (Multifuncional)",
+      "SALA LM Puente Alto (9 personas)"
+    ];
+
+    var TIME_SLOTS = [
+      "08:00 - 10:00",
+      "10:00 - 12:00",
+      "12:00 - 14:00",
+      "14:00 - 16:00",
+      "16:00 - 18:00",
+      "18:00 - 20:00 (Extensión)",
+      "20:00 - 22:00 (Extensión + Uber)"
+    ];
+
+    // Patrón semanal por defecto: 1=Lunes, 2=Martes, 3=Miércoles, 4=Jueves, 5=Viernes, 6=FinDeSemana
+    var weeklyPattern = {
+      1: "Romina Armoa",
+      2: "Jorge Sinconegui",
+      3: "Diego Calderón",
+      4: "Ignacio Oillataguerre",
+      5: "Federico Figueroa",
+      6: "Federico Figueroa"
+    };
+
+    // Permisos de simuladores autorizados por operador (Administrado por Matías y Valezca)
+    var operatorPermissions = {
+      "Romina Armoa": ["A320 FTD NIVEL 4 (LAB-CH-134)", "AATD C172 G1000 (No certificado)", "SALA 2 (15 personas)", "SALA 3 Clases (6 personas)"],
+      "Jorge Sinconegui": ["PC-ATD C172 Análogo (PC-LAB-64)", "AATD C172 G1000 (No certificado)", "SALA 2 (15 personas)", "SALA 3 Clases (6 personas)"],
+      "Diego Calderón": ["PC-ATD A320 (PC-LAB-70)", "PC-ATD C172 Análogo (PC-LAB-64)", "SALA 2 (15 personas)"],
+      "Ignacio Oillataguerre": ["A320 FTD NIVEL 4 (LAB-CH-134)", "PC-ATD A320 (PC-LAB-70)", "SALA 3 Reuniones (Multifuncional)"],
+      "Federico Figueroa": ["PC-ATD C172 Análogo (PC-LAB-64)", "AATD C172 G1000 (No certificado)", "SALA LM Puente Alto (9 personas)"],
+      "Matías Quiroz": ALL_RESOURCES.slice()
+    };
+
+    // Turnos por Fecha Específica (con soporte de cambios/coberturas y 2° operador)
+    var dateShifts = [
+      { date: "2026-11-09", dayName: "Lunes", titular: "Romina Armoa", cover: "Sin cambio (Asiste Titular)", secondOp: "2° Op Activo: Ignacio Oillataguerre", end: "18:00" },
+      { date: "2026-11-10", dayName: "Martes", titular: "Jorge Sinconegui", cover: "Sin cambio (Asiste Titular)", secondOp: "No requerido (1 Sim activo)", end: "19:30" },
+      { date: "2026-11-11", dayName: "Miércoles", titular: "Diego Calderón", cover: "Cubierto por: Romina Armoa", secondOp: "No requerido (1 Sim activo)", end: "22:00" },
+      { date: "2026-11-12", dayName: "Jueves", titular: "Ignacio Oillataguerre", cover: "Sin cambio (Asiste Titular)", secondOp: "No requerido (1 Sim activo)", end: "18:00" },
+      { date: "2026-11-13", dayName: "Viernes", titular: "Federico Figueroa", cover: "Sin cambio (Asiste Titular)", secondOp: "No requerido (1 Sim activo)", end: "18:00" }
+    ];
+
+    // Base de Datos de Clientes y Reservas
+    var clientsDB = [
+      { id: "CLI-01", name: "Cap. Sebastián Morales", rut: "16.482.910-K", email: "smorales@vuelochile.cl", phone: "+56 9 8412 3301", birth: "1989-11-09", segment: "Piloto Comercial", lastResource: "A320 FTD NIVEL 4 (LAB-CH-134)", payment: "Smart POS Mercado Pago (Presencial)" },
+      { id: "CLI-02", name: "Valentina Echeverría", rut: "19.831.044-2", email: "vecheverria@clubvuelo.cl", phone: "+56 9 7112 9082", birth: "1996-11-15", segment: "Piloto Privado", lastResource: "PC-ATD C172 Análogo (PC-LAB-64)", payment: "Transferencia Bancaria" },
+      { id: "CLI-03", name: "Andrés Valdivieso", rut: "14.205.771-8", email: "avaldivieso@instruccion.cl", phone: "+56 9 9301 4450", birth: "1982-05-20", segment: "Instructor de Vuelo", lastResource: "SALA 2 (15 personas)", payment: "Transferencia Bancaria" }
+    ];
+
+    // Reservas en el Calendario Maestro (Notar que en 10:00 - 12:00 hay 2 simuladores simultáneos para demostrar la activación del 2° operador)
+    var calendarBookings = [
+      { id: "RES-9041", date: "2026-11-09", slot: "10:00 - 12:00", resource: "A320 FTD NIVEL 4 (LAB-CH-134)", pilot: "Cap. Sebastián Morales", payment: "Smart POS Mercado Pago" },
+      { id: "RES-9042", date: "2026-11-09", slot: "10:00 - 12:00", resource: "PC-ATD C172 Análogo (PC-LAB-64)", pilot: "Valentina Echeverría", payment: "Transferencia Bancaria" },
+      { id: "RES-9043", date: "2026-11-09", slot: "10:00 - 12:00", resource: "SALA 2 (15 personas)", pilot: "Andrés Valdivieso (Curso IFR)", payment: "Transferencia Bancaria" },
+      { id: "RES-9044", date: "2026-11-09", slot: "14:00 - 16:00", resource: "PC-ATD A320 (PC-LAB-70)", pilot: "Tomás Fuenzalida", payment: "Smart POS Mercado Pago" }
+    ];
+
+    var currentRole = "admin";
+
     function notify(msg) {
       var t = document.getElementById('toast');
       document.getElementById('toast-msg').textContent = msg;
@@ -623,145 +917,473 @@
     }
 
     function openTab(name) {
-      var tabs = ['booking', 'operator', 'shifts', 'crm', 'marketing'];
+      var tabs = ['booking', 'shifts', 'crm', 'marketing', 'operator'];
       for (var i = 0; i < tabs.length; i++) {
         var el = document.getElementById('tab-' + tabs[i]);
         if (el) el.classList.add('hidden');
         var btn = document.getElementById('btn-' + tabs[i]);
         if (btn) btn.classList.remove('active');
       }
-      var targetTab = document.getElementById('tab-' + name);
-      if (targetTab) targetTab.classList.remove('hidden');
+      var target = document.getElementById('tab-' + name);
+      if (target) target.classList.remove('hidden');
       var targetBtn = document.getElementById('btn-' + name);
       if (targetBtn) targetBtn.classList.add('active');
     }
 
-    // Modo Link Cliente (Oculta navegación interna y deja solo la reserva y la foto)
-    function copyClientLink() {
-      var url = window.location.href.split('#')[0] + '#cliente';
-      navigator.clipboard.writeText(url);
-      notify('🔗 Enlace exclusivo para clientes copiado al portapapeles.');
-    }
+    // Cambio entre los 3 Frontends: Administrador (Matías y Valezca), Operador y Cliente
+    function setRoleView(role) {
+      currentRole = role;
+      ['admin', 'operator', 'client'].forEach(function(r) {
+        var b = document.getElementById('role-' + r);
+        if (b) b.classList.remove('active');
+      });
+      var activeBtn = document.getElementById('role-' + role);
+      if (activeBtn) activeBtn.classList.add('active');
 
-    window.addEventListener('load', function() {
-      if (window.location.hash === '#cliente') {
-        var header = document.getElementById('main-header');
-        if (header) header.style.display = 'none';
-        var sidebar = document.getElementById('client-sidebar');
-        if (sidebar) sidebar.style.display = 'none';
-        var formContainer = document.getElementById('client-form-container');
-        if (formContainer) {
-          formContainer.className = "card p-6 sm:p-8 shadow-2xl max-w-2xl mx-auto w-full";
-        }
+      var adminTabs = document.querySelectorAll('.admin-only');
+      var opTabs = document.querySelectorAll('.op-only');
+      var subtitle = document.getElementById('role-subtitle');
+
+      if (role === 'admin') {
+        adminTabs.forEach(function(el) { el.style.display = 'inline-block'; });
+        opTabs.forEach(function(el) { el.style.display = 'inline-block'; });
+        subtitle.textContent = "Panel de Administración: Matías Eliecer Quiroz & Valezca Ríos Letelier";
+        openTab('booking');
+      } else if (role === 'operator') {
+        adminTabs.forEach(function(el) { el.style.display = 'none'; });
+        opTabs.forEach(function(el) { el.style.display = 'inline-block'; });
+        subtitle.textContent = "Frontend Operador / Instructor · Hangar D35 (08:00 a 18:00 hrs)";
+        openTab('operator');
+      } else if (role === 'client') {
+        adminTabs.forEach(function(el) { el.style.display = 'none'; });
+        opTabs.forEach(function(el) { el.style.display = 'none'; });
+        subtitle.textContent = "Portal Público de Reservas de Simuladores y Salas · Hangar D35";
         openTab('booking');
       }
-    });
+      renderMasterCalendar();
+    }
+
+    function copyShareLink(hashRole) {
+      var base = window.location.href.split('#')[0];
+      var link = base + '#' + hashRole;
+      navigator.clipboard.writeText(link);
+      notify('🔗 Link directo para ' + hashRole.toUpperCase() + ' copiado: ' + link);
+    }
+
+    function populateResourceDropdown() {
+      var sel = document.getElementById('b-resource');
+      sel.innerHTML = ALL_RESOURCES.map(function(r) {
+        return '<option value="' + r + '">' + r + '</option>';
+      }).join('');
+    }
 
     function pickResource(val) {
       document.getElementById('b-resource').value = val;
-      notify('Seleccionado: ' + val);
+      notify('Recurso seleccionado: ' + val);
     }
 
+    function syncDateAndRender(val) {
+      document.getElementById('b-date').value = val;
+      document.getElementById('cal-filter-date').value = val;
+      renderMasterCalendar();
+    }
+
+    // Obtener quién está a cargo del Hangar D35 en una fecha dada
+    function getHangarShiftForDate(dateStr) {
+      var found = dateShifts.find(function(s) { return s.date === dateStr; });
+      if (found) return found;
+      var d = new Date(dateStr + "T12:00:00");
+      var dayIdx = d.getDay(); // 0 Dom, 1 Lun...
+      var dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      var titular = weeklyPattern[dayIdx] || weeklyPattern[6];
+      return {
+        date: dateStr,
+        dayName: dayNames[dayIdx],
+        titular: titular,
+        cover: "Sin cambio (Asiste Titular)",
+        secondOp: "Se activa si hay 2° Simulador",
+        end: "18:00"
+      };
+    }
+
+    // Renderizar el Calendario Maestro de Concentración del Hangar D35
+    function renderMasterCalendar() {
+      var filterDate = document.getElementById('cal-filter-date').value;
+      var shiftInfo = getHangarShiftForDate(filterDate);
+      var effectiveOp = shiftInfo.cover.indexOf("Cubierto por:") !== -1
+        ? shiftInfo.cover.replace("Cubierto por: ", "") + " (Cubriendo a " + shiftInfo.titular + ")"
+        : shiftInfo.titular;
+
+      document.getElementById('hangar-day-banner').innerHTML =
+        '<div><span class="text-[#B8F2E6] font-extrabold uppercase">📅 ' + shiftInfo.dayName + ' ' + filterDate + '</span> · Encargado Titular Hangar D35 (Todas las Salas + Sim 1): <strong class="text-white">' + effectiveOp + '</strong></div>' +
+        '<div><span class="px-2.5 py-1 rounded bg-[#1C6B6A] text-[#B8F2E6] font-bold">Horario Hangar: 08:00 a 18:00 hrs</span></div>';
+
+      var tbody = document.getElementById('master-calendar-tbody');
+      tbody.innerHTML = TIME_SLOTS.map(function(slot) {
+        var slotBookings = calendarBookings.filter(function(b) { return b.date === filterDate && b.slot.indexOf(slot.slice(0, 13)) !== -1; });
+
+        function cellFor(resName) {
+          var match = slotBookings.find(function(b) { return b.resource === resName; });
+          if (!match) return '<span class="text-[#E2E8F0]/30">Disponible</span>';
+          var label = (currentRole === 'client') ? 'Reservado (' + match.pilot.split(' ')[0] + ')' : match.pilot;
+          return '<div class="p-1.5 rounded bg-[#1C6B6A]/50 border border-[#B8F2E6] text-white font-bold">' + label + '</div>';
+        }
+
+        // Verificar salas reservadas en este bloque
+        var roomMatches = slotBookings.filter(function(b) { return b.resource.indexOf("SALA") !== -1; });
+        var roomCell = roomMatches.length > 0
+          ? roomMatches.map(function(rm) { return '<div class="p-1.5 rounded bg-[#0A1F24] border border-[#B8F2E6]/60 text-[#B8F2E6] font-bold">' + rm.resource.split(' (')[0] + ': ' + rm.pilot + '</div>'; }).join('')
+          : '<span class="text-[#E2E8F0]/30">Salas Libres</span>';
+
+        // Contar cuántos simuladores están ocupados simultáneamente en este bloque
+        var simMatches = slotBookings.filter(function(b) { return b.resource.indexOf("SALA") === -1; });
+        var opStatusHtml = '';
+        if (simMatches.length === 0 && roomMatches.length === 0) {
+          opStatusHtml = '<span class="text-[#E2E8F0]/50">Hangar en espera (' + shiftInfo.titular + ')</span>';
+        } else if (simMatches.length <= 1) {
+          opStatusHtml = '<span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 font-bold">✓ Cubierto por Op. Hangar (' + shiftInfo.titular + ')</span>';
+        } else {
+          opStatusHtml = '<span class="px-2 py-1 rounded bg-amber-400 text-[#071014] font-black block">⚡ ' + simMatches.length + ' SIMS SIMULTÁNEOS: ACTIVA 2° OPERADOR</span>';
+        }
+
+        return '<tr class="hover:bg-[#071014]/60">' +
+          '<td class="py-2.5 px-2.5 font-mono font-bold text-[#B8F2E6]">' + slot + '</td>' +
+          '<td class="py-2.5 px-2.5">' + cellFor("A320 FTD NIVEL 4 (LAB-CH-134)") + '</td>' +
+          '<td class="py-2.5 px-2.5">' + cellFor("PC-ATD A320 (PC-LAB-70)") + '</td>' +
+          '<td class="py-2.5 px-2.5">' + cellFor("PC-ATD C172 Análogo (PC-LAB-64)") + '</td>' +
+          '<td class="py-2.5 px-2.5">' + cellFor("AATD C172 G1000 (No certificado)") + '</td>' +
+          '<td class="py-2.5 px-2.5">' + roomCell + '</td>' +
+          '<td class="py-2.5 px-2.5">' + opStatusHtml + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    // Guardar Reserva + Guardar Cliente en CRM + Actualizar Calendario + Link Google Calendar
     function handleBooking(e) {
       e.preventDefault();
       var name = document.getElementById('b-name').value;
       var rut = document.getElementById('b-rut').value;
-      var lic = document.getElementById('b-lic').value || 'N/A';
+      var email = document.getElementById('b-email').value;
+      var phone = document.getElementById('b-phone').value;
+      var birth = document.getElementById('b-birth').value;
+      var segment = document.getElementById('b-segment').value;
       var res = document.getElementById('b-resource').value;
       var date = document.getElementById('b-date').value;
       var slot = document.getElementById('b-slot').value;
+      var payment = document.getElementById('b-payment').value;
       var code = 'RES-' + Math.floor(9050 + Math.random() * 800);
 
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">' + code + '</td>' +
-        '<td class="py-2.5 px-3 font-bold">' + name + '</td>' +
-        '<td class="py-2.5 px-3">' + rut + ' (' + lic + ')</td>' +
-        '<td class="py-2.5 px-3">' + res + '</td>' +
-        '<td class="py-2.5 px-3 font-mono">' + date + ' · ' + slot + '</td>' +
-        '<td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">Confirmada</span></td>';
-      document.getElementById('bookings-body').prepend(tr);
+      // 1. Guardar en el Calendario Maestro
+      calendarBookings.push({
+        id: code,
+        date: date,
+        slot: slot,
+        resource: res,
+        pilot: name,
+        payment: payment
+      });
+      document.getElementById('cal-filter-date').value = date;
+      renderMasterCalendar();
 
+      // 2. Guardar o actualizar en la Base de Datos de Clientes (CRM)
+      var existing = clientsDB.find(function(c) { return c.rut === rut; });
+      if (existing) {
+        existing.lastResource = res;
+        existing.payment = payment;
+      } else {
+        clientsDB.unshift({
+          id: "CLI-0" + (clientsDB.length + 1),
+          name: name,
+          rut: rut,
+          email: email,
+          phone: phone,
+          birth: birth,
+          segment: segment,
+          lastResource: res,
+          payment: payment
+        });
+      }
+      try { localStorage.setItem('labmeter_crm_clients', JSON.stringify(clientsDB)); } catch(err) {}
+      renderCrmClients();
+
+      // 3. Mostrar confirmación y botón de Google Calendar
       var ok = document.getElementById('booking-ok');
       ok.classList.remove('hidden');
-      ok.innerHTML = '<b class="text-[#B8F2E6]">✓ ¡Bienvenido a nuestra comunidad de aviadores!</b> ' + name + ', tu reserva ' + code + ' en <b>' + res + '</b> ha sido registrada.<br/>🎁 <b>Gift Card 30% de descuento</b> aplicada para tu primera sesión (máx 2 hrs).<br/>Notificación enviada a administración (mquiroz@labmeter.cl ; arios@labmeter.cl ; vrios@labmeter.cl) y correo de bienvenida al piloto.';
+      ok.innerHTML =
+        '<b class="text-[#B8F2E6]">✓ Reserva ' + code + ' agendada en el Calendario Hangar D35 y guardada en la Base de Datos CRM.</b><br/>' +
+        '• Cliente: <b>' + name + '</b> (' + email + ') — Dispositivo/Sala: <b>' + res + '</b> (' + date + ' · ' + slot + ').<br/>' +
+        '• Pago seleccionado: <b>' + payment + '</b>.<br/>' +
+        '• 🎁 Se ha enviado a su correo la <b>Gift Card de Bienvenida (30% Desc. máx 2 hrs)</b> y el enlace para agregar el turno a su Google Calendar.';
 
-      // Enlace Google Calendar real
       var gcal = document.getElementById('gcal-link');
-      var calTitle = encodeURIComponent('Simulador/Sala: ' + res + ' - ' + name);
-      var calDetails = encodeURIComponent('Reserva ' + code + ' en Centro de Entrenamiento Labmeter. Dispositivo: ' + res);
-      gcal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + calTitle + '&details=' + calDetails + '&dates=20261109T120000Z/20261109T140000Z';
+      var calTitle = encodeURIComponent('Hangar D35: ' + res + ' - ' + name);
+      var calDetails = encodeURIComponent('Reserva ' + code + ' en IFR LabTraining (Hangar D35). Pago: ' + payment);
+      var cleanDate = date.replace(/-/g, '');
+      gcal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + calTitle + '&details=' + calDetails + '&dates=' + cleanDate + 'T120000Z/' + cleanDate + 'T140000Z&add=' + encodeURIComponent(email + ',mquiroz@labmeter.cl,vrios@labmeter.cl');
       gcal.style.display = 'inline-flex';
 
-      // Abrir gestor de correo real con los administradores
-      var mailtoUrl = 'mailto:mquiroz@labmeter.cl,arios@labmeter.cl,vrios@labmeter.cl?subject=Nueva Reserva ' + code + '&body=Piloto: ' + encodeURIComponent(name) + '%0ARecursos: ' + encodeURIComponent(res) + '%0AFecha: ' + date + ' ' + slot;
-      window.open(mailtoUrl, '_blank');
+      notify('✅ Cliente guardado en CRM y turno agendado en el Calendario D35.');
+    }
 
-      notify('✅ Reserva confirmada. Se abrió tu cliente de correo para notificar a administración.');
+    // Actualizar patrón semanal
+    function updatePattern(dayNum, opName) {
+      weeklyPattern[dayNum] = opName;
+      renderMasterCalendar();
+      notify('✅ Patrón actualizado: ' + opName + ' asignado a cargo del Hangar D35.');
+    }
+
+    // Agregar o modificar fecha específica (cambios de turno o 2° operador)
+    function addOrUpdateDateShift(e) {
+      e.preventDefault();
+      var dateVal = document.getElementById('ds-date').value;
+      var op1 = document.getElementById('ds-op1').value;
+      var cover = document.getElementById('ds-cover').value;
+      var op2 = document.getElementById('ds-op2').value;
+      var endVal = document.getElementById('ds-end').value;
+
+      var d = new Date(dateVal + "T12:00:00");
+      var dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      var dayName = dayNames[d.getDay()];
+
+      var idx = dateShifts.findIndex(function(s) { return s.date === dateVal; });
+      var obj = { date: dateVal, dayName: dayName, titular: op1, cover: cover, secondOp: op2, end: endVal };
+      if (idx !== -1) {
+        dateShifts[idx] = obj;
+      } else {
+        dateShifts.unshift(obj);
+      }
+      renderDateShiftsTable();
+      renderMasterCalendar();
+      notify('✅ Fecha ' + dateVal + ' actualizada en la matriz del Hangar D35.');
+    }
+
+    function renderDateShiftsTable() {
+      var tbody = document.getElementById('date-shifts-tbody');
+      tbody.innerHTML = dateShifts.map(function(s) {
+        var outH = parseInt(s.end.split(':')[0], 10);
+        var ext = outH > 18 ? '<span class="text-amber-300 font-bold">08:00 - ' + s.end + ' (+' + (outH - 18) + 'h Ext.)</span>' : '08:00 - 18:00 (10h Base)';
+        var uber = (outH >= 21 || outH <= 6)
+          ? '<span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span>'
+          : '<span class="text-[#E2E8F0]/50">Diurno Normal</span>';
+        var coverBadge = s.cover.indexOf("Cubierto") !== -1
+          ? '<span class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 font-bold">🔄 ' + s.cover + '</span>'
+          : '<span class="text-[#E2E8F0]/60">Asiste Titular</span>';
+        var op2Badge = s.secondOp.indexOf("2° Op") !== -1
+          ? '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">⚡ ' + s.secondOp + '</span>'
+          : '<span class="text-[#E2E8F0]/50">' + s.secondOp + '</span>';
+
+        return '<tr class="hover:bg-[#071014]/60">' +
+          '<td class="py-2.5 px-3 font-bold text-white">' + s.dayName + ' <span class="font-mono text-[#B8F2E6]">(' + s.date + ')</span></td>' +
+          '<td class="py-2.5 px-3">Hangar D35 Completo (Todas las Salas + Sim 1)</td>' +
+          '<td class="py-2.5 px-3 font-bold">' + s.titular + '</td>' +
+          '<td class="py-2.5 px-3">' + coverBadge + '</td>' +
+          '<td class="py-2.5 px-3">' + op2Badge + '</td>' +
+          '<td class="py-2.5 px-3 font-mono">' + ext + '</td>' +
+          '<td class="py-2.5 px-3">' + uber + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    // Panel donde Matías y Valezca autorizan qué simuladores puede agendar cada operador
+    function renderOperatorPermissions() {
+      var box = document.getElementById('operator-permissions-box');
+      var ops = Object.keys(operatorPermissions);
+      box.innerHTML = ops.map(function(op) {
+        var allowed = operatorPermissions[op];
+        var checks = ["A320 FTD NIVEL 4 (LAB-CH-134)", "PC-ATD A320 (PC-LAB-70)", "PC-ATD C172 Análogo (PC-LAB-64)", "AATD C172 G1000 (No certificado)"].map(function(sim) {
+          var isChecked = allowed.indexOf(sim) !== -1 ? 'checked' : '';
+          var shortName = sim.split(' (')[0];
+          return '<label class="inline-flex items-center gap-1 mr-3 cursor-pointer">' +
+            '<input type="checkbox" ' + isChecked + ' onchange="toggleOpSim(\'' + op + '\', \'' + sim + '\', this.checked)" class="accent-[#B8F2E6]" />' +
+            '<span>' + shortName + '</span>' +
+          '</label>';
+        }).join('');
+        return '<div class="p-2.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">' +
+          '<div class="font-bold text-[#B8F2E6] mb-1">' + op + '</div>' +
+          '<div class="flex flex-wrap text-[11px]">' + checks + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function toggleOpSim(op, sim, checked) {
+      var list = operatorPermissions[op] || [];
+      if (checked && list.indexOf(sim) === -1) list.push(sim);
+      if (!checked) operatorPermissions[op] = list.filter(function(x) { return x !== sim; });
+      updateOperatorAllowedSimulators();
+      notify('🔑 Permisos actualizados para ' + op);
+    }
+
+    function updateOperatorAllowedSimulators() {
+      var op = document.getElementById('op-selected-name').value;
+      var allowed = operatorPermissions[op] || [];
+      var sel = document.getElementById('op-allowed-sim');
+      sel.innerHTML = allowed.map(function(r) {
+        return '<option value="' + r + '">' + r + '</option>';
+      }).join('');
     }
 
     function handleOperatorCheckIn(e) {
       e.preventDefault();
       var op = document.getElementById('op-selected-name').value;
       var action = document.getElementById('op-action').value;
-      var device = document.getElementById('op-device').value;
+      var mode = document.getElementById('op-mode').value;
       var tk = document.getElementById('op-qr-token').textContent;
       var now = new Date().toTimeString().slice(0, 5);
 
       var box = document.getElementById('op-success-box');
       box.classList.remove('hidden');
-      box.innerHTML = '<b>✓ Asistencia registrada correctamente:</b><br/>Operador: <b>' + op + '</b><br/>Acción: <b>' + action + '</b> en ' + device + '<br/>Hora: <b>' + now + '</b><br/><a href="https://wa.me/56985561490?text=' + encodeURIComponent('Hola Matías, soy ' + op + ' y acabo de marcar ' + action + ' en ' + device + ' a las ' + now) + '" target="_blank" class="text-[#B8F2E6] underline font-bold mt-1 inline-block">📲 Enviar reporte por WhatsApp a Administración</a>';
+      box.innerHTML = '<b>✓ Hora registrada en Reloj Dinámico:</b> ' + op + ' (' + action + ' · ' + mode + ') a las <b>' + now + '</b>.';
 
-      // Agregar a la tabla general de turnos del Administrador
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td class="py-2 px-2 font-bold">' + op + '</td><td class="py-2 px-2 text-[#B8F2E6]">' + action + ' (' + device + ')</td><td class="py-2 px-2 font-mono">' + now + '</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">' + tk + '</td>';
+      tr.innerHTML = '<td class="py-2 px-3 font-bold">' + op + '</td><td class="py-2 px-3 text-[#B8F2E6]">' + action + ' (' + mode + ')</td><td class="py-2 px-3 font-mono">' + now + '</td><td class="py-2 px-3 font-mono text-[#B8F2E6]">' + tk + '</td>';
       document.getElementById('qr-logs-body').prepend(tr);
-
-      notify('📲 Asistencia registrada para ' + op + '.');
+      notify('📲 Asistencia registrada: ' + op);
     }
 
-    function addShiftRow(e) {
+    function handleOperatorBooking(e) {
       e.preventDefault();
-      var day = document.getElementById('s-day').value;
-      var res = document.getElementById('s-res').value;
-      var op = document.getElementById('s-op').value;
-      var tin = document.getElementById('s-in').value;
-      var tout = document.getElementById('s-out').value;
-      var outH = parseInt(tout.split(':')[0], 10);
-      var uber = (outH >= 21 || outH <= 6) ? '<span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span>' : '<span class="text-[#E2E8F0]/50">Diurno Normal</span>';
-      var ext = (outH > 18) ? '+' + (outH - 18) + ' hrs Ext.' : '0.0 hrs';
+      var op = document.getElementById('op-selected-name').value;
+      var sim = document.getElementById('op-allowed-sim').value;
+      var pilot = document.getElementById('op-b-pilot').value;
+      var date = document.getElementById('op-b-date').value;
+      var slot = document.getElementById('op-b-slot').value;
 
-      var tr = document.createElement('tr');
-      tr.innerHTML = '<td class="py-2.5 px-3 font-bold">' + day + '</td><td class="py-2.5 px-3">' + res + '</td><td class="py-2.5 px-3">' + op + '</td><td class="py-2.5 px-3 font-mono">' + tin + ' - ' + tout + '</td><td class="py-2.5 px-3 font-bold">10.0 hrs</td><td class="py-2.5 px-3 text-amber-300 font-bold">' + ext + '</td><td class="py-2.5 px-3">' + uber + '</td>';
-      document.getElementById('shifts-body').prepend(tr);
-      notify('✅ Turno mensual asignado a ' + op + '.');
+      calendarBookings.push({
+        id: 'RES-' + Math.floor(9100 + Math.random() * 800),
+        date: date,
+        slot: slot,
+        resource: sim,
+        pilot: pilot + ' (Agendado por ' + op + ')',
+        payment: 'Smart POS / Transferencia'
+      });
+      document.getElementById('cal-filter-date').value = date;
+      renderMasterCalendar();
+      notify('✅ Bloque agendado por ' + op + ' en el Calendario Hangar D35.');
+    }
+
+    // Renderizar Base de Datos de Clientes (CRM)
+    function renderCrmClients() {
+      var tbody = document.getElementById('crm-clients-tbody');
+      tbody.innerHTML = clientsDB.map(function(c) {
+        return '<tr class="hover:bg-[#071014]/60">' +
+          '<td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">' + c.id + '</td>' +
+          '<td class="py-2.5 px-3 font-bold text-white">' + c.name + '</td>' +
+          '<td class="py-2.5 px-3">' + c.rut + '</td>' +
+          '<td class="py-2.5 px-3">' + c.email + '<br/><span class="text-[#E2E8F0]/60">' + c.phone + '</span></td>' +
+          '<td class="py-2.5 px-3 font-mono">' + c.birth + '</td>' +
+          '<td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6] font-bold">' + c.segment + '</span></td>' +
+          '<td class="py-2.5 px-3">' + c.lastResource + '</td>' +
+          '<td class="py-2.5 px-3 font-semibold text-emerald-300">' + c.payment + '</td>' +
+          '<td class="py-2.5 px-3"><button onclick="previewClientGiftCard(\'' + c.name + '\')" class="px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014] font-extrabold text-[10px]">🎁 Ver Gift Card</button></td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function previewClientGiftCard(pilotName) {
+      openTab('marketing');
+      document.getElementById('gc-pilot').value = pilotName;
+      updateGiftCardPreview();
+      notify('👁️ Mostrando vista previa de Gift Card para ' + pilotName);
+    }
+
+    function exportClientsCSV() {
+      var rows = [["ID", "Nombre", "RUT", "Email", "Telefono", "Cumpleanos", "Segmento", "Ultimo Recurso", "Medio de Pago"]];
+      clientsDB.forEach(function(c) {
+        rows.push([c.id, c.name, c.rut, c.email, c.phone, c.birth, c.segment, c.lastResource, c.payment]);
+      });
+      var csvContent = "data:text/csv;charset=utf-8," + rows.map(function(e) { return e.join(";"); }).join("\n");
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "base_datos_clientes_hangar_d35.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      notify('📥 Planilla CSV descargada correctamente.');
+    }
+
+    // Vista Previa en Vivo de la Gift Card (con imagen A320 FTD de fondo)
+    function updateGiftCardPreview() {
+      var type = document.getElementById('gc-type').value;
+      var pilot = document.getElementById('gc-pilot').value || 'Piloto Invitado';
+      var sim = document.getElementById('gc-sim').value;
+
+      document.getElementById('gc-preview-pilot').textContent = pilot;
+      document.getElementById('gc-preview-sim').textContent = 'Válido en: ' + sim;
+
+      if (type === 'BIENVENIDA') {
+        document.getElementById('gc-preview-tag').textContent = 'BIENVENIDO A NUESTRA COMUNIDAD DE AVIADORES';
+        document.getElementById('gc-preview-title').textContent = '30% DE DESCUENTO';
+        document.getElementById('gc-preview-desc').innerHTML = 'Canjeable en tu <b>primera sesión de simulación de vuelo (máximo 2 horas)</b> en el simulador que elijas en nuestro Hangar D35.';
+        document.getElementById('gc-preview-code').textContent = 'WELCOME-30-D35';
+      } else {
+        document.getElementById('gc-preview-tag').textContent = '🎂 ¡FELIZ CUMPLEAÑOS TE DESEA HANGAR D35!';
+        document.getElementById('gc-preview-title').textContent = 'PASE CUMPLEAÑOS';
+        document.getElementById('gc-preview-desc').innerHTML = 'Celebramos tu vuelta al sol con un <b>beneficio exclusivo de cumpleaños</b> para volar en cabina A320 FTD o C172.';
+        document.getElementById('gc-preview-code').textContent = 'BDAY-D35-2026';
+      }
+    }
+
+    // Vista Previa en Vivo del Email Marketing Masivo
+    function updateEmailPreview() {
+      var brand = document.getElementById('m-brand').value;
+      var seg = document.getElementById('m-seg').value;
+      var headline = document.getElementById('m-headline').value;
+      var subj = document.getElementById('m-subj').value;
+      var body = document.getElementById('m-body').value;
+
+      document.getElementById('ep-from').textContent = brand + ' <contacto@labmeter.cl>';
+      document.getElementById('ep-seg').textContent = 'Para: ' + seg;
+      document.getElementById('ep-subj').textContent = 'Asunto: ' + subj;
+      document.getElementById('ep-headline').textContent = headline;
+      document.getElementById('ep-body').textContent = body;
     }
 
     function sendCampaign(e) {
       e.preventDefault();
-      var b = document.getElementById('m-brand').value;
-      var s = document.getElementById('m-seg').value;
-      var subj = document.getElementById('m-subj').value;
-      var div = document.createElement('div');
-      div.className = 'p-3.5 rounded-xl bg-[#071014] border border-[#B8F2E6]';
-      div.innerHTML = '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">' + b + '</span><p class="font-bold text-white mt-1">' + subj + '</p><p class="text-[#E2E8F0]/70">Segmento: ' + s + ' · Enviado con Banner Gráfico</p>';
-      document.getElementById('campaign-logs').prepend(div);
-      notify('🚀 Campaña con banner visual enviada al segmento: ' + s);
+      var seg = document.getElementById('m-seg').value;
+      notify('🚀 Campaña visual enviada a ' + seg + ' (Revisada por Valezca y Matías).');
     }
 
+    // Temporizador del Reloj Dinámico (30s)
     var sec = 30;
     setInterval(function() {
       sec--;
       if (sec <= 0) {
         sec = 30;
         var tokenNew = 'LBM-2026-' + Math.random().toString(16).slice(2, 6).toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
-        var tEl = document.getElementById('op-qr-token');
-        if (tEl) tEl.textContent = tokenNew;
+        document.getElementById('op-qr-token').textContent = tokenNew;
+        document.getElementById('admin-token-view').textContent = 'Token Actual: ' + tokenNew;
       }
-      var tLabel = document.getElementById('op-timer');
-      if (tLabel) tLabel.textContent = 'Actualiza en ' + sec + 's';
-      var tLabel2 = document.getElementById('qr-timer');
-      if (tLabel2) tLabel2.textContent = 'Cambia en ' + sec + 's';
+      document.getElementById('op-timer').textContent = 'Actualiza en ' + sec + 's';
+      document.getElementById('qr-timer').textContent = 'Cambia en ' + sec + 's';
     }, 1000);
+
+    // Inicialización al cargar
+    window.addEventListener('DOMContentLoaded', function() {
+      try {
+        var saved = localStorage.getItem('labmeter_crm_clients');
+        if (saved) clientsDB = JSON.parse(saved);
+      } catch(err) {}
+
+      populateResourceDropdown();
+      renderDateShiftsTable();
+      renderOperatorPermissions();
+      updateOperatorAllowedSimulators();
+      renderCrmClients();
+      updateGiftCardPreview();
+      updateEmailPreview();
+      renderMasterCalendar();
+
+      // Si entra con #cliente o #operador en el link, bloquea el frontend automáticamente
+      if (window.location.hash === '#cliente') {
+        document.getElementById('role-switcher-bar').style.display = 'none';
+        setRoleView('client');
+      } else if (window.location.hash === '#operador') {
+        document.getElementById('role-switcher-bar').style.display = 'none';
+        setRoleView('operator');
+      }
+    });
   </script>
 </body>
 </html>
