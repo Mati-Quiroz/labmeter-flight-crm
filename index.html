@@ -3,36 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Labmeter Flight CRM | Simuladores & Salas de Instrucción</title>
-
-  <!-- Fuente Mandatoria: Montserrat -->
+  <title>Labmeter Flight CRM | Simuladores & Salas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Montserrat', 'sans-serif'],
-          },
-          colors: {
-            bgDeep: '#071014',
-            bgSurface: '#0A1F24',
-            borderPassive: '#0F3A3F',
-            accentSecondary: '#1C6B6A',
-            accentPrimary: '#B8F2E6',
-            textMain: '#E2E8F0',
-          }
-        }
-      }
-    };
-  </script>
-
-  <!-- Variables CSS Mandatorias (:root) -->
   <style>
     :root {
       --bg-deep: #071014;
@@ -41,1370 +16,734 @@
       --accent-secondary: #1C6B6A;
       --accent-primary: #B8F2E6;
       --text-main: #E2E8F0;
-      --font-main: 'Montserrat', sans-serif;
     }
-
-    * {
-      font-family: var(--font-main);
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: var(--bg-deep);
-      color: var(--text-main);
-      margin: 0;
-      overflow-x: hidden;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg-deep);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-passive);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--accent-secondary);
-    }
+    * { font-family: 'Montserrat', sans-serif; box-sizing: border-box; }
+    body { background-color: var(--bg-deep); color: var(--text-main); margin: 0; }
+    .card { background: rgba(10, 31, 36, 0.94); border: 1px solid var(--border-passive); border-radius: 16px; }
+    .inp { width: 100%; background: var(--bg-deep); border: 1px solid var(--border-passive); border-radius: 10px; padding: 10px 14px; color: var(--text-main); font-size: 13px; outline: none; }
+    .inp:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 2px rgba(184, 242, 230, 0.35); }
+    .btn-cta { background: var(--accent-primary); color: var(--bg-deep); font-weight: 800; border-radius: 10px; transition: 0.2s; cursor: pointer; }
+    .btn-cta:hover:not(:disabled) { background: var(--accent-secondary); color: #fff; }
+    .btn-cta:disabled { opacity: 0.4; cursor: not-allowed; }
+    .tab-btn { padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid var(--border-passive); background: rgba(7,16,20,0.8); color: var(--text-main); cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { background: var(--accent-secondary); color: var(--accent-primary); border-color: var(--accent-primary); }
+    .res-item { background: rgba(7, 16, 20, 0.85); border: 1px solid var(--border-passive); border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
+    .res-item:hover, .res-item.selected { border-color: var(--accent-primary); background: rgba(28, 107, 106, 0.3); }
   </style>
 </head>
-<body class="min-h-screen bg-[#071014] text-[#E2E8F0] relative flex flex-col antialiased">
+<body class="min-h-screen flex flex-col relative">
 
-  <!-- FONDO AMBIENTAL CABINA A320 FTD -->
-  <div
-    class="fixed inset-0 pointer-events-none z-0 opacity-20 bg-cover bg-center"
-    style="background-image: url('./A320%20FTD.jpeg'), url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=1600&q=85');"
-  ></div>
-  <div class="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#071014]/85 via-[#071014]/90 to-[#071014]"></div>
+  <!-- FONDO CABINA A320 FTD -->
+  <div class="fixed inset-0 pointer-events-none z-0 opacity-25 bg-cover bg-center" style="background-image: url('./A320%20FTD.jpeg');"></div>
+  <div class="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-[#071014]/80 via-[#071014]/90 to-[#071014]"></div>
 
-  <!-- NOTIFICACIÓN FLOTANTE (TOAST) -->
-  <div id="toast-container" class="fixed bottom-5 right-5 z-50 hidden max-w-md bg-[#0A1F24] border-2 border-[#B8F2E6] text-[#E2E8F0] px-5 py-4 rounded-xl shadow-2xl items-center gap-3">
-    <span class="w-3 h-3 rounded-full bg-[#B8F2E6] shrink-0"></span>
-    <p id="toast-text" class="text-xs sm:text-sm font-semibold"></p>
+  <!-- TOAST DE NOTIFICACIÓN -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-md bg-[#0A1F24] border-2 border-[#B8F2E6] text-[#E2E8F0] px-5 py-3.5 rounded-xl shadow-2xl items-center gap-3">
+    <span class="w-2.5 h-2.5 rounded-full bg-[#B8F2E6] shrink-0"></span>
+    <p id="toast-msg" class="text-xs font-semibold"></p>
   </div>
 
-  <!-- HEADER SUPERIOR CON LOS 3 LOGOS CORPORATIVOS -->
-  <header class="relative z-10 bg-[#0A1F24]/95 backdrop-blur-md border-b border-[#0F3A3F] sticky top-0">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-      
-      <!-- Logos de las 3 Empresas -->
-      <div class="flex flex-wrap items-center gap-3">
-        <!-- Logo 1: Labmeter Training Center -->
-        <div class="bg-[#E2E8F0] px-3 py-1.5 rounded-lg flex items-center shadow-sm border border-[#B8F2E6]/40">
-          <img
-            src="./LABMETER%20training%20Center%20LOGO%20PNG%20.png"
-            alt="Labmeter Training Center"
-            class="h-8 sm:h-9 object-contain"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-          />
-          <div style="display:none" class="leading-none text-[#071014]">
-            <div class="font-extrabold tracking-tight text-xs"><span class="text-neutral-600">LAB</span><span class="text-[#0c2d57]">METER</span></div>
-            <div class="font-bold tracking-widest text-[9px]"><span class="text-[#0c2d57]">TRAINING </span><span class="text-neutral-600">CENTER</span></div>
-          </div>
+  <!-- HEADER CORPORATIVO CON LOS 3 LOGOS -->
+  <header class="relative z-10 bg-[#0A1F24]/95 border-b border-[#0F3A3F] sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <div class="bg-[#E2E8F0] px-2.5 py-1 rounded-lg flex items-center border border-[#B8F2E6]/40">
+          <img src="./LABMETER%20training%20Center%20LOGO%20PNG%20.png" alt="Labmeter Training Center" class="h-8 object-contain" onerror="this.outerHTML='<b class=\'text-[#071014] text-xs\'>LABMETER TRAINING</b>'" />
         </div>
-
-        <!-- Logo 2: IFR LabTraining -->
-        <div class="bg-[#E2E8F0] px-3 py-1.5 rounded-lg flex items-center shadow-sm border border-[#B8F2E6]/40">
-          <img
-            src="./IFR_LT_fnl.png"
-            alt="IFR LabTraining"
-            class="h-8 sm:h-9 object-contain"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-          />
-          <div style="display:none" class="items-center gap-1.5 text-[#071014] leading-none">
-            <span class="w-6 h-6 rounded-full bg-[#0077a8] text-white flex items-center justify-center text-[10px] font-bold">✈</span>
-            <div>
-              <div class="font-extrabold italic text-neutral-700 text-xs">IFR</div>
-              <div class="font-extrabold text-[#0077a8] text-[10px]">LabTraining</div>
-            </div>
-          </div>
+        <div class="bg-[#E2E8F0] px-2.5 py-1 rounded-lg flex items-center border border-[#B8F2E6]/40">
+          <img src="./IFR_LT_fnl.png" alt="IFR LabTraining" class="h-8 object-contain" onerror="this.outerHTML='<b class=\'text-[#0077a8] text-xs\'>IFR LabTraining</b>'" />
         </div>
-
-        <!-- Logo 3: LabMeter -->
-        <div class="bg-black px-3 py-1.5 rounded-lg flex items-center shadow-sm border border-[#0F3A3F]">
-          <img
-            src="./LogoNormal.jpg"
-            alt="LabMeter"
-            class="h-8 sm:h-9 object-contain"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-          />
-          <div style="display:none" class="leading-none">
-            <div class="text-neutral-400 font-bold text-xs">Lab</div>
-            <div class="text-[#0095d9] font-extrabold text-xs">Meter</div>
-          </div>
+        <div class="bg-black px-2.5 py-1 rounded-lg flex items-center border border-[#0F3A3F]">
+          <img src="./LogoNormal.jpg" alt="LabMeter" class="h-8 object-contain" onerror="this.outerHTML='<b class=\'text-[#0095d9] text-xs\'>LabMeter</b>'" />
         </div>
-
-        <div class="hidden xl:block pl-3 border-l border-[#0F3A3F]">
-          <span class="text-[11px] uppercase tracking-widest text-[#B8F2E6] font-bold block">Flight Simulation & Training CRM</span>
-          <span class="text-xs text-[#E2E8F0]/70">4 Simuladores · 4 Salas de Clases · Control QR TOTP</span>
+        <div class="pl-2 border-l border-[#0F3A3F]">
+          <div class="text-[11px] font-extrabold tracking-wider text-[#B8F2E6] uppercase">Flight Simulation & Training CRM</div>
+          <div class="text-[11px] text-[#E2E8F0]/70">4 Simuladores · 4 Salas de Clases · Control QR TOTP</div>
         </div>
       </div>
 
-      <!-- Botones de Navegación -->
-      <nav class="flex flex-wrap items-center gap-1.5" id="nav-tabs">
-        <button onclick="switchTab('booking')" id="tab-btn-booking" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#B8F2E6] bg-[#1C6B6A] text-[#B8F2E6] border border-[#B8F2E6]/50 shadow-lg">
-          1. Link Reserva (Simuladores & Salas)
-        </button>
-        <button onclick="switchTab('shifts')" id="tab-btn-shifts" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#B8F2E6] bg-[#071014]/70 text-[#E2E8F0]/80 border border-[#0F3A3F] hover:bg-[#1C6B6A]/40 hover:text-white">
-          2. Turnos & QR Operadores
-        </button>
-        <button onclick="switchTab('crm')" id="tab-btn-crm" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#B8F2E6] bg-[#071014]/70 text-[#E2E8F0]/80 border border-[#0F3A3F] hover:bg-[#1C6B6A]/40 hover:text-white">
-          3. CRM Clientes & Reservas
-        </button>
-        <button onclick="switchTab('marketing')" id="tab-btn-marketing" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#B8F2E6] bg-[#071014]/70 text-[#E2E8F0]/80 border border-[#0F3A3F] hover:bg-[#1C6B6A]/40 hover:text-white">
-          4. Email Marketing
-        </button>
-        <button onclick="switchTab('architecture')" id="tab-btn-architecture" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#B8F2E6] bg-[#071014]/70 text-[#E2E8F0]/80 border border-[#0F3A3F] hover:bg-[#1C6B6A]/40 hover:text-white">
-          5. Arquitectura SQL & API
-        </button>
+      <!-- 5 PESTAÑAS DE NAVEGACIÓN -->
+      <nav class="flex flex-wrap gap-1.5">
+        <button type="button" onclick="openTab('booking')" id="btn-booking" class="tab-btn active">1. Reserva Pilotos & Salas</button>
+        <button type="button" onclick="openTab('shifts')" id="btn-shifts" class="tab-btn">2. Turnos, Uber & QR</button>
+        <button type="button" onclick="openTab('crm')" id="btn-crm" class="tab-btn">3. CRM Clientes & Reservas</button>
+        <button type="button" onclick="openTab('marketing')" id="btn-marketing" class="tab-btn">4. Email Marketing</button>
+        <button type="button" onclick="openTab('arch')" id="btn-arch" class="tab-btn">5. SQL & Arquitectura</button>
       </nav>
     </div>
   </header>
 
-  <!-- CONTENIDO PRINCIPAL -->
-  <main class="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 flex-1">
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="relative z-10 max-w-7xl w-full mx-auto px-4 py-6 flex-1">
 
     <!-- ===================================================================
-         VISTA 1: PORTAL PÚBLICO DE RESERVA PARA PILOTOS Y SALAS (MOBILE-FIRST)
+         PESTAÑA 1: RESERVA DE SIMULADORES Y SALAS DE CLASES
          =================================================================== -->
-    <section id="view-booking" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Columna Izquierda: Imagen Cabina A320 FTD + Tarjetas de los 4 Simuladores y 4 Salas -->
-      <div class="lg:col-span-5 space-y-6">
-        <div class="relative rounded-2xl overflow-hidden border border-[#0F3A3F] shadow-2xl bg-[#0A1F24]">
-          <div
-            class="h-60 sm:h-64 bg-cover bg-center relative"
-            style="background-image: url('./A320%20FTD.jpeg'), url('https://images.unsplash.com/photo-1540962351504-03099e0a754b?auto=format&fit=crop&w=1600&q=85');"
-          >
+    <section id="tab-booking" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="lg:col-span-5 space-y-5">
+        <!-- Banner Cabina A320 -->
+        <div class="card overflow-hidden">
+          <div class="h-48 bg-cover bg-center relative" style="background-image: url('./A320%20FTD.jpeg');">
             <div class="absolute inset-0 bg-gradient-to-t from-[#071014] via-[#071014]/40 to-transparent"></div>
-            <div class="absolute top-3 left-3 flex flex-wrap gap-2">
-              <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#B8F2E6] text-[#071014] uppercase tracking-wider shadow">
-                Portal Autoservicio Pilotos & Instrucción
-              </span>
-              <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#071014]/80 text-[#B8F2E6] border border-[#0F3A3F]">
-                4 Simuladores · 4 Salas
-              </span>
+            <div class="absolute top-3 left-3">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-[#B8F2E6] text-[#071014] uppercase">Portal Público de Autoatención</span>
             </div>
-            <div class="absolute bottom-4 left-4 right-4">
-              <h1 class="text-xl sm:text-2xl font-extrabold text-white drop-shadow">
-                Reserva de Simuladores y Salas de Clases
-              </h1>
-              <p class="text-xs text-[#E2E8F0]/90 mt-1">
-                A320 FTD Nivel 4 (LAB-CH-134), PC-ATD A320 (PC-LAB-70), PC-ATD C172 Análogo (PC-LAB-64), AATD C172 G1000 y Salas Teóricas.
-              </p>
+            <div class="absolute bottom-3 left-3 right-3">
+              <h1 class="text-lg font-extrabold text-white">Reserva de Simuladores y Salas de Instrucción</h1>
+              <p class="text-xs text-[#E2E8F0]/85">Selecciona el simulador o sala a la izquierda o directo en el formulario.</p>
             </div>
-          </div>
-          <div class="p-3.5 bg-[#0A1F24] border-t border-[#0F3A3F] flex items-center justify-between text-xs">
-            <span class="font-bold text-[#B8F2E6] uppercase tracking-wider">Horario Normal: 08:00 - 18:00 hrs</span>
-            <span class="text-[#E2E8F0]/80">+ Horas Extensión / Activación</span>
           </div>
         </div>
 
-        <!-- Estado en vivo de los 4 Simuladores -->
-        <div class="bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-5 space-y-3">
-          <div class="flex items-center justify-between">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-[#B8F2E6]">
-              Flota de Simuladores de Vuelo (4)
-            </h2>
-            <span class="text-[11px] text-emerald-400 font-semibold">● Clic para seleccionar</span>
+        <!-- Los 4 Simuladores Oficiales -->
+        <div class="card p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#B8F2E6]">4 Simuladores de Vuelo</h2>
+            <span class="text-[11px] text-emerald-400 font-bold">● Clic para elegir</span>
           </div>
-          <div id="simulator-cards-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div onclick="pickResource('A320 FTD NIVEL 4 (LAB-CH-134)')" class="res-item selected">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">LAB-CH-134</span>
+                <span class="text-[10px] text-emerald-400 font-bold">Nivel 4</span>
+              </div>
+              <div class="font-bold text-xs text-white mt-1.5">A320 FTD NIVEL 4</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Matrícula LAB-CH-134</div>
+            </div>
+
+            <div onclick="pickResource('PC-ATD A320 (PC-LAB-70)')" class="res-item">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">PC-LAB-70</span>
+                <span class="text-[10px] text-emerald-400 font-bold">Certificado</span>
+              </div>
+              <div class="font-bold text-xs text-white mt-1.5">PC-ATD A320</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Matrícula PC-LAB-70</div>
+            </div>
+
+            <div onclick="pickResource('PC-ATD C172 Análogo (PC-LAB-64)')" class="res-item">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">PC-LAB-64</span>
+                <span class="text-[10px] text-emerald-400 font-bold">Análogo</span>
+              </div>
+              <div class="font-bold text-xs text-white mt-1.5">PC-ATD C172 Análogo</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Matrícula PC-LAB-64</div>
+            </div>
+
+            <div onclick="pickResource('AATD C172 G1000 (No certificado)')" class="res-item">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-amber-300 text-[#071014]">G1000</span>
+                <span class="text-[10px] text-amber-300 font-bold">No Cert.</span>
+              </div>
+              <div class="font-bold text-xs text-white mt-1.5">AATD C172 G1000</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Entrenador Glass Cockpit</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Estado en vivo de las 4 Salas de Clases / Reuniones -->
-        <div class="bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-5 space-y-3">
-          <div class="flex items-center justify-between">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-[#B8F2E6]">
-              Salas de Clases & Reuniones (4)
-            </h2>
-            <span class="text-[11px] text-[#E2E8F0]/70">Briefing / Teoría / Eventos</span>
+        <!-- Las 4 Salas de Clases y Reuniones -->
+        <div class="card p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-[#B8F2E6]">4 Salas de Clases & Reuniones</h2>
+            <span class="text-[11px] text-[#E2E8F0]/70">Instrucción / Briefing</span>
           </div>
-          <div id="classroom-cards-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-        </div>
-      </div>
-
-      <!-- Columna Derecha: Formulario Público de Reserva -->
-      <div class="lg:col-span-7">
-        <div class="bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 sm:p-8 shadow-2xl">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-5 border-b border-[#0F3A3F]">
-            <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-[#B8F2E6]">Formulario Oficial de Reserva</span>
-              <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-0.5">Solicitud de Simulador o Sala</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div onclick="pickResource('SALA 2 - Sala para 15 personas')" class="res-item">
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">15 Personas</span>
+              <div class="font-bold text-xs text-white mt-1.5">SALA 2</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Sala de Clases (15 pers.)</div>
             </div>
-            <div>
-              <span class="text-[11px] bg-[#071014] border border-[#0F3A3F] px-3 py-1.5 rounded-lg text-[#B8F2E6] font-semibold inline-block">
-                🎁 Incluye Giftcard Cumpleaños
-              </span>
+
+            <div onclick="pickResource('SALA 3 - Sala para 6 personas')" class="res-item">
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">6 Personas</span>
+              <div class="font-bold text-xs text-white mt-1.5">SALA 3 (Clases)</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Sala de Clases (6 pers.)</div>
+            </div>
+
+            <div onclick="pickResource('SALA 3 - Sala de Reuniones (Multifuncional)')" class="res-item">
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">Multifuncional</span>
+              <div class="font-bold text-xs text-white mt-1.5">SALA 3 (Reuniones)</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Reuniones & Briefing</div>
+            </div>
+
+            <div onclick="pickResource('SALA LM Puente Alto (9 personas)')" class="res-item">
+              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6]">9 Personas</span>
+              <div class="font-bold text-xs text-white mt-1.5">SALA LM Puente Alto</div>
+              <div class="text-[11px] text-[#E2E8F0]/70">Sala para 9 personas</div>
             </div>
           </div>
-
-          <!-- Caja de Éxito al Enviar -->
-          <div id="booking-success-box" class="hidden my-5 p-5 rounded-xl bg-[#1C6B6A]/30 border-2 border-[#B8F2E6] space-y-2"></div>
-
-          <form id="booking-form" onsubmit="submitBooking(event)" class="space-y-5 mt-5">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0] mb-1.5">
-                  Nombre Completo del Piloto / Solicitante *
-                </label>
-                <input
-                  type="text"
-                  id="f-pilotName"
-                  required
-                  placeholder="Ej: Cap. Matías Quiroz G."
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder-[#E2E8F0]/40 focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0] mb-1.5">
-                  RUT o Pasaporte *
-                </label>
-                <input
-                  type="text"
-                  id="f-rut"
-                  required
-                  placeholder="Ej: 18.450.210-K"
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-4 py-3 text-sm text-[#E2E8F0] placeholder-[#E2E8F0]/40 focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#B8F2E6] mb-1.5">
-                  Fecha de Nacimiento * (Giftcard)
-                </label>
-                <input
-                  type="date"
-                  id="f-birthDate"
-                  required
-                  onchange="checkBirthdayBanner()"
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0]/80 mb-1.5">
-                  Licencia / Habilitación (Opc.)
-                </label>
-                <input
-                  type="text"
-                  id="f-license"
-                  placeholder="Ej: PPA / PCA / IFR / Instructor"
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-[#E2E8F0] placeholder-[#E2E8F0]/40 focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0]/80 mb-1.5">
-                  Horas de Vuelo (Opcional)
-                </label>
-                <input
-                  type="number"
-                  id="f-flightHours"
-                  min="0"
-                  placeholder="Ej: 450"
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-[#E2E8F0] placeholder-[#E2E8F0]/40 focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                />
-              </div>
-            </div>
-
-            <!-- Aviso automático de cumpleaños -->
-            <div id="birthday-alert" class="hidden p-3.5 rounded-xl bg-[#1C6B6A]/30 border border-[#B8F2E6] text-xs text-[#B8F2E6] items-center justify-between">
-              <span>🎉 <strong>¡Registro de cumpleaños activo!</strong> El CRM emitirá automáticamente tu beneficio / Giftcard en la fecha de tu cumpleaños.</span>
-              <span class="font-extrabold uppercase px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Giftcard</span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0] mb-1.5">
-                  Simulador o Sala Requerida *
-                </label>
-                <select
-                  id="f-simulatorId"
-                  onchange="onSimulatorOrSlotChange()"
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                >
-                  <optgroup label="Simuladores de Vuelo (4)">
-                    <option value="SIM-A320-FTD">A320 FTD NIVEL 4 (LAB-CH-134)</option>
-                    <option value="SIM-A320-PCATD">PC-ATD A320 (PC-LAB-70)</option>
-                    <option value="SIM-C172-ANA">PC-ATD C172 Análogo (PC-LAB-64)</option>
-                    <option value="SIM-C172-G1000">AATD C172 G1000 (No certificado)</option>
-                  </optgroup>
-                  <optgroup label="Salas de Clases & Reuniones (4)">
-                    <option value="SALA-2">SALA 2 - Clases (15 personas)</option>
-                    <option value="SALA-3-CLASES">SALA 3 - Clases (6 personas)</option>
-                    <option value="SALA-3-REUNIONES">SALA 3 - Reuniones (Multifuncional)</option>
-                    <option value="SALA-LM-PA">SALA LM Puente Alto (9 personas)</option>
-                  </optgroup>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0] mb-1.5">
-                  Fecha Solicitada *
-                </label>
-                <input
-                  type="date"
-                  id="f-date"
-                  value="2026-11-09"
-                  required
-                  onchange="onSimulatorOrSlotChange()"
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0] mb-1.5">
-                  Bloque Horario *
-                </label>
-                <select
-                  id="f-slot"
-                  onchange="onSimulatorOrSlotChange()"
-                  class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-                >
-                  <option value="08:00 - 10:00">08:00 - 10:00</option>
-                  <option value="10:00 - 12:00">10:00 - 12:00</option>
-                  <option value="12:00 - 14:00" selected>12:00 - 14:00</option>
-                  <option value="14:00 - 16:00">14:00 - 16:00</option>
-                  <option value="16:00 - 18:00">16:00 - 18:00</option>
-                  <option value="18:00 - 20:00 (Extensión)">18:00 - 20:00 (Extensión)</option>
-                  <option value="20:00 - 22:00 (Extensión Nocturna)">20:00 - 22:00 (Extensión Nocturna)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Estado de validación de disponibilidad en tiempo real -->
-            <div id="availability-banner" class="p-3.5 rounded-xl border text-xs flex items-center justify-between bg-[#071014] border-[#0F3A3F] text-[#B8F2E6]">
-              <span id="availability-text">✓ Bloque verificado disponible con operador de turno asignado.</span>
-              <span id="availability-badge" class="font-bold uppercase">Disponible</span>
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-[#E2E8F0]/80 mb-1.5">
-                Comentarios / Maniobras o Requerimiento de Sala
-              </label>
-              <textarea
-                id="f-comments"
-                rows="2"
-                placeholder="Ej: Entrenamiento en LAB-CH-134, práctica instrumental en PC-LAB-64 o reserva de SALA 2 para curso teórico..."
-                class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-4 py-2.5 text-sm text-[#E2E8F0] placeholder-[#E2E8F0]/40 focus:outline-none focus:ring-2 focus:ring-[#B8F2E6]"
-              ></textarea>
-            </div>
-
-            <!-- Botón CTA Primario Mandatorio (#B8F2E6 con texto #071014) -->
-            <button
-              type="submit"
-              id="submit-booking-btn"
-              class="w-full py-4 px-6 rounded-xl font-extrabold text-sm uppercase tracking-wider bg-[#B8F2E6] text-[#071014] hover:bg-[#1C6B6A] hover:text-white transition-all shadow-lg focus:outline-none focus:ring-4 focus:ring-[#B8F2E6]/50 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Confirmar Reserva y Notificar a Administración
-            </button>
-
-            <p class="text-[11px] text-center text-[#E2E8F0]/60">
-              Notificación instantánea automática a: <span class="text-[#B8F2E6]">mquiroz@labmeter.cl</span> · <span class="text-[#B8F2E6]">arios@labmeter.cl</span> · <span class="text-[#B8F2E6]">vrios@labmeter.cl</span>
-            </p>
-          </form>
         </div>
       </div>
-    </section>
 
-    <!-- ===================================================================
-         VISTA 2: TURNOS DE OPERADORES, CÁLCULO UBER & QR DINÁMICO (TOTP)
-         =================================================================== -->
-    <section id="view-shifts" class="hidden space-y-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Reloj Control QR Dinámico -->
-        <div class="lg:col-span-5 bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+      <!-- Formulario de Reserva -->
+      <div class="lg:col-span-7 card p-6 sm:p-8 shadow-2xl">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[#0F3A3F]">
           <div>
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">
-                Anti-Fraude TOTP
-              </span>
-              <span id="qr-timer-label" class="text-xs font-bold text-[#B8F2E6]">Cambia en 30s</span>
-            </div>
-            <h2 class="text-lg font-extrabold text-white mt-3">Reloj Control QR Dinámico de Operadores</h2>
-            <p class="text-xs text-[#E2E8F0]/75 mt-1">
-              El código QR regenera su firma cada 30 segundos para impedir que se falsee la asistencia con fotos o capturas.
-            </p>
-
-            <div class="my-5 p-4 bg-[#071014] border border-[#0F3A3F] rounded-2xl flex flex-col sm:flex-row items-center gap-5">
-              <div id="qr-svg-box" class="bg-white p-3 rounded-xl shadow-md shrink-0"></div>
-              <div class="flex-1 space-y-2 w-full">
-                <div class="text-[11px] uppercase tracking-wider text-[#E2E8F0]/60">Token Criptográfico Activo:</div>
-                <div id="qr-token-text" class="font-mono text-sm font-extrabold text-[#B8F2E6] bg-[#0A1F24] px-3 py-2 rounded-lg border border-[#0F3A3F]">
-                  LBM-2026-A9F4-8821
-                </div>
-                <div class="w-full bg-[#0A1F24] h-2 rounded-full overflow-hidden border border-[#0F3A3F]">
-                  <div id="qr-progress-bar" class="bg-[#B8F2E6] h-full transition-all duration-1000" style="width: 100%;"></div>
-                </div>
-                <p class="text-[11px] text-[#E2E8F0]/70">Validación de asistencia en sala de simuladores activa.</p>
-              </div>
-            </div>
+            <span class="text-xs font-bold uppercase tracking-widest text-[#B8F2E6]">Formulario Oficial de Reserva</span>
+            <h2 class="text-xl font-extrabold text-white">Solicitud de Bloque de Simulador o Sala</h2>
           </div>
-
-          <div class="pt-3 border-t border-[#0F3A3F] space-y-3">
-            <div class="grid grid-cols-2 gap-2">
-              <select id="qr-op-select" class="bg-[#071014] border border-[#0F3A3F] rounded-lg px-3 py-2 text-xs text-[#E2E8F0] focus:ring-2 focus:ring-[#B8F2E6]">
-                <option value="Matías Quiroz">Matías Quiroz (5d)</option>
-                <option value="Jorge Sinconegui" selected>Jorge Sinconegui (5d)</option>
-                <option value="Romina Armoa">Romina Armoa (5d)</option>
-                <option value="Diego Calderón">Diego Calderón (5d)</option>
-                <option value="Ignacio Oillataguerre">Ignacio Oillataguerre (4d)</option>
-                <option value="Federico Figueroa">Federico Figueroa (3d)</option>
-                <option value="Erico">Erico (5d)</option>
-              </select>
-              <select id="qr-action-select" class="bg-[#071014] border border-[#0F3A3F] rounded-lg px-3 py-2 text-xs text-[#E2E8F0] focus:ring-2 focus:ring-[#B8F2E6]">
-                <option value="ENTRADA">Marcar ENTRADA</option>
-                <option value="SALIDA">Marcar SALIDA</option>
-                <option value="SALIDA + UBER (Nocturno)">SALIDA Nocturna (21-06h)</option>
-              </select>
-            </div>
-            <button onclick="simulateQrCheckIn()" class="w-full py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider bg-[#B8F2E6] text-[#071014] hover:bg-[#1C6B6A] hover:text-white transition-all">
-              Simular Escaneo QR de Asistencia Ahora
-            </button>
-          </div>
+          <span class="text-[11px] bg-[#071014] border border-[#0F3A3F] px-3 py-1 rounded-lg text-[#B8F2E6] font-bold">
+            🎁 Giftcard de Cumpleaños Activa
+          </span>
         </div>
 
-        <!-- Reglas de Negocio y Bitácora QR -->
-        <div class="lg:col-span-7 bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-5 shadow-xl">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6]">Reglas de Liquidación Automática</span>
-              <h2 class="text-lg font-extrabold text-white">Control de Horas Ordinarias, Extensión, Activación y Uber</h2>
-            </div>
-            <span class="text-xs px-3 py-1 rounded-lg bg-[#071014] border border-[#0F3A3F] text-[#B8F2E6]">
-              Jorge Sinconegui: 5 días base
-            </span>
-          </div>
+        <div id="booking-ok" class="hidden my-4 p-4 rounded-xl bg-[#1C6B6A]/30 border-2 border-[#B8F2E6] text-xs space-y-1"></div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <span class="text-[11px] font-bold text-[#B8F2E6] uppercase">1. Turno Base + Extensión</span>
-              <p class="text-xs text-[#E2E8F0]/80 mt-1">
-                Jornada normal de <strong>08:00 a 18:00 hrs</strong>. Posterior a las 18:00 hrs suma como <strong>Hora de Extensión</strong>.
-              </p>
-            </div>
-            <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <span class="text-[11px] font-bold text-amber-300 uppercase">2. Horas de Activación</span>
-              <p class="text-xs text-[#E2E8F0]/80 mt-1">
-                Operaciones en <strong>fines de semana o fuera de horario</strong> suman como Hora de Activación (mayor valor).
-              </p>
-            </div>
-            <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <span class="text-[11px] font-bold text-emerald-300 uppercase">3. Movilización Uber</span>
-              <p class="text-xs text-[#E2E8F0]/80 mt-1">
-                Si el operador termina entre <strong>21:00 y 06:00 hrs</strong>, el sistema asigna automáticamente <strong>Uber</strong>.
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <h3 class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6] mb-2.5">
-              Últimas Marcaciones Validadas por QR Dinámico
-            </h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr class="border-b border-[#0F3A3F] text-[#E2E8F0]/70">
-                    <th class="py-2 px-3">Operador</th>
-                    <th class="py-2 px-3">Acción</th>
-                    <th class="py-2 px-3">Hora</th>
-                    <th class="py-2 px-3">Dispositivo / Sala</th>
-                    <th class="py-2 px-3">Token QR Validado</th>
-                  </tr>
-                </thead>
-                <tbody id="attendance-logs-tbody" class="divide-y divide-[#0F3A3F]"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Matriz de Asignación de Turnos x 4 Simuladores y Salas -->
-      <div class="bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-6 shadow-xl">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#0F3A3F] pb-4">
-          <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6]">Prevención de Colisiones</span>
-            <h2 class="text-xl font-extrabold text-white">Matriz de Asignación de Turnos x Simuladores y Salas</h2>
-          </div>
-
-          <form onsubmit="addNewShift(event)" class="flex flex-wrap items-center gap-2">
-            <select id="sh-day" class="bg-[#071014] border border-[#0F3A3F] rounded-lg px-2.5 py-2 text-xs text-white">
-              <option value="Lunes">Lunes</option>
-              <option value="Martes">Martes</option>
-              <option value="Miércoles" selected>Miércoles</option>
-              <option value="Jueves">Jueves</option>
-              <option value="Viernes">Viernes</option>
-              <option value="Sábado">Sábado (Activación)</option>
-              <option value="Domingo">Domingo (Activación)</option>
-            </select>
-            <select id="sh-simId" class="bg-[#071014] border border-[#0F3A3F] rounded-lg px-2.5 py-2 text-xs text-white">
-              <optgroup label="Simuladores">
-                <option value="SIM-A320-FTD">A320 FTD NIVEL 4 (LAB-CH-134)</option>
-                <option value="SIM-A320-PCATD">PC-ATD A320 (PC-LAB-70)</option>
-                <option value="SIM-C172-ANA">PC-ATD C172 Análogo (PC-LAB-64)</option>
-                <option value="SIM-C172-G1000">AATD C172 G1000 (No cert.)</option>
-              </optgroup>
-              <optgroup label="Salas">
-                <option value="SALA-2">SALA 2 (15 personas)</option>
-                <option value="SALA-3-CLASES">SALA 3 Clases (6 personas)</option>
-                <option value="SALA-3-REUNIONES">SALA 3 Reuniones</option>
-                <option value="SALA-LM-PA">SALA LM Puente Alto (9 pers.)</option>
-              </optgroup>
-            </select>
-            <select id="sh-operatorId" class="bg-[#071014] border border-[#0F3A3F] rounded-lg px-2.5 py-2 text-xs text-white">
-              <option value="OP-01">Matías Quiroz</option>
-              <option value="OP-02" selected>Jorge Sinconegui</option>
-              <option value="OP-03">Romina Armoa</option>
-              <option value="OP-04">Diego Calderón</option>
-              <option value="OP-05">Ignacio Oillataguerre</option>
-              <option value="OP-06">Federico Figueroa</option>
-              <option value="OP-07">Erico</option>
-            </select>
-            <input type="time" id="sh-start" value="08:00" class="bg-[#071014] border border-[#0F3A3F] rounded-lg px-2.5 py-2 text-xs text-white" />
-            <input type="time" id="sh-end" value="21:30" class="bg-[#071014] border border-[#0F3A3F] rounded-lg px-2.5 py-2 text-xs text-white" />
-            <button type="submit" class="px-4 py-2 rounded-lg bg-[#B8F2E6] text-[#071014] font-extrabold text-xs uppercase hover:bg-[#1C6B6A] hover:text-white transition-all">
-              + Asignar Turno
-            </button>
-          </form>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase tracking-wider">
-                <th class="py-3 px-3">Día / Fecha</th>
-                <th class="py-3 px-3">Simulador / Sala (Matrícula)</th>
-                <th class="py-3 px-3">Operador Asignado</th>
-                <th class="py-3 px-3">Horario</th>
-                <th class="py-3 px-3">Hrs Normales (08-18h)</th>
-                <th class="py-3 px-3">Hrs Extensión (&gt;18h)</th>
-                <th class="py-3 px-3">Hrs Activación (FDS/Extra)</th>
-                <th class="py-3 px-3">Movilización (21:00-06:00)</th>
-              </tr>
-            </thead>
-            <tbody id="shifts-tbody" class="divide-y divide-[#0F3A3F]"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         VISTA 3: CRM DE CLIENTES & LISTADO DE RESERVAS RECIENTES
-         =================================================================== -->
-    <section id="view-crm" class="hidden space-y-8">
-      <div class="bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-4 shadow-xl">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <span class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6]">Operaciones en Tiempo Real</span>
-            <h2 class="text-xl font-extrabold text-white">Listado de Reservas Recientes (Simuladores & Salas)</h2>
-          </div>
-          <div class="flex flex-wrap gap-2" id="booking-filter-buttons">
-            <button onclick="setBookingFilter('Todas')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#B8F2E6] text-[#071014]">Todas</button>
-            <button onclick="setBookingFilter('Pendiente')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#071014] text-[#E2E8F0]/80 border border-[#0F3A3F]">Pendiente</button>
-            <button onclick="setBookingFilter('Confirmada')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#071014] text-[#E2E8F0]/80 border border-[#0F3A3F]">Confirmada</button>
-            <button onclick="setBookingFilter('Completada')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#071014] text-[#E2E8F0]/80 border border-[#0F3A3F]">Completada</button>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase">
-                <th class="py-3 px-3">ID</th>
-                <th class="py-3 px-3">Piloto / Cliente</th>
-                <th class="py-3 px-3">RUT / Licencia</th>
-                <th class="py-3 px-3">Simulador / Sala Reservada</th>
-                <th class="py-3 px-3">Fecha y Bloque</th>
-                <th class="py-3 px-3">Operador / Encargado</th>
-                <th class="py-3 px-3">Estado</th>
-              </tr>
-            </thead>
-            <tbody id="bookings-tbody" class="divide-y divide-[#0F3A3F]"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Directorio CRM + Ficha Individual -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div class="lg:col-span-7 bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-4">
-          <h3 class="text-lg font-extrabold text-white">
-            Base de Datos de Clientes (Pilotos, Instructores, Aficionados & Visitas)
-          </h3>
-          <div id="pilots-list-container" class="space-y-3"></div>
-        </div>
-
-        <div id="pilot-detail-card" class="lg:col-span-5 bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-5"></div>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         VISTA 4: MÓDULO DE EMAIL MARKETING & COMUNICACIONES
-         =================================================================== -->
-    <section id="view-marketing" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <div class="lg:col-span-7 bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-5 shadow-xl">
-        <span class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6]">
-          Integración Motor Transaccional (Resend / SendGrid)
-        </span>
-        <h2 class="text-xl font-extrabold text-white">
-          Redactor de Campañas, Promociones y Giftcards de Cumpleaños
-        </h2>
-
-        <form onsubmit="sendMarketingCampaign(event)" class="space-y-4">
+        <form onsubmit="handleBooking(event)" class="space-y-4 mt-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold uppercase text-[#E2E8F0] mb-1.5">Empresa Remitente (Multi-Marca)</label>
-              <select id="cmp-brand" class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-white focus:ring-2 focus:ring-[#B8F2E6]">
-                <option value="Labmeter Training Center">Labmeter Training Center</option>
-                <option value="IFR LabTraining">IFR LabTraining</option>
-                <option value="LabMeter">LabMeter Aeronautical</option>
+              <label class="block text-xs font-bold uppercase mb-1">Nombre Completo (Piloto / Cliente) *</label>
+              <input type="text" id="b-name" required placeholder="Ej: Cap. Matías Quiroz G." class="inp" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">RUT o Pasaporte *</label>
+              <input type="text" id="b-rut" required placeholder="Ej: 18.450.210-K" class="inp" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#B8F2E6] mb-1">Fecha Nacimiento * (Giftcard)</label>
+              <input type="date" id="b-birth" required class="inp" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#E2E8F0]/80 mb-1">Licencia (Opcional)</label>
+              <input type="text" id="b-lic" placeholder="PPA / PCA / IFR / Curso" class="inp" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-[#E2E8F0]/80 mb-1">Horas de Vuelo (Opcional)</label>
+              <input type="number" id="b-hrs" min="0" placeholder="Ej: 350" class="inp" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">Simulador o Sala Requerida *</label>
+              <select id="b-resource" class="inp">
+                <optgroup label="Simuladores de Vuelo">
+                  <option value="A320 FTD NIVEL 4 (LAB-CH-134)">A320 FTD NIVEL 4 (LAB-CH-134)</option>
+                  <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
+                  <option value="PC-ATD C172 Análogo (PC-LAB-64)">PC-ATD C172 Análogo (PC-LAB-64)</option>
+                  <option value="AATD C172 G1000 (No certificado)">AATD C172 G1000 (No certificado)</option>
+                </optgroup>
+                <optgroup label="Salas de Clases y Reuniones">
+                  <option value="SALA 2 - Sala para 15 personas">SALA 2 - Sala para 15 personas</option>
+                  <option value="SALA 3 - Sala para 6 personas">SALA 3 - Sala para 6 personas</option>
+                  <option value="SALA 3 - Sala de Reuniones (Multifuncional)">SALA 3 - Sala de Reuniones (Multifuncional)</option>
+                  <option value="SALA LM Puente Alto (9 personas)">SALA LM Puente Alto (9 personas)</option>
+                </optgroup>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-bold uppercase text-[#E2E8F0] mb-1.5">Segmento de Audiencia</label>
-              <select id="cmp-segment" class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-3.5 py-3 text-sm text-white focus:ring-2 focus:ring-[#B8F2E6]">
-                <option value="Todos">Todos los Clientes Registrados</option>
-                <option value="Piloto Privado">Pilotos Privados (PPA)</option>
-                <option value="Piloto Comercial">Pilotos Comerciales (PCA / Línea Aérea)</option>
-                <option value="Instructor de Vuelo">Instructores de Vuelo (Simuladores + Salas)</option>
-                <option value="Aficionado">Aficionados / Entusiastas Simulador</option>
-                <option value="Visita Pedagógica">Visitas Pedagógicas / Colegios</option>
-                <option value="Visita Comercial">Visitas Comerciales / Empresas</option>
+              <label class="block text-xs font-bold uppercase mb-1">Fecha Solicitada *</label>
+              <input type="date" id="b-date" value="2026-11-09" required class="inp" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">Bloque Horario *</label>
+              <select id="b-slot" class="inp">
+                <option value="08:00 - 10:00">08:00 - 10:00</option>
+                <option value="10:00 - 12:00">10:00 - 12:00</option>
+                <option value="12:00 - 14:00" selected>12:00 - 14:00</option>
+                <option value="14:00 - 16:00">14:00 - 16:00</option>
+                <option value="16:00 - 18:00">16:00 - 18:00</option>
+                <option value="18:00 - 20:00 (Extensión)">18:00 - 20:00 (Extensión)</option>
+                <option value="20:00 - 22:00 (Extensión Nocturna)">20:00 - 22:00 (Extensión Nocturna)</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold uppercase text-[#E2E8F0] mb-1.5">Asunto del Correo</label>
-            <input
-              type="text"
-              id="cmp-subject"
-              required
-              value="Entrenamiento en A320 FTD Nivel 4 (LAB-CH-134), C172 & Salas de Instrucción"
-              class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-[#B8F2E6]"
-            />
+            <label class="block text-xs font-bold uppercase text-[#E2E8F0]/80 mb-1">Comentarios / Maniobras o Requerimiento</label>
+            <textarea id="b-notes" rows="2" placeholder="Ej: Práctica aproximaciones ILS en LAB-CH-134 o uso de SALA 2 para instrucción..." class="inp"></textarea>
           </div>
 
-          <div>
-            <label class="block text-xs font-bold uppercase text-[#E2E8F0] mb-1.5">
-              Cuerpo del Mensaje (Variables soportadas: [nombre_piloto], [codigo_giftcard])
-            </label>
-            <textarea
-              id="cmp-message"
-              rows="4"
-              required
-              class="w-full bg-[#071014] border border-[#0F3A3F] rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-[#B8F2E6]"
-            >Hola [nombre_piloto], agenda tus bloques en nuestros simuladores A320 FTD Nivel 4 (LAB-CH-134), PC-ATD A320 (PC-LAB-70), PC-ATD C172 Análogo (PC-LAB-64), AATD C172 G1000 o reserva nuestras Salas de Clases (SALA 2, SALA 3 y SALA LM Puente Alto). Si estás de cumpleaños, canjea tu Giftcard.</textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full py-3.5 px-6 rounded-xl font-extrabold text-xs uppercase tracking-wider bg-[#B8F2E6] text-[#071014] hover:bg-[#1C6B6A] hover:text-white transition-all"
-          >
-            Disparar Campaña Segmentada Ahora
+          <button type="submit" class="btn-cta w-full py-3.5 text-sm uppercase tracking-wider">
+            Confirmar Reserva y Notificar a Administración
           </button>
+
+          <p class="text-[11px] text-center text-[#E2E8F0]/60">
+            Envío instantáneo a: <span class="text-[#B8F2E6]">mquiroz@labmeter.cl</span> · <span class="text-[#B8F2E6]">arios@labmeter.cl</span> · <span class="text-[#B8F2E6]">vrios@labmeter.cl</span>
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         PESTAÑA 2: TURNOS DE OPERADORES, CÁLCULO UBER & QR DINÁMICO
+         =================================================================== -->
+    <section id="tab-shifts" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Reloj QR Dinámico -->
+        <div class="lg:col-span-5 card p-6 space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">QR Dinámico Anti-Fraude</span>
+            <span id="qr-timer" class="text-xs font-bold text-[#B8F2E6]">Cambia en 30s</span>
+          </div>
+          <h2 class="text-lg font-extrabold text-white">Control de Asistencia de Operadores (TOTP)</h2>
+          <p class="text-xs text-[#E2E8F0]/75">El código QR cambia cada 30 segundos para evitar que se falsee la hora de llegada o salida.</p>
+
+          <div class="p-4 bg-[#071014] border border-[#0F3A3F] rounded-xl flex items-center gap-4">
+            <div class="bg-white p-2.5 rounded-lg shrink-0">
+              <svg width="96" height="96" viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="#fff"/>
+                <rect x="8" y="8" width="24" height="24" fill="#071014"/>
+                <rect x="13" y="13" width="14" height="14" fill="#fff"/>
+                <rect x="16" y="16" width="8" height="8" fill="#1C6B6A"/>
+                <rect x="68" y="8" width="24" height="24" fill="#071014"/>
+                <rect x="73" y="13" width="14" height="14" fill="#fff"/>
+                <rect x="76" y="16" width="8" height="8" fill="#1C6B6A"/>
+                <rect x="8" y="68" width="24" height="24" fill="#071014"/>
+                <rect x="13" y="73" width="14" height="14" fill="#fff"/>
+                <rect x="16" y="76" width="8" height="8" fill="#1C6B6A"/>
+                <rect x="40" y="20" width="10" height="10" fill="#071014"/>
+                <rect x="42" y="42" width="16" height="16" fill="#1C6B6A"/>
+                <rect x="65" y="55" width="12" height="12" fill="#071014"/>
+                <rect x="38" y="72" width="18" height="10" fill="#071014"/>
+              </svg>
+            </div>
+            <div class="flex-1 space-y-2">
+              <div class="text-[10px] uppercase text-[#E2E8F0]/60">Token Activo:</div>
+              <div id="qr-token" class="font-mono text-xs font-extrabold text-[#B8F2E6] bg-[#0A1F24] p-2 rounded border border-[#0F3A3F]">LBM-2026-A9F4-8821</div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <select id="chk-op" class="inp text-xs py-1.5">
+                  <option>Matías Quiroz (5d)</option>
+                  <option selected>Jorge Sinconegui (5d)</option>
+                  <option>Romina Armoa (5d)</option>
+                  <option>Diego Calderón (5d)</option>
+                  <option>Ignacio Oillataguerre (4d)</option>
+                  <option>Federico Figueroa (3d)</option>
+                  <option>Erico (5d)</option>
+                </select>
+                <select id="chk-type" class="inp text-xs py-1.5">
+                  <option value="ENTRADA">ENTRADA</option>
+                  <option value="SALIDA">SALIDA</option>
+                  <option value="SALIDA + UBER">SALIDA Nocturna</option>
+                </select>
+              </div>
+              <button type="button" onclick="logQrCheckIn()" class="btn-cta w-full py-2 text-xs uppercase">Registrar Asistencia QR</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reglas de Horas y Bitácora QR -->
+        <div class="lg:col-span-7 card p-6 space-y-4">
+          <h2 class="text-lg font-extrabold text-white">Reglas Automáticas de Turnos, Extensión, Activación y Uber</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <b class="text-[#B8F2E6] block">1. Turno 08:00 a 18:00</b>
+              Posterior a las 18:00 hrs suma automáticamente como <b>Hora de Extensión</b>.
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <b class="text-amber-300 block">2. Horas de Activación</b>
+              Fines de semana o requerimientos fuera de horario suman con <b>valor mayor</b>.
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <b class="text-emerald-300 block">3. Uber Nocturno</b>
+              Término de operación entre <b>21:00 y 06:00 hrs</b> asigna movilización <b>Uber</b>.
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-[#0F3A3F] text-[#B8F2E6]">
+                  <th class="py-2 px-2">Operador</th>
+                  <th class="py-2 px-2">Marcación</th>
+                  <th class="py-2 px-2">Hora</th>
+                  <th class="py-2 px-2">Token QR</th>
+                </tr>
+              </thead>
+              <tbody id="qr-logs-body" class="divide-y divide-[#0F3A3F]">
+                <tr><td class="py-2 px-2 font-bold">Matías Quiroz</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">07:55</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-7C12</td></tr>
+                <tr><td class="py-2 px-2 font-bold">Jorge Sinconegui</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">08:00</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-4B89</td></tr>
+                <tr><td class="py-2 px-2 font-bold">Diego Calderón</td><td class="py-2 px-2 text-emerald-300">SALIDA + UBER (22:30)</td><td class="py-2 px-2 font-mono">22:31</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-1D77</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matriz de Turnos -->
+      <div class="card p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#0F3A3F] pb-3">
+          <h3 class="text-base font-extrabold text-white">Matriz de Turnos Asignados x Simuladores y Salas</h3>
+          <form onsubmit="addShiftRow(event)" class="flex flex-wrap gap-2 items-center">
+            <select id="s-day" class="inp w-auto py-1.5 text-xs">
+              <option value="Lunes">Lunes</option>
+              <option value="Martes">Martes</option>
+              <option value="Miércoles">Miércoles</option>
+              <option value="Jueves">Jueves</option>
+              <option value="Viernes">Viernes</option>
+              <option value="Sábado (Activación)">Sábado (Activación)</option>
+              <option value="Domingo (Activación)">Domingo (Activación)</option>
+            </select>
+            <select id="s-res" class="inp w-auto py-1.5 text-xs">
+              <option value="A320 FTD NIVEL 4 (LAB-CH-134)">A320 FTD (LAB-CH-134)</option>
+              <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
+              <option value="PC-ATD C172 Análogo (PC-LAB-64)">C172 Análogo (PC-LAB-64)</option>
+              <option value="AATD C172 G1000 (No certificado)">AATD C172 G1000</option>
+              <option value="SALA 2 (15 personas)">SALA 2 (15p)</option>
+              <option value="SALA LM Puente Alto (9p)">SALA LM Puente Alto</option>
+            </select>
+            <select id="s-op" class="inp w-auto py-1.5 text-xs">
+              <option>Matías Quiroz (5d)</option>
+              <option selected>Jorge Sinconegui (5d)</option>
+              <option>Romina Armoa (5d)</option>
+              <option>Diego Calderón (5d)</option>
+              <option>Ignacio Oillataguerre (4d)</option>
+              <option>Federico Figueroa (3d)</option>
+              <option>Erico (5d)</option>
+            </select>
+            <input type="time" id="s-in" value="08:00" class="inp w-auto py-1.5 text-xs" />
+            <input type="time" id="s-out" value="21:30" class="inp w-auto py-1.5 text-xs" />
+            <button type="submit" class="btn-cta px-3 py-2 text-xs uppercase">+ Asignar Turno</button>
+          </form>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase">
+                <th class="py-2.5 px-3">Día</th>
+                <th class="py-2.5 px-3">Simulador / Sala</th>
+                <th class="py-2.5 px-3">Operador</th>
+                <th class="py-2.5 px-3">Horario</th>
+                <th class="py-2.5 px-3">Normales (08-18h)</th>
+                <th class="py-2.5 px-3">Extensión (&gt;18h)</th>
+                <th class="py-2.5 px-3">Activación</th>
+                <th class="py-2.5 px-3">Movilización Uber</th>
+              </tr>
+            </thead>
+            <tbody id="shifts-body" class="divide-y divide-[#0F3A3F]">
+              <tr>
+                <td class="py-2.5 px-3 font-bold">Lunes</td>
+                <td class="py-2.5 px-3">A320 FTD NIVEL 4 (LAB-CH-134)</td>
+                <td class="py-2.5 px-3">Matías Quiroz (5d)</td>
+                <td class="py-2.5 px-3 font-mono">08:00 - 18:00</td>
+                <td class="py-2.5 px-3 font-bold">10.0 hrs</td>
+                <td class="py-2.5 px-3">0.0 hrs</td>
+                <td class="py-2.5 px-3">0.0 hrs</td>
+                <td class="py-2.5 px-3 text-[#E2E8F0]/50">Diurno Normal</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-bold">Lunes</td>
+                <td class="py-2.5 px-3">PC-ATD C172 Análogo (PC-LAB-64)</td>
+                <td class="py-2.5 px-3">Jorge Sinconegui (5d)</td>
+                <td class="py-2.5 px-3 font-mono">08:00 - 19:30</td>
+                <td class="py-2.5 px-3 font-bold">10.0 hrs</td>
+                <td class="py-2.5 px-3 text-amber-300 font-bold">+1.5 hrs Ext.</td>
+                <td class="py-2.5 px-3">0.0 hrs</td>
+                <td class="py-2.5 px-3 text-[#E2E8F0]/50">Diurno Normal</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-bold">Martes</td>
+                <td class="py-2.5 px-3">PC-ATD A320 (PC-LAB-70)</td>
+                <td class="py-2.5 px-3">Diego Calderón (5d)</td>
+                <td class="py-2.5 px-3 font-mono">12:00 - 22:30</td>
+                <td class="py-2.5 px-3 font-bold">6.0 hrs</td>
+                <td class="py-2.5 px-3 text-amber-300 font-bold">+4.5 hrs Ext.</td>
+                <td class="py-2.5 px-3">0.0 hrs</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span></td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-bold">Sábado (Activación)</td>
+                <td class="py-2.5 px-3">A320 FTD NIVEL 4 (LAB-CH-134)</td>
+                <td class="py-2.5 px-3">Federico Figueroa (3d)</td>
+                <td class="py-2.5 px-3 font-mono">09:00 - 21:30</td>
+                <td class="py-2.5 px-3 font-bold">0.0 hrs</td>
+                <td class="py-2.5 px-3">0.0 hrs</td>
+                <td class="py-2.5 px-3 text-purple-300 font-bold">+12.5 hrs Act.</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         PESTAÑA 3: CRM DE CLIENTES Y LISTADO DE RESERVAS
+         =================================================================== -->
+    <section id="tab-crm" class="hidden space-y-6">
+      <div class="card p-6 space-y-4">
+        <h2 class="text-lg font-extrabold text-white">Reservas Recientes (Simuladores & Salas de Clases)</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase">
+                <th class="py-2.5 px-3">Código</th>
+                <th class="py-2.5 px-3">Piloto / Solicitante</th>
+                <th class="py-2.5 px-3">RUT / Licencia</th>
+                <th class="py-2.5 px-3">Simulador / Sala</th>
+                <th class="py-2.5 px-3">Fecha y Bloque</th>
+                <th class="py-2.5 px-3">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-body" class="divide-y divide-[#0F3A3F]">
+              <tr>
+                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9041</td>
+                <td class="py-2.5 px-3 font-bold">Cap. Sebastián Morales</td>
+                <td class="py-2.5 px-3">16.482.910-K (PCA #8841)</td>
+                <td class="py-2.5 px-3">A320 FTD NIVEL 4 (LAB-CH-134)</td>
+                <td class="py-2.5 px-3 font-mono">2026-11-09 · 10:00 - 12:00</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">Confirmada</span></td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9042</td>
+                <td class="py-2.5 px-3 font-bold">Valentina Echeverría</td>
+                <td class="py-2.5 px-3">19.831.044-2 (PPA #12490)</td>
+                <td class="py-2.5 px-3">PC-ATD C172 Análogo (PC-LAB-64)</td>
+                <td class="py-2.5 px-3 font-mono">2026-11-09 · 14:00 - 16:00</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 font-bold">Pendiente</span></td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9043</td>
+                <td class="py-2.5 px-3 font-bold">Andrés Valdivieso (Instructor)</td>
+                <td class="py-2.5 px-3">14.205.771-8 (IV #3310)</td>
+                <td class="py-2.5 px-3">SALA 2 - Sala para 15 personas</td>
+                <td class="py-2.5 px-3 font-mono">2026-11-09 · 16:00 - 18:00</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#1C6B6A] text-white font-bold">Completada</span></td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9044</td>
+                <td class="py-2.5 px-3 font-bold">Curso IFR Sede Puente Alto</td>
+                <td class="py-2.5 px-3">76.540.210-3 (Instrucción)</td>
+                <td class="py-2.5 px-3">SALA LM Puente Alto (9 personas)</td>
+                <td class="py-2.5 px-3 font-mono">2026-11-09 · 08:00 - 10:00</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">Confirmada</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Fichas CRM de Clientes -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="card p-5 space-y-2">
+          <div class="flex justify-between">
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Piloto Comercial</span>
+            <span class="text-xs text-[#B8F2E6] font-bold">🎂 Cumpleaños: 09 Nov</span>
+          </div>
+          <h3 class="font-extrabold text-base text-white">Cap. Sebastián Morales</h3>
+          <p class="text-xs text-[#E2E8F0]/70">RUT: 16.482.910-K · Licencia PCA #8841</p>
+          <p class="text-xs text-[#B8F2E6]">• LAB-CH-134: 44 hrs | PC-LAB-70: 18 hrs</p>
+          <button type="button" onclick="notify('🎁 Giftcard de Cumpleaños enviada a Cap. Sebastián Morales')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Giftcard Cumpleaños</button>
+        </div>
+
+        <div class="card p-5 space-y-2">
+          <div class="flex justify-between">
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Piloto Privado</span>
+            <span class="text-xs text-[#E2E8F0]/60">Nac: 15 Nov 1996</span>
+          </div>
+          <h3 class="font-extrabold text-base text-white">Valentina Echeverría</h3>
+          <p class="text-xs text-[#E2E8F0]/70">RUT: 19.831.044-2 · Licencia PPA #12490</p>
+          <p class="text-xs text-[#B8F2E6]">• PC-LAB-64: 32 hrs | AATD G1000: 14 hrs</p>
+          <button type="button" onclick="notify('🎁 Giftcard de Cumpleaños enviada a Valentina Echeverría')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Giftcard Cumpleaños</button>
+        </div>
+
+        <div class="card p-5 space-y-2">
+          <div class="flex justify-between">
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Instructor de Vuelo</span>
+            <span class="text-xs text-[#E2E8F0]/60">Convenio Salas + Sim</span>
+          </div>
+          <h3 class="font-extrabold text-base text-white">Andrés Valdivieso</h3>
+          <p class="text-xs text-[#E2E8F0]/70">RUT: 14.205.771-8 · IV #3310 Multi/IFR</p>
+          <p class="text-xs text-[#B8F2E6]">• LAB-CH-134: 60 hrs | SALA 2 y SALA LM PA</p>
+          <button type="button" onclick="notify('📩 Bitácora enviada a Andrés Valdivieso')" class="btn-cta w-full py-2 text-xs mt-2">Enviar Resumen de Horas</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         PESTAÑA 4: EMAIL MARKETING SEGMENTADO
+         =================================================================== -->
+    <section id="tab-marketing" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-7 card p-6 space-y-4">
+        <span class="text-xs font-bold uppercase text-[#B8F2E6]">Motor de Comunicaciones (Resend / SendGrid)</span>
+        <h2 class="text-xl font-extrabold text-white">Envío de Campañas y Promociones por Segmento</h2>
+        <form onsubmit="sendCampaign(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">Empresa Remitente</label>
+              <select id="m-brand" class="inp">
+                <option>Labmeter Training Center</option>
+                <option>IFR LabTraining</option>
+                <option>LabMeter</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">Segmento de Clientes</label>
+              <select id="m-seg" class="inp">
+                <option>Todos los Segmentos</option>
+                <option>Piloto Privado</option>
+                <option>Piloto Comercial</option>
+                <option>Instructor de Vuelo</option>
+                <option>Aficionado</option>
+                <option>Visita Pedagógica</option>
+                <option>Visita Comercial</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase mb-1">Asunto de la Campaña</label>
+            <input type="text" id="m-subj" value="Bloques Disponibles: A320 FTD (LAB-CH-134), C172 (PC-LAB-64) y Salas de Instrucción" class="inp" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase mb-1">Mensaje</label>
+            <textarea rows="4" class="inp">Estimado piloto, te invitamos a reservar tus horas de entrenamiento en nuestros simuladores A320 FTD Nivel 4 (LAB-CH-134), PC-ATD A320 (PC-LAB-70), PC-ATD C172 Análogo (PC-LAB-64), AATD C172 G1000 y nuestras Salas de Clases (SALA 2, SALA 3 y SALA LM Puente Alto).</textarea>
+          </div>
+          <button type="submit" class="btn-cta w-full py-3 text-xs uppercase tracking-wider">Enviar Campaña Masiva Ahora</button>
         </form>
       </div>
 
-      <div class="lg:col-span-5 bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-4">
-        <h3 class="text-lg font-extrabold text-white">Historial de Campañas & Automatizaciones</h3>
-        <div id="campaigns-list-container" class="space-y-3"></div>
+      <div class="lg:col-span-5 card p-6 space-y-3">
+        <h3 class="text-base font-extrabold text-white">Campañas Enviadas Recientemente</h3>
+        <div id="campaign-logs" class="space-y-2.5 text-xs">
+          <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">IFR LabTraining</span>
+            <p class="font-bold text-white mt-1">Entrenamiento A320 FTD (LAB-CH-134) & PC-LAB-70</p>
+            <p class="text-[#E2E8F0]/70">Segmento: Piloto Comercial · 48 envíos</p>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Labmeter Training Center</span>
+            <p class="font-bold text-white mt-1">🎁 Giftcard Automática de Cumpleaños del Mes</p>
+            <p class="text-[#E2E8F0]/70">Segmento: Cumpleañeros · 14 envíos</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- ===================================================================
-         VISTA 5: ARQUITECTURA SQL, STACK & FLUJO DE WEBHOOK
+         PESTAÑA 5: ARQUITECTURA SQL Y FLUJO DE WEBHOOK
          =================================================================== -->
-    <section id="view-architecture" class="hidden space-y-6">
-      <div class="bg-[#0A1F24] border border-[#0F3A3F] rounded-2xl p-6 space-y-4">
-        <span class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6]">Entregable de Arquitectura de Software</span>
-        <h2 class="text-xl font-extrabold text-white">1. Esquema Relacional SQL (Simuladores Oficiales + Salas de Clases)</h2>
-        <pre class="bg-[#071014] border border-[#0F3A3F] rounded-xl p-4 text-xs text-[#B8F2E6] overflow-x-auto font-mono leading-relaxed">-- TABLA 1: PILOTOS Y CLIENTES (CRM)
-CREATE TABLE pilots (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  full_name VARCHAR(150) NOT NULL,
-  rut_passport VARCHAR(40) UNIQUE NOT NULL,
-  email VARCHAR(150),
-  phone VARCHAR(40),
-  birth_date DATE NOT NULL, -- Requerido para trigger automático de Giftcard de cumpleaños
-  license_type VARCHAR(80), -- Opcional (PPA, PCA, IFR, Aficionado)
-  logged_flight_hours NUMERIC(8,1) DEFAULT 0,
-  client_segment VARCHAR(50) NOT NULL, -- 'Piloto Privado','Comercial','Instructor','Aficionado','Visita Pedagógica','Visita Comercial'
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- TABLA 2: RECURSOS RESERVABLES (4 SIMULADORES + 4 SALAS DE CLASES/REUNIONES)
-CREATE TABLE facilities_and_simulators (
+    <section id="tab-arch" class="hidden space-y-6">
+      <div class="card p-6 space-y-3">
+        <h2 class="text-lg font-extrabold text-white">Esquema Relacional SQL (4 Simuladores Oficiales + 4 Salas de Clases)</h2>
+        <pre class="bg-[#071014] border border-[#0F3A3F] rounded-xl p-4 text-xs text-[#B8F2E6] overflow-x-auto font-mono">CREATE TABLE resources (
   id VARCHAR(30) PRIMARY KEY,
-  resource_type VARCHAR(20) NOT NULL, -- 'SIMULADOR' o 'SALA'
+  type VARCHAR(20) NOT NULL, -- 'SIMULADOR' o 'SALA'
   name VARCHAR(120) NOT NULL,
-  registration_code VARCHAR(40),      -- 'LAB-CH-134', 'PC-LAB-70', 'PC-LAB-64', 'NO CERTIFICADO' o Capacidad de Sala
-  capacity_people INTEGER DEFAULT 2,  -- Ej: 15 (SALA 2), 6 (SALA 3), 9 (SALA LM Puente Alto)
-  is_certified BOOLEAN DEFAULT TRUE,
-  is_active BOOLEAN DEFAULT TRUE
+  registration VARCHAR(40),
+  capacity INT DEFAULT 2
 );
 
--- DATOS SEMILLA OFICIALES DE SIMULADORES Y SALAS
-INSERT INTO facilities_and_simulators (id, resource_type, name, registration_code, capacity_people, is_certified) VALUES
-  ('SIM-A320-FTD',   'SIMULADOR', 'A320 FTD NIVEL 4',                    'LAB-CH-134',     2,  TRUE),
-  ('SIM-A320-PCATD', 'SIMULADOR', 'PC-ATD A320',                         'PC-LAB-70',      2,  TRUE),
-  ('SIM-C172-ANA',   'SIMULADOR', 'PC-ATD C172 Análogo',                 'PC-LAB-64',      2,  TRUE),
-  ('SIM-C172-G1000', 'SIMULADOR', 'AATD C172 G1000',                     'No certificado', 2,  FALSE),
-  ('SALA-2',         'SALA',      'SALA 2 - Sala de Clases',             'Cap. 15 pers.',  15, TRUE),
-  ('SALA-3-CLASES',  'SALA',      'SALA 3 - Sala de Clases',             'Cap. 6 pers.',   6,  TRUE),
-  ('SALA-3-REUN',    'SALA',      'SALA 3 - Sala de Reuniones Multif.',  'Multifuncional', 8,  TRUE),
-  ('SALA-LM-PA',     'SALA',      'SALA LM Puente Alto',                 'Cap. 9 pers.',   9,  TRUE);
-
--- TABLA 3: OPERADORES / INSTRUCTORES DE SIMULADOR
-CREATE TABLE operators (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  full_name VARCHAR(120) NOT NULL,
-  email VARCHAR(150) UNIQUE NOT NULL,
-  base_weekly_days INTEGER DEFAULT 5,
-  totp_secret VARCHAR(64) NOT NULL -- Semilla para validación de QR dinámico anti-fraude
-);
-
--- TABLA 4: MATRIZ DE TURNOS Y CONTROL DE ASISTENCIA QR + UBER
-CREATE TABLE shifts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  resource_id VARCHAR(30) REFERENCES facilities_and_simulators(id),
-  operator_id UUID REFERENCES operators(id),
-  shift_date DATE NOT NULL,
-  start_time TIME NOT NULL, -- Jornada base 08:00 a 18:00
-  end_time TIME NOT NULL,
-  regular_hours NUMERIC(4,1) DEFAULT 0,
-  extension_hours NUMERIC(4,1) DEFAULT 0,  -- Horas posteriores a las 18:00 hrs
-  activation_hours NUMERIC(4,1) DEFAULT 0, -- Fines de semana o fuera de horario normal (tarifa mayor)
-  requires_uber BOOLEAN DEFAULT FALSE,     -- TRUE cuando end_time está entre 21:00 y 06:00 hrs
-  qr_checkin_token VARCHAR(64),
-  qr_checkout_token VARCHAR(64),
-  UNIQUE (resource_id, shift_date, start_time)
-);
-
--- TABLA 5: RESERVAS DE BLOQUES DE SIMULADOR O SALAS
-CREATE TABLE bookings (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  pilot_id UUID REFERENCES pilots(id),
-  resource_id VARCHAR(30) REFERENCES facilities_and_simulators(id),
-  shift_id UUID REFERENCES shifts(id),
-  booking_date DATE NOT NULL,
-  time_slot VARCHAR(40) NOT NULL,
-  status VARCHAR(25) DEFAULT 'Pendiente',
-  admin_notified BOOLEAN DEFAULT FALSE, -- Notificación a mquiroz@labmeter.cl; arios@labmeter.cl; vrios@labmeter.cl
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);</pre>
+INSERT INTO resources VALUES
+  ('SIM-A320-FTD',   'SIMULADOR', 'A320 FTD NIVEL 4',                   'LAB-CH-134',     2),
+  ('SIM-A320-PCATD', 'SIMULADOR', 'PC-ATD A320',                        'PC-LAB-70',      2),
+  ('SIM-C172-ANA',   'SIMULADOR', 'PC-ATD C172 Análogo',                'PC-LAB-64',      2),
+  ('SIM-C172-G1000', 'SIMULADOR', 'AATD C172 G1000',                    'No certificado', 2),
+  ('SALA-2',         'SALA',      'SALA 2 - Sala de Clases',            'Cap. 15 pers.',  15),
+  ('SALA-3-CLASES',  'SALA',      'SALA 3 - Sala de Clases',            'Cap. 6 pers.',   6),
+  ('SALA-3-REUN',    'SALA',      'SALA 3 - Sala de Reuniones Multif.', 'Multifuncional', 8),
+  ('SALA-LM-PA',     'SALA',      'SALA LM Puente Alto',                'Cap. 9 pers.',   9);</pre>
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER CORPORATIVO -->
-  <footer class="relative z-10 bg-[#0A1F24] border-t border-[#0F3A3F] py-4 px-6 text-center text-xs text-[#E2E8F0]/60">
-    Labmeter Training Center · IFR LabTraining · LabMeter CMA N° 332 / CEAC DAN 147 — Simuladores (LAB-CH-134 · PC-LAB-70 · PC-LAB-64 · AATD G1000) & Salas
+  <footer class="relative z-10 bg-[#0A1F24] border-t border-[#0F3A3F] py-3 px-4 text-center text-[11px] text-[#E2E8F0]/60">
+    Labmeter Training Center · IFR LabTraining · LabMeter — LAB-CH-134 · PC-LAB-70 · PC-LAB-64 · AATD C172 G1000 · Salas 2, 3 y LM Puente Alto
   </footer>
 
-  <!-- =====================================================================
-       LÓGICA JAVASCRIPT NATIVA (FLOTA DE SIMULADORES + SALAS DE CLASES)
-       ===================================================================== -->
   <script>
-    // 4 SIMULADORES OFICIALES
-    const SIMULATORS = [
-      {
-        id: "SIM-A320-FTD",
-        type: "SIMULADOR",
-        name: "A320 FTD NIVEL 4",
-        matricula: "LAB-CH-134",
-        category: "Jet Comercial / Certificación Nivel 4",
-        badge: "LAB-CH-134",
-        operator: "Matías Quiroz"
-      },
-      {
-        id: "SIM-A320-PCATD",
-        type: "SIMULADOR",
-        name: "PC-ATD A320",
-        matricula: "PC-LAB-70",
-        category: "Entrenador Procedimientos A320",
-        badge: "PC-LAB-70",
-        operator: "Ignacio Oillataguerre"
-      },
-      {
-        id: "SIM-C172-ANA",
-        type: "SIMULADOR",
-        name: "PC-ATD C172 Análogo",
-        matricula: "PC-LAB-64",
-        category: "Monomotor Instrumental Análogo",
-        badge: "PC-LAB-64",
-        operator: "Jorge Sinconegui"
-      },
-      {
-        id: "SIM-C172-G1000",
-        type: "SIMULADOR",
-        name: "AATD C172 G1000",
-        matricula: "No certificado",
-        category: "Cabina Glass Cockpit G1000",
-        badge: "No Certificado",
-        operator: "Romina Armoa"
+    function notify(msg) {
+      var t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.remove('hidden');
+      t.classList.add('flex');
+      setTimeout(function() { t.classList.add('hidden'); t.classList.remove('flex'); }, 4500);
+    }
+
+    function openTab(name) {
+      var tabs = ['booking', 'shifts', 'crm', 'marketing', 'arch'];
+      for (var i = 0; i < tabs.length; i++) {
+        document.getElementById('tab-' + tabs[i]).classList.add('hidden');
+        document.getElementById('btn-' + tabs[i]).classList.remove('active');
       }
-    ];
-
-    // 4 SALAS DE CLASES Y REUNIONES
-    const CLASSROOMS = [
-      {
-        id: "SALA-2",
-        type: "SALA",
-        name: "SALA 2 - Clases",
-        matricula: "Capacidad: 15 personas",
-        category: "Instrucción Teórica Grupal / Cursos",
-        badge: "15 Personas",
-        operator: "Coordinación Académica"
-      },
-      {
-        id: "SALA-3-CLASES",
-        type: "SALA",
-        name: "SALA 3 - Clases",
-        matricula: "Capacidad: 6 personas",
-        category: "Sala de Clases / Briefing Grupal",
-        badge: "6 Personas",
-        operator: "Coordinación Académica"
-      },
-      {
-        id: "SALA-3-REUNIONES",
-        type: "SALA",
-        name: "SALA 3 - Reuniones",
-        matricula: "Multifuncional",
-        category: "Sala de Reuniones & Debriefing",
-        badge: "Multifuncional",
-        operator: "Administración"
-      },
-      {
-        id: "SALA-LM-PA",
-        type: "SALA",
-        name: "SALA LM Puente Alto",
-        matricula: "Capacidad: 9 personas",
-        category: "Sede Puente Alto / Instrucción",
-        badge: "9 Personas",
-        operator: "Sede Puente Alto"
-      }
-    ];
-
-    const ALL_RESOURCES = [...SIMULATORS, ...CLASSROOMS];
-
-    const OPERATORS = [
-      { id: "OP-01", name: "Matías Quiroz", baseDays: 5, activeSim: "SIM-A320-FTD" },
-      { id: "OP-02", name: "Jorge Sinconegui", baseDays: 5, activeSim: "SIM-C172-ANA" },
-      { id: "OP-03", name: "Romina Armoa", baseDays: 5, activeSim: "SIM-C172-G1000" },
-      { id: "OP-04", name: "Diego Calderón", baseDays: 5, activeSim: "SIM-A320-PCATD" },
-      { id: "OP-05", name: "Ignacio Oillataguerre", baseDays: 4, activeSim: "SIM-A320-FTD" },
-      { id: "OP-06", name: "Federico Figueroa", baseDays: 3, activeSim: "SIM-C172-ANA" },
-      { id: "OP-07", name: "Erico", baseDays: 5, activeSim: "SIM-A320-PCATD" }
-    ];
-
-    let shifts = [
-      { id: "SH-101", day: "Lunes", date: "2026-11-09", isWeekend: false, simId: "SIM-A320-FTD", operatorId: "OP-01", start: "08:00", end: "18:00" },
-      { id: "SH-102", day: "Lunes", date: "2026-11-09", isWeekend: false, simId: "SIM-C172-ANA", operatorId: "OP-02", start: "08:00", end: "19:30" },
-      { id: "SH-103", day: "Lunes", date: "2026-11-09", isWeekend: false, simId: "SIM-C172-G1000", operatorId: "OP-03", start: "08:00", end: "18:00" },
-      { id: "SH-104", day: "Lunes", date: "2026-11-09", isWeekend: false, simId: "SIM-A320-PCATD", operatorId: "OP-04", start: "12:00", end: "22:30" },
-      { id: "SH-105", day: "Martes", date: "2026-11-10", isWeekend: false, simId: "SALA-2", operatorId: "OP-05", start: "08:00", end: "21:30" },
-      { id: "SH-106", day: "Sábado", date: "2026-11-14", isWeekend: true, simId: "SIM-A320-FTD", operatorId: "OP-06", start: "09:00", end: "22:00" }
-    ];
-
-    let bookings = [
-      { id: "RES-9041", pilotName: "Cap. Sebastián Morales", rut: "16.482.910-K", license: "PCA #8841", simulatorId: "SIM-A320-FTD", date: "2026-11-09", slot: "10:00 - 12:00", operatorName: "Matías Quiroz", status: "Confirmada" },
-      { id: "RES-9042", pilotName: "Valentina Echeverría", rut: "19.831.044-2", license: "PPA #12490", simulatorId: "SIM-C172-ANA", date: "2026-11-09", slot: "14:00 - 16:00", operatorName: "Jorge Sinconegui", status: "Pendiente" },
-      { id: "RES-9043", pilotName: "Andrés Valdivieso", rut: "14.205.771-8", license: "IV #3310", simulatorId: "SALA-2", date: "2026-11-09", slot: "16:00 - 18:00", operatorName: "Coordinación Académica", status: "Completada" },
-      { id: "RES-9044", pilotName: "Tomás Fuenzalida", rut: "20.411.892-1", license: "Aficionado", simulatorId: "SIM-C172-G1000", date: "2026-11-09", slot: "20:00 - 22:00 (Extensión Nocturna)", operatorName: "Romina Armoa", status: "Confirmada" },
-      { id: "RES-9045", pilotName: "Curso Teórico IFR Puente Alto", rut: "76.540.210-3", license: "Instrucción", simulatorId: "SALA-LM-PA", date: "2026-11-09", slot: "08:00 - 10:00", operatorName: "Sede Puente Alto", status: "Confirmada" }
-    ];
-
-    let pilots = [
-      {
-        id: "PIL-01",
-        name: "Cap. Sebastián Morales",
-        rut: "16.482.910-K",
-        email: "smorales@vuelochile.cl",
-        phone: "+56 9 8412 3301",
-        birthDate: "1989-11-09",
-        segment: "Piloto Comercial",
-        license: "PCA #8841 - IFR Vigente",
-        totalFlightHours: 2450,
-        simHours: { "SIM-A320-FTD": 44, "SIM-A320-PCATD": 18, "SIM-C172-ANA": 12, "SIM-C172-G1000": 4 },
-        notes: "Entrenamiento recurrente en A320 FTD Nivel 4 (LAB-CH-134) y briefing en SALA 3."
-      },
-      {
-        id: "PIL-02",
-        name: "Valentina Echeverría",
-        rut: "19.831.044-2",
-        email: "vecheverria@clubvuelo.cl",
-        phone: "+56 9 7112 9082",
-        birthDate: "1996-11-15",
-        segment: "Piloto Privado",
-        license: "PPA #12490 - En curso IFR",
-        totalFlightHours: 145,
-        simHours: { "SIM-A320-FTD": 2, "SIM-A320-PCATD": 4, "SIM-C172-ANA": 32, "SIM-C172-G1000": 14 },
-        notes: "Práctica instrumental en PC-ATD C172 Análogo (PC-LAB-64) y AATD C172 G1000."
-      },
-      {
-        id: "PIL-03",
-        name: "Andrés Valdivieso",
-        rut: "14.205.771-8",
-        email: "avaldivieso@instruccion.cl",
-        phone: "+56 9 9301 4450",
-        birthDate: "1982-05-20",
-        segment: "Instructor de Vuelo",
-        license: "IV #3310 - Habilitado Multi/IFR",
-        totalFlightHours: 4800,
-        simHours: { "SIM-A320-FTD": 60, "SIM-A320-PCATD": 40, "SIM-C172-ANA": 85, "SIM-C172-G1000": 30 },
-        notes: "Reserva habitualmente SALA 2 (15 personas) y SALA LM Puente Alto (9 personas) junto con simuladores."
-      },
-      {
-        id: "PIL-04",
-        name: "Colegio Técnico Aeronáutico",
-        rut: "65.120.400-5",
-        email: "coordinacion@colegioaero.cl",
-        phone: "+56 2 2411 8900",
-        birthDate: "2000-03-12",
-        segment: "Visita Pedagógica",
-        license: "Convenio Educacional",
-        totalFlightHours: 0,
-        simHours: { "SIM-A320-FTD": 16, "SIM-A320-PCATD": 10, "SIM-C172-ANA": 8, "SIM-C172-G1000": 12 },
-        notes: "Programa Aviadores del Futuro - Ocupan SALA 2 (15 personas) + A320 FTD LAB-CH-134."
-      }
-    ];
-
-    let attendanceLogs = [
-      { operator: "Matías Quiroz", action: "ENTRADA", time: "07:55:12", sim: "A320 FTD NIVEL 4 (LAB-CH-134)", token: "LBM-2026-7C12-9011" },
-      { operator: "Jorge Sinconegui", action: "ENTRADA", time: "08:00:04", sim: "PC-ATD C172 Análogo (PC-LAB-64)", token: "LBM-2026-4B89-1102" },
-      { operator: "Romina Armoa", action: "ENTRADA", time: "08:02:41", sim: "AATD C172 G1000", token: "LBM-2026-9E31-5540" },
-      { operator: "Diego Calderón", action: "SALIDA (Uber Asignado)", time: "22:31:09", sim: "PC-ATD A320 (PC-LAB-70)", token: "LBM-2026-1D77-3098" }
-    ];
-
-    let sentCampaigns = [
-      { brand: "IFR LabTraining", segment: "Piloto Comercial", recipients: 48, openRate: "68% Apertura", subject: "Entrenamiento en A320 FTD Nivel 4 (LAB-CH-134) y PC-ATD A320 (PC-LAB-70)", date: "05 Nov 2026" },
-      { brand: "Labmeter Training Center", segment: "Instructor de Vuelo", recipients: 19, openRate: "84% Apertura", subject: "Disponibilidad SALA 2 (15p), SALA 3 y SALA LM Puente Alto (9p)", date: "02 Nov 2026" }
-    ];
-
-    let currentBookingFilter = "Todas";
-    let selectedPilotId = "PIL-01";
-    let qrSecondsLeft = 30;
-    let qrToken = "LBM-2026-A9F4-8821";
-
-    function showToast(msg) {
-      const box = document.getElementById("toast-container");
-      document.getElementById("toast-text").textContent = msg;
-      box.classList.remove("hidden");
-      box.classList.add("flex");
-      setTimeout(() => {
-        box.classList.add("hidden");
-        box.classList.remove("flex");
-      }, 4500);
+      document.getElementById('tab-' + name).classList.remove('hidden');
+      document.getElementById('btn-' + name).classList.add('active');
     }
 
-    function switchTab(tabId) {
-      ["booking", "shifts", "crm", "marketing", "architecture"].forEach((id) => {
-        document.getElementById("view-" + id).classList.add("hidden");
-        const btn = document.getElementById("tab-btn-" + id);
-        btn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#B8F2E6] bg-[#071014]/70 text-[#E2E8F0]/80 border border-[#0F3A3F] hover:bg-[#1C6B6A]/40 hover:text-white";
-      });
-      document.getElementById("view-" + tabId).classList.remove("hidden");
-      document.getElementById("tab-btn-" + tabId).className = "px-3.5 py-2 rounded-lg text-xs font-bold transition-all focus:outline-none focus:ring-2 focus:ring-[#B8F2E6] bg-[#1C6B6A] text-[#B8F2E6] border border-[#B8F2E6]/50 shadow-lg";
+    function pickResource(val) {
+      document.getElementById('b-resource').value = val;
+      notify('Seleccionado: ' + val);
     }
 
-    function renderResourceCards() {
-      const selectedId = document.getElementById("f-simulatorId").value;
-
-      // Render 4 Simuladores
-      const simContainer = document.getElementById("simulator-cards-container");
-      simContainer.innerHTML = SIMULATORS.map((sim) => {
-        const isSelected = sim.id === selectedId;
-        return `
-          <div onclick="selectResourceCard('${sim.id}')" class="p-3.5 rounded-xl border cursor-pointer transition-all ${
-            isSelected ? "bg-[#1C6B6A]/40 border-[#B8F2E6] shadow-md" : "bg-[#071014]/80 border-[#0F3A3F] hover:border-[#1C6B6A]"
-          }">
-            <div class="flex items-center justify-between gap-1">
-              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">${sim.badge}</span>
-              <span class="text-[10px] font-semibold text-emerald-400">● Operativo</span>
-            </div>
-            <h3 class="font-bold text-sm mt-2 text-white">${sim.name}</h3>
-            <p class="text-[11px] text-[#E2E8F0]/70">${sim.category}</p>
-            <div class="mt-2 pt-2 border-t border-[#0F3A3F] flex items-center justify-between text-[11px]">
-              <span class="text-[#E2E8F0]/80">Op: ${sim.operator}</span>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      // Render 4 Salas de Clases / Reuniones
-      const roomContainer = document.getElementById("classroom-cards-container");
-      roomContainer.innerHTML = CLASSROOMS.map((room) => {
-        const isSelected = room.id === selectedId;
-        return `
-          <div onclick="selectResourceCard('${room.id}')" class="p-3.5 rounded-xl border cursor-pointer transition-all ${
-            isSelected ? "bg-[#1C6B6A]/40 border-[#B8F2E6] shadow-md" : "bg-[#071014]/80 border-[#0F3A3F] hover:border-[#1C6B6A]"
-          }">
-            <div class="flex items-center justify-between gap-1">
-              <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#1C6B6A] text-[#B8F2E6] border border-[#B8F2E6]/40">${room.badge}</span>
-              <span class="text-[10px] font-semibold text-[#B8F2E6]">Disponible</span>
-            </div>
-            <h3 class="font-bold text-sm mt-2 text-white">${room.name}</h3>
-            <p class="text-[11px] text-[#E2E8F0]/70">${room.category}</p>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function selectResourceCard(resourceId) {
-      document.getElementById("f-simulatorId").value = resourceId;
-      onSimulatorOrSlotChange();
-    }
-
-    function checkBirthdayBanner() {
-      const val = document.getElementById("f-birthDate").value;
-      const alertBox = document.getElementById("birthday-alert");
-      if (val) {
-        alertBox.classList.remove("hidden");
-        alertBox.classList.add("flex");
-      } else {
-        alertBox.classList.add("hidden");
-        alertBox.classList.remove("flex");
-      }
-    }
-
-    function onSimulatorOrSlotChange() {
-      renderResourceCards();
-      const simId = document.getElementById("f-simulatorId").value;
-      const date = document.getElementById("f-date").value;
-      const slot = document.getElementById("f-slot").value;
-      const occupied = bookings.some((b) => b.simulatorId === simId && b.date === date && b.slot === slot);
-
-      const banner = document.getElementById("availability-banner");
-      const text = document.getElementById("availability-text");
-      const badge = document.getElementById("availability-badge");
-      const btn = document.getElementById("submit-booking-btn");
-
-      if (occupied) {
-        banner.className = "p-3.5 rounded-xl border text-xs flex items-center justify-between bg-red-950/50 border-red-500/60 text-red-200";
-        text.textContent = "❌ Bloque ocupado en este simulador o sala. Elige otro horario o recurso.";
-        badge.textContent = "No Disponible";
-        btn.disabled = true;
-      } else {
-        banner.className = "p-3.5 rounded-xl border text-xs flex items-center justify-between bg-[#071014] border-[#0F3A3F] text-[#B8F2E6]";
-        text.textContent = "✓ Bloque verificado disponible en tiempo real.";
-        badge.textContent = "Disponible";
-        btn.disabled = false;
-      }
-    }
-
-    function submitBooking(e) {
+    function handleBooking(e) {
       e.preventDefault();
-      const pilotName = document.getElementById("f-pilotName").value;
-      const rut = document.getElementById("f-rut").value;
-      const license = document.getElementById("f-license").value || "No especificada";
-      const simulatorId = document.getElementById("f-simulatorId").value;
-      const date = document.getElementById("f-date").value;
-      const slot = document.getElementById("f-slot").value;
-      const resObj = ALL_RESOURCES.find((s) => s.id === simulatorId) || ALL_RESOURCES[0];
+      var name = document.getElementById('b-name').value;
+      var rut = document.getElementById('b-rut').value;
+      var lic = document.getElementById('b-lic').value || 'N/A';
+      var res = document.getElementById('b-resource').value;
+      var date = document.getElementById('b-date').value;
+      var slot = document.getElementById('b-slot').value;
+      var code = 'RES-' + Math.floor(9050 + Math.random() * 800);
 
-      const newBooking = {
-        id: "RES-" + Math.floor(9050 + Math.random() * 800),
-        pilotName,
-        rut,
-        license,
-        simulatorId,
-        date,
-        slot,
-        operatorName: resObj.operator,
-        status: "Confirmada"
-      };
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">' + code + '</td>' +
+        '<td class="py-2.5 px-3 font-bold">' + name + '</td>' +
+        '<td class="py-2.5 px-3">' + rut + ' (' + lic + ')</td>' +
+        '<td class="py-2.5 px-3">' + res + '</td>' +
+        '<td class="py-2.5 px-3 font-mono">' + date + ' · ' + slot + '</td>' +
+        '<td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">Confirmada</span></td>';
+      document.getElementById('bookings-body').prepend(tr);
 
-      bookings.unshift(newBooking);
-      renderBookingsTable();
-      onSimulatorOrSlotChange();
-
-      const successBox = document.getElementById("booking-success-box");
-      successBox.classList.remove("hidden");
-      successBox.innerHTML = `
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">
-            Solicitud Recibida #${newBooking.id}
-          </span>
-        </div>
-        <p class="text-sm font-bold text-white">¡Reserva registrada para ${pilotName} en ${resObj.name} (${resObj.matricula})!</p>
-        <p class="text-xs text-[#E2E8F0]/90">• Fecha y Bloque: <strong>${date} (${slot})</strong> — Encargado/Operador: <strong>${resObj.operator}</strong>.</p>
-        <p class="text-xs text-[#B8F2E6]">• Notificación enviada a: <strong>mquiroz@labmeter.cl ; arios@labmeter.cl ; vrios@labmeter.cl</strong></p>
-      `;
-
-      showToast("✅ Reserva confirmada y notificada a mquiroz@labmeter.cl, arios@labmeter.cl y vrios@labmeter.cl");
+      var ok = document.getElementById('booking-ok');
+      ok.classList.remove('hidden');
+      ok.innerHTML = '<b class="text-[#B8F2E6]">✓ Solicitud ' + code + ' confirmada:</b> ' + name + ' en <b>' + res + '</b> (' + date + ' · ' + slot + ').<br/>Notificación enviada a: <b>mquiroz@labmeter.cl ; arios@labmeter.cl ; vrios@labmeter.cl</b>';
+      notify('✅ Reserva ' + code + ' registrada y enviada a administración.');
     }
 
-    // Cálculo de horas normales, extensión (>18:00), activación (fin de semana) y Uber (21:00 a 06:00)
-    function analyzeShift(startStr, endStr, isWeekend) {
-      const toMin = (t) => {
-        const parts = t.split(":").map(Number);
-        return parts[0] * 60 + parts[1];
-      };
-      const s = toMin(startStr);
-      const e = toMin(endStr);
-      const total = Math.max(0, (e - s) / 60);
-      let reg = 0, ext = 0, act = 0;
-
-      if (isWeekend) {
-        act = total;
-      } else {
-        const oStart = Math.max(s, 480);
-        const oEnd = Math.min(e, 1080);
-        reg = Math.max(0, (oEnd - oStart) / 60);
-        if (e > 1080) ext = (e - Math.max(s, 1080)) / 60;
-        if (s < 480) act = (Math.min(e, 480) - s) / 60;
-      }
-      const endHour = Math.floor(e / 60);
-      const requiresUber = endHour >= 21 || endHour <= 6;
-      return { reg: reg.toFixed(1), ext: ext.toFixed(1), act: act.toFixed(1), requiresUber };
+    function logQrCheckIn() {
+      var op = document.getElementById('chk-op').value;
+      var type = document.getElementById('chk-type').value;
+      var tk = document.getElementById('qr-token').textContent;
+      var now = new Date().toTimeString().slice(0, 5);
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td class="py-2 px-2 font-bold">' + op + '</td><td class="py-2 px-2 text-[#B8F2E6]">' + type + '</td><td class="py-2 px-2 font-mono">' + now + '</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">' + tk + '</td>';
+      document.getElementById('qr-logs-body').prepend(tr);
+      notify('📲 Asistencia QR registrada: ' + op + ' (' + type + ')');
     }
 
-    function renderShiftsTable() {
-      const tbody = document.getElementById("shifts-tbody");
-      tbody.innerHTML = shifts.map((sh) => {
-        const res = ALL_RESOURCES.find((s) => s.id === sh.simId) || ALL_RESOURCES[0];
-        const op = OPERATORS.find((o) => o.id === sh.operatorId) || OPERATORS[0];
-        const calc = analyzeShift(sh.start, sh.end, sh.isWeekend);
-        return `
-          <tr class="hover:bg-[#071014]/60">
-            <td class="py-3 px-3 font-bold text-white">${sh.day} <span class="text-[#E2E8F0]/60 font-normal">(${sh.date})</span></td>
-            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-[#1C6B6A]/40 text-[#B8F2E6] font-bold mr-1.5">${res.badge}</span>${res.name}</td>
-            <td class="py-3 px-3 font-semibold text-white">${op.name} <span class="text-[10px] text-[#B8F2E6]">(${op.baseDays} días)</span></td>
-            <td class="py-3 px-3 font-mono">${sh.start} - ${sh.end}</td>
-            <td class="py-3 px-3 font-bold">${calc.reg} hrs</td>
-            <td class="py-3 px-3">${Number(calc.ext) > 0 ? `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">+${calc.ext} hrs Ext.</span>` : "0.0 hrs"}</td>
-            <td class="py-3 px-3">${Number(calc.act) > 0 ? `<span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold">+${calc.act} hrs Act.</span>` : "0.0 hrs"}</td>
-            <td class="py-3 px-3">${calc.requiresUber ? `<span class="px-2.5 py-1 rounded-full bg-[#B8F2E6] text-[#071014] font-extrabold text-[11px]">🚕 UBER ASIGNADO (&gt;21:00h)</span>` : `<span class="text-[#E2E8F0]/50">Diurno Normal</span>`}</td>
-          </tr>
-        `;
-      }).join("");
-    }
-
-    function addNewShift(e) {
+    function addShiftRow(e) {
       e.preventDefault();
-      const day = document.getElementById("sh-day").value;
-      const simId = document.getElementById("sh-simId").value;
-      const operatorId = document.getElementById("sh-operatorId").value;
-      const start = document.getElementById("sh-start").value;
-      const end = document.getElementById("sh-end").value;
-      const isWeekend = day === "Sábado" || day === "Domingo";
+      var day = document.getElementById('s-day').value;
+      var res = document.getElementById('s-res').value;
+      var op = document.getElementById('s-op').value;
+      var tin = document.getElementById('s-in').value;
+      var tout = document.getElementById('s-out').value;
+      var outH = parseInt(tout.split(':')[0], 10);
+      var uber = (outH >= 21 || outH <= 6) ? '<span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span>' : '<span class="text-[#E2E8F0]/50">Diurno Normal</span>';
+      var isWk = day.indexOf('Sábado') !== -1 || day.indexOf('Domingo') !== -1;
+      var ext = (!isWk && outH > 18) ? '+' + (outH - 18) + ' hrs Ext.' : '0.0 hrs';
+      var act = isWk ? '+10.0 hrs Act.' : '0.0 hrs';
 
-      shifts.unshift({
-        id: "SH-" + Math.floor(200 + Math.random() * 700),
-        day,
-        date: "2026-11-11",
-        isWeekend,
-        simId,
-        operatorId,
-        start,
-        end
-      });
-      renderShiftsTable();
-      showToast("✅ Turno agregado a la matriz con cálculo de horas y validación de Uber.");
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td class="py-2.5 px-3 font-bold">' + day + '</td><td class="py-2.5 px-3">' + res + '</td><td class="py-2.5 px-3">' + op + '</td><td class="py-2.5 px-3 font-mono">' + tin + ' - ' + tout + '</td><td class="py-2.5 px-3 font-bold">' + (isWk ? '0.0' : '10.0') + ' hrs</td><td class="py-2.5 px-3 text-amber-300 font-bold">' + ext + '</td><td class="py-2.5 px-3 text-purple-300 font-bold">' + act + '</td><td class="py-2.5 px-3">' + uber + '</td>';
+      document.getElementById('shifts-body').prepend(tr);
+      notify('✅ Turno asignado en ' + res);
     }
 
-    function renderQrGraphic() {
-      const box = document.getElementById("qr-svg-box");
-      let rects = "";
-      for (let i = 0; i < qrToken.length; i++) {
-        const x = 36 + ((i * 13 + qrToken.charCodeAt(i)) % 50);
-        const y = 36 + ((i * 19 + qrToken.charCodeAt(i)) % 50);
-        const color = i % 2 === 0 ? "#071014" : "#1C6B6A";
-        rects += `<rect x="${x}" y="${y}" width="7" height="7" fill="${color}" />`;
-      }
-      box.innerHTML = `
-        <svg width="112" height="112" viewBox="0 0 100 100">
-          <rect width="100" height="100" fill="#FFFFFF" />
-          <rect x="8" y="8" width="24" height="24" fill="#071014" />
-          <rect x="12" y="12" width="16" height="16" fill="#FFFFFF" />
-          <rect x="16" y="16" width="8" height="8" fill="#1C6B6A" />
-          <rect x="68" y="8" width="24" height="24" fill="#071014" />
-          <rect x="72" y="12" width="16" height="16" fill="#FFFFFF" />
-          <rect x="76" y="16" width="8" height="8" fill="#1C6B6A" />
-          <rect x="8" y="68" width="24" height="24" fill="#071014" />
-          <rect x="12" y="72" width="16" height="16" fill="#FFFFFF" />
-          <rect x="16" y="76" width="8" height="8" fill="#1C6B6A" />
-          ${rects}
-        </svg>
-      `;
-    }
-
-    function renderAttendanceLogs() {
-      const tbody = document.getElementById("attendance-logs-tbody");
-      tbody.innerHTML = attendanceLogs.map((l) => `
-        <tr class="hover:bg-[#071014]/50">
-          <td class="py-2.5 px-3 font-bold text-white">${l.operator}</td>
-          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#1C6B6A]/40 text-[#B8F2E6] font-semibold">${l.action}</span></td>
-          <td class="py-2.5 px-3 font-mono">${l.time}</td>
-          <td class="py-2.5 px-3">${l.sim}</td>
-          <td class="py-2.5 px-3 font-mono text-[#B8F2E6]">${l.token}</td>
-        </tr>
-      `).join("");
-    }
-
-    function simulateQrCheckIn() {
-      const operator = document.getElementById("qr-op-select").value;
-      const action = document.getElementById("qr-action-select").value;
-      const nowStr = new Date().toTimeString().split(" ")[0];
-      attendanceLogs.unshift({
-        operator,
-        action,
-        time: nowStr,
-        sim: "A320 FTD NIVEL 4 (LAB-CH-134)",
-        token: qrToken
-      });
-      renderAttendanceLogs();
-      showToast(`📲 Asistencia registrada: ${operator} (${action}) con token ${qrToken}`);
-    }
-
-    function setBookingFilter(status) {
-      currentBookingFilter = status;
-      renderBookingsTable();
-    }
-
-    function renderBookingsTable() {
-      const tbody = document.getElementById("bookings-tbody");
-      const list = currentBookingFilter === "Todas" ? bookings : bookings.filter((b) => b.status === currentBookingFilter);
-      tbody.innerHTML = list.map((b) => {
-        const res = ALL_RESOURCES.find((s) => s.id === b.simulatorId) || ALL_RESOURCES[0];
-        const badgeClass = b.status === "Confirmada"
-          ? "bg-[#B8F2E6] text-[#071014]"
-          : b.status === "Pendiente"
-          ? "bg-amber-400/20 text-amber-300 border border-amber-400/40"
-          : "bg-[#1C6B6A] text-white";
-        return `
-          <tr class="hover:bg-[#071014]/60">
-            <td class="py-3 px-3 font-mono text-[#B8F2E6] font-bold">${b.id}</td>
-            <td class="py-3 px-3 font-bold text-white">${b.pilotName}</td>
-            <td class="py-3 px-3">${b.rut} <span class="text-[#E2E8F0]/60">(${b.license})</span></td>
-            <td class="py-3 px-3 font-semibold">${res.name} <span class="text-[10px] text-[#B8F2E6]">(${res.badge})</span></td>
-            <td class="py-3 px-3 font-mono">${b.date} · ${b.slot}</td>
-            <td class="py-3 px-3">${b.operatorName}</td>
-            <td class="py-3 px-3"><span class="px-2.5 py-1 rounded-full font-extrabold text-[11px] ${badgeClass}">${b.status}</span></td>
-          </tr>
-        `;
-      }).join("");
-    }
-
-    function renderPilotsDirectory() {
-      const listEl = document.getElementById("pilots-list-container");
-      listEl.innerHTML = pilots.map((p) => {
-        const totalSim = Object.values(p.simHours).reduce((a, b) => a + b, 0);
-        const active = p.id === selectedPilotId;
-        return `
-          <div onclick="selectPilot('${p.id}')" class="p-4 rounded-xl border cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
-            active ? "bg-[#1C6B6A]/40 border-[#B8F2E6]" : "bg-[#071014] border-[#0F3A3F] hover:border-[#1C6B6A]"
-          }">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-sm text-white">${p.name}</span>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">${p.segment}</span>
-              </div>
-              <p class="text-xs text-[#E2E8F0]/70 mt-0.5">RUT: ${p.rut} · ${p.license} · Nac: ${p.birthDate}</p>
-            </div>
-            <div class="text-right">
-              <span class="text-xs font-extrabold text-[#B8F2E6]">${totalSim} hrs Simulador</span>
-              <span class="block text-[11px] text-[#E2E8F0]/60">Ver ficha →</span>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      const p = pilots.find((x) => x.id === selectedPilotId) || pilots[0];
-      const detailEl = document.getElementById("pilot-detail-card");
-      detailEl.innerHTML = `
-        <div class="flex items-start justify-between border-b border-[#0F3A3F] pb-4">
-          <div>
-            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#B8F2E6]">Ficha de Cliente #${p.id}</span>
-            <h3 class="text-xl font-extrabold text-white mt-0.5">${p.name}</h3>
-            <p class="text-xs text-[#E2E8F0]/70">${p.email} · ${p.phone}</p>
-          </div>
-          <button onclick="showToast('🎁 Giftcard de Cumpleaños enviada a ${p.name}')" class="px-3 py-2 rounded-xl bg-[#B8F2E6] text-[#071014] font-extrabold text-xs hover:bg-[#1C6B6A] hover:text-white transition-all">
-            🎁 Enviar Giftcard
-          </button>
-        </div>
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-[#B8F2E6] mb-2.5">Horas Voladas en Cada Simulador</h4>
-          <div class="grid grid-cols-2 gap-2.5">
-            ${SIMULATORS.map((s) => `
-              <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-                <span class="text-[10px] text-[#E2E8F0]/60 block">${s.name} (${s.badge})</span>
-                <span class="text-lg font-extrabold text-[#B8F2E6]">${p.simHours[s.id] || 0} hrs</span>
-              </div>
-            `).join("")}
-          </div>
-        </div>
-        <div class="p-4 rounded-xl bg-[#071014] border border-[#0F3A3F] space-y-1.5">
-          <span class="text-xs font-bold text-[#B8F2E6] uppercase">Bitácora de Contacto & Uso de Salas</span>
-          <p class="text-xs text-white font-semibold">${p.license} (${p.totalFlightHours} hrs totales)</p>
-          <p class="text-xs text-[#E2E8F0]/80">${p.notes}</p>
-        </div>
-      `;
-    }
-
-    function selectPilot(id) {
-      selectedPilotId = id;
-      renderPilotsDirectory();
-    }
-
-    function renderCampaigns() {
-      const container = document.getElementById("campaigns-list-container");
-      container.innerHTML = sentCampaigns.map((c) => `
-        <div class="p-4 rounded-xl bg-[#071014] border border-[#0F3A3F] space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">${c.brand}</span>
-            <span class="text-xs text-[#B8F2E6] font-bold">${c.openRate}</span>
-          </div>
-          <p class="text-sm font-bold text-white mt-1">${c.subject}</p>
-          <p class="text-xs text-[#E2E8F0]/70">Segmento: ${c.segment} (${c.recipients} pilotos) · ${c.date}</p>
-        </div>
-      `).join("");
-    }
-
-    function sendMarketingCampaign(e) {
+    function sendCampaign(e) {
       e.preventDefault();
-      const brand = document.getElementById("cmp-brand").value;
-      const segment = document.getElementById("cmp-segment").value;
-      const subject = document.getElementById("cmp-subject").value;
-      sentCampaigns.unshift({
-        brand,
-        segment,
-        recipients: 24,
-        openRate: "Enviado (Resend API)",
-        subject,
-        date: "Hoy"
-      });
-      renderCampaigns();
-      showToast(`🚀 Campaña enviada al segmento "${segment}" vía Resend API.`);
+      var b = document.getElementById('m-brand').value;
+      var s = document.getElementById('m-seg').value;
+      var subj = document.getElementById('m-subj').value;
+      var div = document.createElement('div');
+      div.className = 'p-3.5 rounded-xl bg-[#071014] border border-[#B8F2E6]';
+      div.innerHTML = '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">' + b + '</span><p class="font-bold text-white mt-1">' + subj + '</p><p class="text-[#E2E8F0]/70">Segmento: ' + s + ' · Enviado ahora</p>';
+      document.getElementById('campaign-logs').prepend(div);
+      notify('🚀 Campaña enviada al segmento: ' + s);
     }
 
-    // Reloj QR Dinámico cada 1 segundo
-    setInterval(() => {
-      qrSecondsLeft--;
-      if (qrSecondsLeft <= 0) {
-        const hex = Math.random().toString(16).substring(2, 6).toUpperCase();
-        const num = Math.floor(1000 + Math.random() * 9000);
-        qrToken = `LBM-2026-${hex}-${num}`;
-        qrSecondsLeft = 30;
-        document.getElementById("qr-token-text").textContent = qrToken;
-        renderQrGraphic();
+    var sec = 30;
+    setInterval(function() {
+      sec--;
+      if (sec <= 0) {
+        sec = 30;
+        document.getElementById('qr-token').textContent = 'LBM-2026-' + Math.random().toString(16).slice(2, 6).toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
       }
-      document.getElementById("qr-timer-label").textContent = `Cambia en ${qrSecondsLeft}s`;
-      document.getElementById("qr-progress-bar").style.width = `${(qrSecondsLeft / 30) * 100}%`;
+      document.getElementById('qr-timer').textContent = 'Cambia en ' + sec + 's';
     }, 1000);
-
-    // Inicializar vistas al cargar la página
-    window.addEventListener("DOMContentLoaded", () => {
-      renderResourceCards();
-      renderShiftsTable();
-      renderQrGraphic();
-      renderAttendanceLogs();
-      renderBookingsTable();
-      renderPilotsDirectory();
-      renderCampaigns();
-    });
   </script>
 </body>
 </html>
