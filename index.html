@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Labmeter Flight CRM | Simuladores & Salas</title>
+  <title>Labmeter Flight CRM | Simuladores & Salas de Instrucción</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -43,8 +43,8 @@
     <p id="toast-msg" class="text-xs font-semibold"></p>
   </div>
 
-  <!-- HEADER CORPORATIVO CON LOS 3 LOGOS -->
-  <header class="relative z-10 bg-[#0A1F24]/95 border-b border-[#0F3A3F] sticky top-0">
+  <!-- HEADER CORPORATIVO -->
+  <header id="main-header" class="relative z-10 bg-[#0A1F24]/95 border-b border-[#0F3A3F] sticky top-0">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
       <div class="flex flex-wrap items-center gap-2.5">
         <div class="bg-[#E2E8F0] px-2.5 py-1 rounded-lg flex items-center border border-[#B8F2E6]/40">
@@ -58,17 +58,18 @@
         </div>
         <div class="pl-2 border-l border-[#0F3A3F]">
           <div class="text-[11px] font-extrabold tracking-wider text-[#B8F2E6] uppercase">Flight Simulation & Training CRM</div>
-          <div class="text-[11px] text-[#E2E8F0]/70">4 Simuladores · 4 Salas de Clases · Control QR TOTP</div>
+          <div class="text-[11px] text-[#E2E8F0]/70">Gestión Operativa & Comercial</div>
         </div>
       </div>
 
-      <!-- 5 PESTAÑAS DE NAVEGACIÓN -->
-      <nav class="flex flex-wrap gap-1.5">
+      <!-- NAVEGACIÓN Y BOTÓN LINK CLIENTE -->
+      <nav class="flex flex-wrap gap-1.5 items-center">
         <button type="button" onclick="openTab('booking')" id="btn-booking" class="tab-btn active">1. Reserva Pilotos & Salas</button>
-        <button type="button" onclick="openTab('shifts')" id="btn-shifts" class="tab-btn">2. Turnos, Uber & QR</button>
+        <button type="button" onclick="openTab('operator')" id="btn-operator" class="tab-btn">📱 Portal Operador (Asistencia)</button>
+        <button type="button" onclick="openTab('shifts')" id="btn-shifts" class="tab-btn">2. Turnos, Uber & Reloj</button>
         <button type="button" onclick="openTab('crm')" id="btn-crm" class="tab-btn">3. CRM Clientes & Reservas</button>
-        <button type="button" onclick="openTab('marketing')" id="btn-marketing" class="tab-btn">4. Email Marketing</button>
-        <button type="button" onclick="openTab('arch')" id="btn-arch" class="tab-btn">5. SQL & Arquitectura</button>
+        <button type="button" onclick="openTab('marketing')" id="btn-marketing" class="tab-btn">4. Email Marketing (Imágenes)</button>
+        <button type="button" onclick="copyClientLink()" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-[#B8F2E6] text-[#071014] hover:bg-white transition-all">🔗 Copiar Link Cliente</button>
       </nav>
     </div>
   </header>
@@ -80,7 +81,7 @@
          PESTAÑA 1: RESERVA DE SIMULADORES Y SALAS DE CLASES
          =================================================================== -->
     <section id="tab-booking" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      <div class="lg:col-span-5 space-y-5">
+      <div id="client-sidebar" class="lg:col-span-5 space-y-5">
         <!-- Banner Cabina A320 -->
         <div class="card overflow-hidden">
           <div class="h-48 bg-cover bg-center relative" style="background-image: url('./A320%20FTD.jpeg');">
@@ -175,18 +176,18 @@
       </div>
 
       <!-- Formulario de Reserva -->
-      <div class="lg:col-span-7 card p-6 sm:p-8 shadow-2xl">
+      <div id="client-form-container" class="lg:col-span-7 card p-6 sm:p-8 shadow-2xl">
         <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[#0F3A3F]">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-[#B8F2E6]">Formulario Oficial de Reserva</span>
             <h2 class="text-xl font-extrabold text-white">Solicitud de Bloque de Simulador o Sala</h2>
           </div>
           <span class="text-[11px] bg-[#071014] border border-[#0F3A3F] px-3 py-1 rounded-lg text-[#B8F2E6] font-bold">
-            🎁 Giftcard de Cumpleaños Activa
+            🎁 Gift Card 30% Desc. en 1ª Sesión (Máx 2 hrs)
           </span>
         </div>
 
-        <div id="booking-ok" class="hidden my-4 p-4 rounded-xl bg-[#1C6B6A]/30 border-2 border-[#B8F2E6] text-xs space-y-1"></div>
+        <div id="booking-ok" class="hidden my-4 p-4 rounded-xl bg-[#1C6B6A]/30 border-2 border-[#B8F2E6] text-xs space-y-2"></div>
 
         <form onsubmit="handleBooking(event)" class="space-y-4 mt-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -253,94 +254,105 @@
 
           <div>
             <label class="block text-xs font-bold uppercase text-[#E2E8F0]/80 mb-1">Comentarios / Maniobras o Requerimiento</label>
-            <textarea id="b-notes" rows="2" placeholder="Ej: Práctica aproximaciones ILS en LAB-CH-134 o uso de SALA 2 para instrucción..." class="inp"></textarea>
+            <textarea id="b-notes" rows="2" placeholder="Ej: Práctica aproximaciones ILS en LAB-CH-134 o uso de SALA 2..." class="inp"></textarea>
           </div>
 
-          <button type="submit" class="btn-cta w-full py-3.5 text-sm uppercase tracking-wider">
-            Confirmar Reserva y Notificar a Administración
-          </button>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button type="submit" class="btn-cta flex-1 py-3.5 text-sm uppercase tracking-wider">
+              Confirmar Reserva y Notificar a Administración
+            </button>
+            <a id="gcal-link" href="#" target="_blank" class="hidden items-center justify-center px-4 py-3.5 rounded-xl bg-[#1C6B6A] text-[#B8F2E6] font-extrabold text-xs uppercase border border-[#B8F2E6]/40 hover:bg-[#071014] transition-all">
+              📅 Añadir a Google Calendar
+            </a>
+          </div>
 
           <p class="text-[11px] text-center text-[#E2E8F0]/60">
-            Envío instantáneo a: <span class="text-[#B8F2E6]">mquiroz@labmeter.cl</span> · <span class="text-[#B8F2E6]">arios@labmeter.cl</span> · <span class="text-[#B8F2E6]">vrios@labmeter.cl</span>
+            Envío automático de Bienvenida + Gift Card 30% y aviso a: <span class="text-[#B8F2E6]">mquiroz@labmeter.cl</span> · <span class="text-[#B8F2E6]">arios@labmeter.cl</span> · <span class="text-[#B8F2E6]">vrios@labmeter.cl</span>
           </p>
         </form>
       </div>
     </section>
 
     <!-- ===================================================================
-         PESTAÑA 2: TURNOS DE OPERADORES, CÁLCULO UBER & QR DINÁMICO
+         PORTAL LIMITADO PARA OPERADORES (MARCAR ASISTENCIA SIN VER OTROS)
          =================================================================== -->
-    <section id="tab-shifts" class="hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Reloj QR Dinámico -->
-        <div class="lg:col-span-5 card p-6 space-y-4">
-          <div class="flex justify-between items-center">
-            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">QR Dinámico Anti-Fraude</span>
-            <span id="qr-timer" class="text-xs font-bold text-[#B8F2E6]">Cambia en 30s</span>
-          </div>
-          <h2 class="text-lg font-extrabold text-white">Control de Asistencia de Operadores (TOTP)</h2>
-          <p class="text-xs text-[#E2E8F0]/75">El código QR cambia cada 30 segundos para evitar que se falsee la hora de llegada o salida.</p>
+    <section id="tab-operator" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="card p-6 sm:p-8 space-y-5 shadow-2xl border-2 border-[#B8F2E6]/30">
+        <div class="text-center space-y-2 pb-4 border-b border-[#0F3A3F]">
+          <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-[#B8F2E6] text-[#071014] uppercase">Portal Exclusivo Operadores</span>
+          <h2 class="text-xl font-extrabold text-white">Registro Diario de Asistencia</h2>
+          <p class="text-xs text-[#E2E8F0]/70">Selecciona tu nombre, verifica el reloj dinámico y registra tu ingreso o salida.</p>
+        </div>
 
-          <div class="p-4 bg-[#071014] border border-[#0F3A3F] rounded-xl flex items-center gap-4">
-            <div class="bg-white p-2.5 rounded-lg shrink-0">
-              <svg width="96" height="96" viewBox="0 0 100 100">
-                <rect width="100" height="100" fill="#fff"/>
-                <rect x="8" y="8" width="24" height="24" fill="#071014"/>
-                <rect x="13" y="13" width="14" height="14" fill="#fff"/>
-                <rect x="16" y="16" width="8" height="8" fill="#1C6B6A"/>
-                <rect x="68" y="8" width="24" height="24" fill="#071014"/>
-                <rect x="73" y="13" width="14" height="14" fill="#fff"/>
-                <rect x="76" y="16" width="8" height="8" fill="#1C6B6A"/>
-                <rect x="8" y="68" width="24" height="24" fill="#071014"/>
-                <rect x="13" y="73" width="14" height="14" fill="#fff"/>
-                <rect x="16" y="76" width="8" height="8" fill="#1C6B6A"/>
-                <rect x="40" y="20" width="10" height="10" fill="#071014"/>
-                <rect x="42" y="42" width="16" height="16" fill="#1C6B6A"/>
-                <rect x="65" y="55" width="12" height="12" fill="#071014"/>
-                <rect x="38" y="72" width="18" height="10" fill="#071014"/>
-              </svg>
-            </div>
-            <div class="flex-1 space-y-2">
-              <div class="text-[10px] uppercase text-[#E2E8F0]/60">Token Activo:</div>
-              <div id="qr-token" class="font-mono text-xs font-extrabold text-[#B8F2E6] bg-[#0A1F24] p-2 rounded border border-[#0F3A3F]">LBM-2026-A9F4-8821</div>
-              <div class="grid grid-cols-2 gap-2 pt-1">
-                <select id="chk-op" class="inp text-xs py-1.5">
-                  <option>Matías Quiroz (5d)</option>
-                  <option selected>Jorge Sinconegui (5d)</option>
-                  <option>Romina Armoa (5d)</option>
-                  <option>Diego Calderón (5d)</option>
-                  <option>Ignacio Oillataguerre (4d)</option>
-                  <option>Federico Figueroa (3d)</option>
-                  <option>Erico (5d)</option>
-                </select>
-                <select id="chk-type" class="inp text-xs py-1.5">
-                  <option value="ENTRADA">ENTRADA</option>
-                  <option value="SALIDA">SALIDA</option>
-                  <option value="SALIDA + UBER">SALIDA Nocturna</option>
-                </select>
-              </div>
-              <button type="button" onclick="logQrCheckIn()" class="btn-cta w-full py-2 text-xs uppercase">Registrar Asistencia QR</button>
-            </div>
+        <div class="p-4 bg-[#071014] border border-[#0F3A3F] rounded-xl flex items-center justify-between gap-4">
+          <div>
+            <span class="text-[10px] uppercase text-[#E2E8F0]/60 block">Reloj Dinámico Activo:</span>
+            <div id="op-qr-token" class="font-mono text-sm font-extrabold text-[#B8F2E6]">LBM-2026-A9F4-8821</div>
+          </div>
+          <div class="text-right">
+            <span id="op-timer" class="text-xs font-bold text-[#B8F2E6]">Actualiza en 30s</span>
           </div>
         </div>
 
-        <!-- Reglas de Horas y Bitácora QR -->
-        <div class="lg:col-span-7 card p-6 space-y-4">
-          <h2 class="text-lg font-extrabold text-white">Reglas Automáticas de Turnos, Extensión, Activación y Uber</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <b class="text-[#B8F2E6] block">1. Turno 08:00 a 18:00</b>
-              Posterior a las 18:00 hrs suma automáticamente como <b>Hora de Extensión</b>.
+        <form onsubmit="handleOperatorCheckIn(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase mb-1">Selecciona tu Nombre (Operador / Instructor) *</label>
+            <select id="op-selected-name" class="inp" required>
+              <option value="">-- Elige tu Nombre --</option>
+              <option value="Matías Quiroz">Matías Quiroz (Jefe de Operaciones)</option>
+              <option value="Jorge Sinconegui">Jorge Sinconegui (Operador / Coord. Académico)</option>
+              <option value="Romina Armoa">Romina Armoa (Instructora / Operadora)</option>
+              <option value="Diego Calderón">Diego Calderón (Operador de Simuladores)</option>
+              <option value="Ignacio Oillataguerre">Ignacio Oillataguerre (Piloto Operador / Instructor)</option>
+              <option value="Federico Figueroa">Federico Figueroa (Instructor / Operador)</option>
+              <option value="Erico">Erico (Operador Senior)</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">Acción *</label>
+              <select id="op-action" class="inp">
+                <option value="ENTRADA">Registrar ENTRADA</option>
+                <option value="SALIDA">Registrar SALIDA</option>
+                <option value="SALIDA + UBER">SALIDA Nocturna (Requiere Uber)</option>
+              </select>
             </div>
-            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <b class="text-amber-300 block">2. Horas de Activación</b>
-              Fines de semana o requerimientos fuera de horario suman con <b>valor mayor</b>.
-            </div>
-            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
-              <b class="text-emerald-300 block">3. Uber Nocturno</b>
-              Término de operación entre <b>21:00 y 06:00 hrs</b> asigna movilización <b>Uber</b>.
+            <div>
+              <label class="block text-xs font-bold uppercase mb-1">Dispositivo o Sala Asignada *</label>
+              <select id="op-device" class="inp">
+                <option value="A320 FTD NIVEL 4 (LAB-CH-134)">A320 FTD (LAB-CH-134)</option>
+                <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
+                <option value="PC-ATD C172 Análogo (PC-LAB-64)">C172 Análogo (PC-LAB-64)</option>
+                <option value="AATD C172 G1000">AATD C172 G1000</option>
+                <option value="SALA 2">SALA 2</option>
+                <option value="SALA LM Puente Alto">SALA LM Puente Alto</option>
+              </select>
             </div>
           </div>
+
+          <button type="submit" class="btn-cta w-full py-3.5 text-sm uppercase tracking-wider">
+            ✓ Registrar Asistencia (Enviar Notificación a Administración)
+          </button>
+        </form>
+
+        <div id="op-success-box" class="hidden p-4 rounded-xl bg-[#1C6B6A]/30 border border-[#B8F2E6] text-xs space-y-1 text-center"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         PESTAÑA 2: TURNOS DE OPERADORES, CÁLCULO UBER & RELOJ DINÁMICO
+         =================================================================== -->
+    <section id="tab-shifts" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Reloj Dinámico Admin -->
+        <div class="lg:col-span-5 card p-6 space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">Reloj Dinámico de Horas</span>
+            <span id="qr-timer" class="text-xs font-bold text-[#B8F2E6]">Cambia en 30s</span>
+          </div>
+          <h2 class="text-lg font-extrabold text-white">Monitoreo General de Asistencia de Turnos</h2>
+          <p class="text-xs text-[#E2E8F0]/75">El sistema registra automáticamente las entradas y salidas de los operadores con confirmación por correo y WhatsApp.</p>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
@@ -349,45 +361,64 @@
                   <th class="py-2 px-2">Operador</th>
                   <th class="py-2 px-2">Marcación</th>
                   <th class="py-2 px-2">Hora</th>
-                  <th class="py-2 px-2">Token QR</th>
+                  <th class="py-2 px-2">Token</th>
                 </tr>
               </thead>
               <tbody id="qr-logs-body" class="divide-y divide-[#0F3A3F]">
                 <tr><td class="py-2 px-2 font-bold">Matías Quiroz</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">07:55</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-7C12</td></tr>
                 <tr><td class="py-2 px-2 font-bold">Jorge Sinconegui</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">08:00</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-4B89</td></tr>
-                <tr><td class="py-2 px-2 font-bold">Diego Calderón</td><td class="py-2 px-2 text-emerald-300">SALIDA + UBER (22:30)</td><td class="py-2 px-2 font-mono">22:31</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-1D77</td></tr>
+                <tr><td class="py-2 px-2 font-bold">Romina Armoa</td><td class="py-2 px-2 text-[#B8F2E6]">ENTRADA</td><td class="py-2 px-2 font-mono">08:02</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-9E31</td></tr>
+                <tr><td class="py-2 px-2 font-bold">Diego Calderón</td><td class="py-2 px-2 text-emerald-300">SALIDA + UBER</td><td class="py-2 px-2 font-mono">22:31</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">LBM-2026-1D77</td></tr>
               </tbody>
             </table>
           </div>
         </div>
+
+        <!-- Reglas de Horas & Turnos Mensuales -->
+        <div class="lg:col-span-7 card p-6 space-y-4">
+          <h2 class="text-lg font-extrabold text-white">Reglas de Turnos Fijos Mensuales, Cambios y Coberturas</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <b class="text-[#B8F2E6] block">1. Turnos Fijos por Día</b>
+              Si a un operador (ej. Romina A.) le toca un día (ej. lunes), se repite todos los lunes del mes.
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <b class="text-amber-300 block">2. Coberturas y Cambios</b>
+              Los operadores pueden cambiarse turnos entre ellos registrando el respaldo en el CRM.
+            </div>
+            <div class="p-3 rounded-xl bg-[#071014] border border-[#0F3A3F]">
+              <b class="text-emerald-300 block">3. Alertas Automáticas</b>
+              Aviso instantáneo por correo/WhatsApp a administración y al operador al asignar o cambiar turnos.
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Matriz de Turnos -->
+      <!-- Matriz de Turnos Mensual -->
       <div class="card p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#0F3A3F] pb-3">
-          <h3 class="text-base font-extrabold text-white">Matriz de Turnos Asignados x Simuladores y Salas</h3>
+          <h3 class="text-base font-extrabold text-white">Matriz de Asignación Mensual de Turnos x Simuladores y Salas</h3>
           <form onsubmit="addShiftRow(event)" class="flex flex-wrap gap-2 items-center">
             <select id="s-day" class="inp w-auto py-1.5 text-xs">
-              <option value="Lunes">Lunes</option>
-              <option value="Martes">Martes</option>
-              <option value="Miércoles">Miércoles</option>
-              <option value="Jueves">Jueves</option>
-              <option value="Viernes">Viernes</option>
-              <option value="Sábado (Activación)">Sábado (Activación)</option>
-              <option value="Domingo (Activación)">Domingo (Activación)</option>
+              <option value="Todos los Lunes del Mes">Todos los Lunes del Mes</option>
+              <option value="Todos los Martes del Mes">Todos los Martes del Mes</option>
+              <option value="Todos los Miércoles del Mes">Todos los Miércoles del Mes</option>
+              <option value="Todos los Jueves del Mes">Todos los Jueves del Mes</option>
+              <option value="Todos los Viernes del Mes">Todos los Viernes del Mes</option>
+              <option value="Fines de Semana (Activación)">Fines de Semana (Activación)</option>
             </select>
             <select id="s-res" class="inp w-auto py-1.5 text-xs">
               <option value="A320 FTD NIVEL 4 (LAB-CH-134)">A320 FTD (LAB-CH-134)</option>
               <option value="PC-ATD A320 (PC-LAB-70)">PC-ATD A320 (PC-LAB-70)</option>
               <option value="PC-ATD C172 Análogo (PC-LAB-64)">C172 Análogo (PC-LAB-64)</option>
-              <option value="AATD C172 G1000 (No certificado)">AATD C172 G1000</option>
+              <option value="AATD C172 G1000">AATD C172 G1000</option>
               <option value="SALA 2 (15 personas)">SALA 2 (15p)</option>
-              <option value="SALA LM Puente Alto (9p)">SALA LM Puente Alto</option>
+              <option value="SALA LM Puente Alto">SALA LM Puente Alto</option>
             </select>
             <select id="s-op" class="inp w-auto py-1.5 text-xs">
-              <option>Matías Quiroz (5d)</option>
-              <option selected>Jorge Sinconegui (5d)</option>
               <option>Romina Armoa (5d)</option>
+              <option>Matías Quiroz (5d)</option>
+              <option>Jorge Sinconegui (5d)</option>
               <option>Diego Calderón (5d)</option>
               <option>Ignacio Oillataguerre (4d)</option>
               <option>Federico Figueroa (3d)</option>
@@ -395,7 +426,7 @@
             </select>
             <input type="time" id="s-in" value="08:00" class="inp w-auto py-1.5 text-xs" />
             <input type="time" id="s-out" value="21:30" class="inp w-auto py-1.5 text-xs" />
-            <button type="submit" class="btn-cta px-3 py-2 text-xs uppercase">+ Asignar Turno</button>
+            <button type="submit" class="btn-cta px-3 py-2 text-xs uppercase">+ Asignar Turno Mensual</button>
           </form>
         </div>
 
@@ -403,55 +434,41 @@
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="border-b border-[#0F3A3F] text-[#B8F2E6] uppercase">
-                <th class="py-2.5 px-3">Día</th>
+                <th class="py-2.5 px-3">Frecuencia Mensual</th>
                 <th class="py-2.5 px-3">Simulador / Sala</th>
-                <th class="py-2.5 px-3">Operador</th>
+                <th class="py-2.5 px-3">Operador Asignado</th>
                 <th class="py-2.5 px-3">Horario</th>
                 <th class="py-2.5 px-3">Normales (08-18h)</th>
                 <th class="py-2.5 px-3">Extensión (&gt;18h)</th>
-                <th class="py-2.5 px-3">Activación</th>
                 <th class="py-2.5 px-3">Movilización Uber</th>
               </tr>
             </thead>
             <tbody id="shifts-body" class="divide-y divide-[#0F3A3F]">
               <tr>
-                <td class="py-2.5 px-3 font-bold">Lunes</td>
+                <td class="py-2.5 px-3 font-bold">Todos los Lunes del Mes</td>
                 <td class="py-2.5 px-3">A320 FTD NIVEL 4 (LAB-CH-134)</td>
-                <td class="py-2.5 px-3">Matías Quiroz (5d)</td>
+                <td class="py-2.5 px-3">Romina Armoa (5d)</td>
                 <td class="py-2.5 px-3 font-mono">08:00 - 18:00</td>
                 <td class="py-2.5 px-3 font-bold">10.0 hrs</td>
-                <td class="py-2.5 px-3">0.0 hrs</td>
                 <td class="py-2.5 px-3">0.0 hrs</td>
                 <td class="py-2.5 px-3 text-[#E2E8F0]/50">Diurno Normal</td>
               </tr>
               <tr>
-                <td class="py-2.5 px-3 font-bold">Lunes</td>
+                <td class="py-2.5 px-3 font-bold">Todos los Martes del Mes</td>
                 <td class="py-2.5 px-3">PC-ATD C172 Análogo (PC-LAB-64)</td>
                 <td class="py-2.5 px-3">Jorge Sinconegui (5d)</td>
                 <td class="py-2.5 px-3 font-mono">08:00 - 19:30</td>
                 <td class="py-2.5 px-3 font-bold">10.0 hrs</td>
                 <td class="py-2.5 px-3 text-amber-300 font-bold">+1.5 hrs Ext.</td>
-                <td class="py-2.5 px-3">0.0 hrs</td>
                 <td class="py-2.5 px-3 text-[#E2E8F0]/50">Diurno Normal</td>
               </tr>
               <tr>
-                <td class="py-2.5 px-3 font-bold">Martes</td>
+                <td class="py-2.5 px-3 font-bold">Todos los Miércoles del Mes</td>
                 <td class="py-2.5 px-3">PC-ATD A320 (PC-LAB-70)</td>
                 <td class="py-2.5 px-3">Diego Calderón (5d)</td>
                 <td class="py-2.5 px-3 font-mono">12:00 - 22:30</td>
                 <td class="py-2.5 px-3 font-bold">6.0 hrs</td>
                 <td class="py-2.5 px-3 text-amber-300 font-bold">+4.5 hrs Ext.</td>
-                <td class="py-2.5 px-3">0.0 hrs</td>
-                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span></td>
-              </tr>
-              <tr>
-                <td class="py-2.5 px-3 font-bold">Sábado (Activación)</td>
-                <td class="py-2.5 px-3">A320 FTD NIVEL 4 (LAB-CH-134)</td>
-                <td class="py-2.5 px-3">Federico Figueroa (3d)</td>
-                <td class="py-2.5 px-3 font-mono">09:00 - 21:30</td>
-                <td class="py-2.5 px-3 font-bold">0.0 hrs</td>
-                <td class="py-2.5 px-3">0.0 hrs</td>
-                <td class="py-2.5 px-3 text-purple-300 font-bold">+12.5 hrs Act.</td>
                 <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span></td>
               </tr>
             </tbody>
@@ -487,57 +504,33 @@
                 <td class="py-2.5 px-3 font-mono">2026-11-09 · 10:00 - 12:00</td>
                 <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">Confirmada</span></td>
               </tr>
-              <tr>
-                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9042</td>
-                <td class="py-2.5 px-3 font-bold">Valentina Echeverría</td>
-                <td class="py-2.5 px-3">19.831.044-2 (PPA #12490)</td>
-                <td class="py-2.5 px-3">PC-ATD C172 Análogo (PC-LAB-64)</td>
-                <td class="py-2.5 px-3 font-mono">2026-11-09 · 14:00 - 16:00</td>
-                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 font-bold">Pendiente</span></td>
-              </tr>
-              <tr>
-                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9043</td>
-                <td class="py-2.5 px-3 font-bold">Andrés Valdivieso (Instructor)</td>
-                <td class="py-2.5 px-3">14.205.771-8 (IV #3310)</td>
-                <td class="py-2.5 px-3">SALA 2 - Sala para 15 personas</td>
-                <td class="py-2.5 px-3 font-mono">2026-11-09 · 16:00 - 18:00</td>
-                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#1C6B6A] text-white font-bold">Completada</span></td>
-              </tr>
-              <tr>
-                <td class="py-2.5 px-3 font-mono text-[#B8F2E6] font-bold">RES-9044</td>
-                <td class="py-2.5 px-3 font-bold">Curso IFR Sede Puente Alto</td>
-                <td class="py-2.5 px-3">76.540.210-3 (Instrucción)</td>
-                <td class="py-2.5 px-3">SALA LM Puente Alto (9 personas)</td>
-                <td class="py-2.5 px-3 font-mono">2026-11-09 · 08:00 - 10:00</td>
-                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">Confirmada</span></td>
-              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Fichas CRM de Clientes -->
+      <!-- Fichas CRM de Clientes con Contactos Reales -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="card p-5 space-y-2">
           <div class="flex justify-between">
             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Piloto Comercial</span>
-            <span class="text-xs text-[#B8F2E6] font-bold">🎂 Cumpleaños: 09 Nov</span>
+            <span class="text-xs text-[#B8F2E6] font-bold">🎂 09 Nov</span>
           </div>
           <h3 class="font-extrabold text-base text-white">Cap. Sebastián Morales</h3>
-          <p class="text-xs text-[#E2E8F0]/70">RUT: 16.482.910-K · Licencia PCA #8841</p>
-          <p class="text-xs text-[#B8F2E6]">• LAB-CH-134: 44 hrs | PC-LAB-70: 18 hrs</p>
-          <button type="button" onclick="notify('🎁 Giftcard de Cumpleaños enviada a Cap. Sebastián Morales')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Giftcard Cumpleaños</button>
+          <p class="text-xs text-[#E2E8F0]/70">smorales@vuelochile.cl · +56 9 8412 3301</p>
+          <p class="text-xs text-[#B8F2E6]">• LAB-CH-134: 44 hrs | Gift Card 30% Activa</p>
+          <button type="button" onclick="notify('🎁 Giftcard 30% enviada a Cap. Sebastián Morales')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Gift Card 30% Desc.</button>
         </div>
 
         <div class="card p-5 space-y-2">
           <div class="flex justify-between">
             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Piloto Privado</span>
-            <span class="text-xs text-[#E2E8F0]/60">Nac: 15 Nov 1996</span>
+            <span class="text-xs text-[#E2E8F0]/60">Nac: 15 Nov</span>
           </div>
           <h3 class="font-extrabold text-base text-white">Valentina Echeverría</h3>
-          <p class="text-xs text-[#E2E8F0]/70">RUT: 19.831.044-2 · Licencia PPA #12490</p>
-          <p class="text-xs text-[#B8F2E6]">• PC-LAB-64: 32 hrs | AATD G1000: 14 hrs</p>
-          <button type="button" onclick="notify('🎁 Giftcard de Cumpleaños enviada a Valentina Echeverría')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Giftcard Cumpleaños</button>
+          <p class="text-xs text-[#E2E8F0]/70">vecheverria@clubvuelo.cl · +56 9 7112 9082</p>
+          <p class="text-xs text-[#B8F2E6]">• PC-LAB-64: 32 hrs | Gift Card 30% Activa</p>
+          <button type="button" onclick="notify('🎁 Giftcard 30% enviada a Valentina Echeverría')" class="btn-cta w-full py-2 text-xs mt-2">🎁 Enviar Gift Card 30% Desc.</button>
         </div>
 
         <div class="card p-5 space-y-2">
@@ -546,20 +539,20 @@
             <span class="text-xs text-[#E2E8F0]/60">Convenio Salas + Sim</span>
           </div>
           <h3 class="font-extrabold text-base text-white">Andrés Valdivieso</h3>
-          <p class="text-xs text-[#E2E8F0]/70">RUT: 14.205.771-8 · IV #3310 Multi/IFR</p>
+          <p class="text-xs text-[#E2E8F0]/70">avaldivieso@instruccion.cl · +56 9 9301 4450</p>
           <p class="text-xs text-[#B8F2E6]">• LAB-CH-134: 60 hrs | SALA 2 y SALA LM PA</p>
-          <button type="button" onclick="notify('📩 Bitácora enviada a Andrés Valdivieso')" class="btn-cta w-full py-2 text-xs mt-2">Enviar Resumen de Horas</button>
+          <button type="button" onclick="notify('📩 Resumen enviado a Andrés Valdivieso')" class="btn-cta w-full py-2 text-xs mt-2">Enviar Resumen de Horas</button>
         </div>
       </div>
     </section>
 
     <!-- ===================================================================
-         PESTAÑA 4: EMAIL MARKETING SEGMENTADO
+         PESTAÑA 4: EMAIL MARKETING CON IMAGEN DESTACADA Y DISEÑO GRÁFICO
          =================================================================== -->
     <section id="tab-marketing" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
       <div class="lg:col-span-7 card p-6 space-y-4">
-        <span class="text-xs font-bold uppercase text-[#B8F2E6]">Motor de Comunicaciones (Resend / SendGrid)</span>
-        <h2 class="text-xl font-extrabold text-white">Envío de Campañas y Promociones por Segmento</h2>
+        <span class="text-xs font-bold uppercase text-[#B8F2E6]">Email Marketing Visual (Imágenes & Banner)</span>
+        <h2 class="text-xl font-extrabold text-white">Redacción de Campañas con Banner Gráfico</h2>
         <form onsubmit="sendCampaign(event)" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -579,62 +572,38 @@
                 <option>Instructor de Vuelo</option>
                 <option>Aficionado</option>
                 <option>Visita Pedagógica</option>
-                <option>Visita Comercial</option>
               </select>
             </div>
           </div>
           <div>
             <label class="block text-xs font-bold uppercase mb-1">Asunto de la Campaña</label>
-            <input type="text" id="m-subj" value="Bloques Disponibles: A320 FTD (LAB-CH-134), C172 (PC-LAB-64) y Salas de Instrucción" class="inp" />
+            <input type="text" id="m-subj" value="✈️ Nuevos Bloques en A320 FTD (LAB-CH-134) & Salas de Instrucción" class="inp" />
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase mb-1">Mensaje</label>
-            <textarea rows="4" class="inp">Estimado piloto, te invitamos a reservar tus horas de entrenamiento en nuestros simuladores A320 FTD Nivel 4 (LAB-CH-134), PC-ATD A320 (PC-LAB-70), PC-ATD C172 Análogo (PC-LAB-64), AATD C172 G1000 y nuestras Salas de Clases (SALA 2, SALA 3 y SALA LM Puente Alto).</textarea>
+            <label class="block text-xs font-bold uppercase mb-1">Mensaje Principal con Imagen Banner</label>
+            <div class="p-3 bg-[#071014] border border-[#0F3A3F] rounded-xl mb-2 text-center">
+              <span class="text-xs text-[#B8F2E6] font-bold">🖼️ Imagen adjunta al correo: [ Banner de Cabina A320 & Flota de Simuladores ]</span>
+            </div>
+            <textarea rows="4" class="inp">Estimado piloto, te invitamos a revisar los nuevos bloques disponibles en nuestro centro de entrenamiento. Reserva tus horas en A320 FTD Nivel 4 (LAB-CH-134), PC-ATD A320 (PC-LAB-70), PC-ATD C172 Análogo (PC-LAB-64) y nuestras Salas de Clases y Reuniones.</textarea>
           </div>
-          <button type="submit" class="btn-cta w-full py-3 text-xs uppercase tracking-wider">Enviar Campaña Masiva Ahora</button>
+          <button type="submit" class="btn-cta w-full py-3 text-xs uppercase tracking-wider">Disparar Campaña con Banner Visual</button>
         </form>
       </div>
 
       <div class="lg:col-span-5 card p-6 space-y-3">
-        <h3 class="text-base font-extrabold text-white">Campañas Enviadas Recientemente</h3>
+        <h3 class="text-base font-extrabold text-white">Campañas Visuales Enviadas</h3>
         <div id="campaign-logs" class="space-y-2.5 text-xs">
           <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">IFR LabTraining</span>
-            <p class="font-bold text-white mt-1">Entrenamiento A320 FTD (LAB-CH-134) & PC-LAB-70</p>
-            <p class="text-[#E2E8F0]/70">Segmento: Piloto Comercial · 48 envíos</p>
+            <p class="font-bold text-white mt-1">✈️ Campaña Visual: A320 FTD (LAB-CH-134) & PC-LAB-70</p>
+            <p class="text-[#E2E8F0]/70">Segmento: Piloto Comercial · 48 envíos (Con Banner)</p>
           </div>
           <div class="p-3.5 rounded-xl bg-[#071014] border border-[#0F3A3F]">
             <span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">Labmeter Training Center</span>
-            <p class="font-bold text-white mt-1">🎁 Giftcard Automática de Cumpleaños del Mes</p>
-            <p class="text-[#E2E8F0]/70">Segmento: Cumpleañeros · 14 envíos</p>
+            <p class="font-bold text-white mt-1">🎁 Gift Card 30% Bienvenida Nueva Comunidad</p>
+            <p class="text-[#E2E8F0]/70">Segmento: Nuevos Registros · 14 envíos</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         PESTAÑA 5: ARQUITECTURA SQL Y FLUJO DE WEBHOOK
-         =================================================================== -->
-    <section id="tab-arch" class="hidden space-y-6">
-      <div class="card p-6 space-y-3">
-        <h2 class="text-lg font-extrabold text-white">Esquema Relacional SQL (4 Simuladores Oficiales + 4 Salas de Clases)</h2>
-        <pre class="bg-[#071014] border border-[#0F3A3F] rounded-xl p-4 text-xs text-[#B8F2E6] overflow-x-auto font-mono">CREATE TABLE resources (
-  id VARCHAR(30) PRIMARY KEY,
-  type VARCHAR(20) NOT NULL, -- 'SIMULADOR' o 'SALA'
-  name VARCHAR(120) NOT NULL,
-  registration VARCHAR(40),
-  capacity INT DEFAULT 2
-);
-
-INSERT INTO resources VALUES
-  ('SIM-A320-FTD',   'SIMULADOR', 'A320 FTD NIVEL 4',                   'LAB-CH-134',     2),
-  ('SIM-A320-PCATD', 'SIMULADOR', 'PC-ATD A320',                        'PC-LAB-70',      2),
-  ('SIM-C172-ANA',   'SIMULADOR', 'PC-ATD C172 Análogo',                'PC-LAB-64',      2),
-  ('SIM-C172-G1000', 'SIMULADOR', 'AATD C172 G1000',                    'No certificado', 2),
-  ('SALA-2',         'SALA',      'SALA 2 - Sala de Clases',            'Cap. 15 pers.',  15),
-  ('SALA-3-CLASES',  'SALA',      'SALA 3 - Sala de Clases',            'Cap. 6 pers.',   6),
-  ('SALA-3-REUN',    'SALA',      'SALA 3 - Sala de Reuniones Multif.', 'Multifuncional', 8),
-  ('SALA-LM-PA',     'SALA',      'SALA LM Puente Alto',                'Cap. 9 pers.',   9);</pre>
       </div>
     </section>
 
@@ -654,14 +623,39 @@ INSERT INTO resources VALUES
     }
 
     function openTab(name) {
-      var tabs = ['booking', 'shifts', 'crm', 'marketing', 'arch'];
+      var tabs = ['booking', 'operator', 'shifts', 'crm', 'marketing'];
       for (var i = 0; i < tabs.length; i++) {
-        document.getElementById('tab-' + tabs[i]).classList.add('hidden');
-        document.getElementById('btn-' + tabs[i]).classList.remove('active');
+        var el = document.getElementById('tab-' + tabs[i]);
+        if (el) el.classList.add('hidden');
+        var btn = document.getElementById('btn-' + tabs[i]);
+        if (btn) btn.classList.remove('active');
       }
-      document.getElementById('tab-' + name).classList.remove('hidden');
-      document.getElementById('btn-' + name).classList.add('active');
+      var targetTab = document.getElementById('tab-' + name);
+      if (targetTab) targetTab.classList.remove('hidden');
+      var targetBtn = document.getElementById('btn-' + name);
+      if (targetBtn) targetBtn.classList.add('active');
     }
+
+    // Modo Link Cliente (Oculta navegación interna y deja solo la reserva y la foto)
+    function copyClientLink() {
+      var url = window.location.href.split('#')[0] + '#cliente';
+      navigator.clipboard.writeText(url);
+      notify('🔗 Enlace exclusivo para clientes copiado al portapapeles.');
+    }
+
+    window.addEventListener('load', function() {
+      if (window.location.hash === '#cliente') {
+        var header = document.getElementById('main-header');
+        if (header) header.style.display = 'none';
+        var sidebar = document.getElementById('client-sidebar');
+        if (sidebar) sidebar.style.display = 'none';
+        var formContainer = document.getElementById('client-form-container');
+        if (formContainer) {
+          formContainer.className = "card p-6 sm:p-8 shadow-2xl max-w-2xl mx-auto w-full";
+        }
+        openTab('booking');
+      }
+    });
 
     function pickResource(val) {
       document.getElementById('b-resource').value = val;
@@ -689,19 +683,36 @@ INSERT INTO resources VALUES
 
       var ok = document.getElementById('booking-ok');
       ok.classList.remove('hidden');
-      ok.innerHTML = '<b class="text-[#B8F2E6]">✓ Solicitud ' + code + ' confirmada:</b> ' + name + ' en <b>' + res + '</b> (' + date + ' · ' + slot + ').<br/>Notificación enviada a: <b>mquiroz@labmeter.cl ; arios@labmeter.cl ; vrios@labmeter.cl</b>';
-      notify('✅ Reserva ' + code + ' registrada y enviada a administración.');
+      ok.innerHTML = '<b class="text-[#B8F2E6]">✓ ¡Bienvenido a nuestra comunidad de aviadores!</b> ' + name + ', tu reserva ' + code + ' en <b>' + res + '</b> ha sido registrada.<br/>🎁 <b>Gift Card 30% de descuento</b> aplicada para tu primera sesión (máx 2 hrs).<br/>Notificación enviada a administración (mquiroz@labmeter.cl ; arios@labmeter.cl ; vrios@labmeter.cl) y correo de bienvenida al piloto.';
+
+      // Enlace Google Calendar
+      var gcal = document.getElementById('gcal-link');
+      var calTitle = encodeURIComponent('Simulador/Sala: ' + res + ' - ' + name);
+      var calDetails = encodeURIComponent('Reserva ' + code + ' en Centro de Entrenamiento Labmeter. Dispositivo: ' + res);
+      gcal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + calTitle + '&details=' + calDetails + '&dates=20261109T120000Z/20261109T140000Z';
+      gcal.style.display = 'inline-flex';
+
+      notify('✅ Reserva confirmada. Correo de bienvenida y Gift Card 30% enviados.');
     }
 
-    function logQrCheckIn() {
-      var op = document.getElementById('chk-op').value;
-      var type = document.getElementById('chk-type').value;
-      var tk = document.getElementById('qr-token').textContent;
+    function handleOperatorCheckIn(e) {
+      e.preventDefault();
+      var op = document.getElementById('op-selected-name').value;
+      var action = document.getElementById('op-action').value;
+      var device = document.getElementById('op-device').value;
+      var tk = document.getElementById('op-qr-token').textContent;
       var now = new Date().toTimeString().slice(0, 5);
+
+      var box = document.getElementById('op-success-box');
+      box.classList.remove('hidden');
+      box.innerHTML = '<b>✓ Asistencia registrada correctamente:</b><br/>Operador: <b>' + op + '</b><br/>Acción: <b>' + action + '</b> en ' + device + '<br/>Hora: <b>' + now + '</b><br/><span class="text-[#B8F2E6]">📧 Correo y 💬 WhatsApp de notificación enviados a administración.</span>';
+
+      // Agregar a la tabla general de turnos
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td class="py-2 px-2 font-bold">' + op + '</td><td class="py-2 px-2 text-[#B8F2E6]">' + type + '</td><td class="py-2 px-2 font-mono">' + now + '</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">' + tk + '</td>';
+      tr.innerHTML = '<td class="py-2 px-2 font-bold">' + op + '</td><td class="py-2 px-2 text-[#B8F2E6]">' + action + ' (' + device + ')</td><td class="py-2 px-2 font-mono">' + now + '</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">' + tk + '</td>';
       document.getElementById('qr-logs-body').prepend(tr);
-      notify('📲 Asistencia QR registrada: ' + op + ' (' + type + ')');
+
+      notify('📲 Asistencia registrada para ' + op + '. Notificación enviada.');
     }
 
     function addShiftRow(e) {
@@ -713,14 +724,12 @@ INSERT INTO resources VALUES
       var tout = document.getElementById('s-out').value;
       var outH = parseInt(tout.split(':')[0], 10);
       var uber = (outH >= 21 || outH <= 6) ? '<span class="px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014] font-extrabold">🚕 UBER ASIGNADO</span>' : '<span class="text-[#E2E8F0]/50">Diurno Normal</span>';
-      var isWk = day.indexOf('Sábado') !== -1 || day.indexOf('Domingo') !== -1;
-      var ext = (!isWk && outH > 18) ? '+' + (outH - 18) + ' hrs Ext.' : '0.0 hrs';
-      var act = isWk ? '+10.0 hrs Act.' : '0.0 hrs';
+      var ext = (outH > 18) ? '+' + (outH - 18) + ' hrs Ext.' : '0.0 hrs';
 
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td class="py-2.5 px-3 font-bold">' + day + '</td><td class="py-2.5 px-3">' + res + '</td><td class="py-2.5 px-3">' + op + '</td><td class="py-2.5 px-3 font-mono">' + tin + ' - ' + tout + '</td><td class="py-2.5 px-3 font-bold">' + (isWk ? '0.0' : '10.0') + ' hrs</td><td class="py-2.5 px-3 text-amber-300 font-bold">' + ext + '</td><td class="py-2.5 px-3 text-purple-300 font-bold">' + act + '</td><td class="py-2.5 px-3">' + uber + '</td>';
+      tr.innerHTML = '<td class="py-2.5 px-3 font-bold">' + day + '</td><td class="py-2.5 px-3">' + res + '</td><td class="py-2.5 px-3">' + op + '</td><td class="py-2.5 px-3 font-mono">' + tin + ' - ' + tout + '</td><td class="py-2.5 px-3 font-bold">10.0 hrs</td><td class="py-2.5 px-3 text-amber-300 font-bold">' + ext + '</td><td class="py-2.5 px-3">' + uber + '</td>';
       document.getElementById('shifts-body').prepend(tr);
-      notify('✅ Turno asignado en ' + res);
+      notify('✅ Turno mensual asignado a ' + op + '. Notificación enviada.');
     }
 
     function sendCampaign(e) {
@@ -730,9 +739,9 @@ INSERT INTO resources VALUES
       var subj = document.getElementById('m-subj').value;
       var div = document.createElement('div');
       div.className = 'p-3.5 rounded-xl bg-[#071014] border border-[#B8F2E6]';
-      div.innerHTML = '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">' + b + '</span><p class="font-bold text-white mt-1">' + subj + '</p><p class="text-[#E2E8F0]/70">Segmento: ' + s + ' · Enviado ahora</p>';
+      div.innerHTML = '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#B8F2E6] text-[#071014]">' + b + '</span><p class="font-bold text-white mt-1">' + subj + '</p><p class="text-[#E2E8F0]/70">Segmento: ' + s + ' · Enviado con Banner Gráfico</p>';
       document.getElementById('campaign-logs').prepend(div);
-      notify('🚀 Campaña enviada al segmento: ' + s);
+      notify('🚀 Campaña con banner visual enviada al segmento: ' + s);
     }
 
     var sec = 30;
@@ -740,9 +749,14 @@ INSERT INTO resources VALUES
       sec--;
       if (sec <= 0) {
         sec = 30;
-        document.getElementById('qr-token').textContent = 'LBM-2026-' + Math.random().toString(16).slice(2, 6).toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
+        var tokenNew = 'LBM-2026-' + Math.random().toString(16).slice(2, 6).toUpperCase() + '-' + Math.floor(1000 + Math.random() * 9000);
+        var tEl = document.getElementById('op-qr-token');
+        if (tEl) tEl.textContent = tokenNew;
       }
-      document.getElementById('qr-timer').textContent = 'Cambia en ' + sec + 's';
+      var tLabel = document.getElementById('op-timer');
+      if (tLabel) tLabel.textContent = 'Actualiza en ' + sec + 's';
+      var tLabel2 = document.getElementById('qr-timer');
+      if (tLabel2) tLabel2.textContent = 'Cambia en ' + sec + 's';
     }, 1000);
   </script>
 </body>
