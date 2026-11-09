@@ -62,13 +62,13 @@
         </div>
       </div>
 
-      <!-- NAVEGACIÓN Y BOTÓN LINK CLIENTE -->
+      <!-- NAVEGACIÓN COMPLETA PARA ADMINISTRADOR + ACCESO SUTIL DE OPERADOR -->
       <nav class="flex flex-wrap gap-1.5 items-center">
         <button type="button" onclick="openTab('booking')" id="btn-booking" class="tab-btn active">1. Reserva Pilotos & Salas</button>
-        <button type="button" onclick="openTab('operator')" id="btn-operator" class="tab-btn">📱 Portal Operador (Asistencia)</button>
         <button type="button" onclick="openTab('shifts')" id="btn-shifts" class="tab-btn">2. Turnos, Uber & Reloj</button>
         <button type="button" onclick="openTab('crm')" id="btn-crm" class="tab-btn">3. CRM Clientes & Reservas</button>
         <button type="button" onclick="openTab('marketing')" id="btn-marketing" class="tab-btn">4. Email Marketing (Imágenes)</button>
+        <button type="button" onclick="openTab('operator')" id="btn-operator" class="tab-btn bg-[#1C6B6A]/50 text-[#B8F2E6] border-[#B8F2E6]/40">📱 Portal Operador (Asistencia)</button>
         <button type="button" onclick="copyClientLink()" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-[#B8F2E6] text-[#071014] hover:bg-white transition-all">🔗 Copiar Link Cliente</button>
       </nav>
     </div>
@@ -274,7 +274,7 @@
     </section>
 
     <!-- ===================================================================
-         PORTAL LIMITADO PARA OPERADORES (MARCAR ASISTENCIA SIN VER OTROS)
+         PORTAL LIMITADO PARA OPERADORES (MARCAR ASISTENCIA SUTIL)
          =================================================================== -->
     <section id="tab-operator" class="hidden max-w-2xl mx-auto space-y-6">
       <div class="card p-6 sm:p-8 space-y-5 shadow-2xl border-2 border-[#B8F2E6]/30">
@@ -336,23 +336,23 @@
           </button>
         </form>
 
-        <div id="op-success-box" class="hidden p-4 rounded-xl bg-[#1C6B6A]/30 border border-[#B8F2E6] text-xs space-y-1 text-center"></div>
+        <div id="op-success-box" class="hidden p-4 rounded-xl bg-[#1C6B6A]/30 border border-[#B8F2E6] text-xs space-y-2 text-center"></div>
       </div>
     </section>
 
     <!-- ===================================================================
-         PESTAÑA 2: TURNOS DE OPERADORES, CÁLCULO UBER & RELOJ DINÁMICO
+         PESTAÑA 2: TURNOS DE OPERADORES, CÁLCULO UBER & RELOJ DINÁMICO (ADMIN)
          =================================================================== -->
     <section id="tab-shifts" class="hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- Reloj Dinámico Admin -->
         <div class="lg:col-span-5 card p-6 space-y-4">
           <div class="flex justify-between items-center">
-            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">Reloj Dinámico de Horas</span>
+            <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded bg-[#B8F2E6] text-[#071014]">Reloj Dinámico para Registro de Horas</span>
             <span id="qr-timer" class="text-xs font-bold text-[#B8F2E6]">Cambia en 30s</span>
           </div>
           <h2 class="text-lg font-extrabold text-white">Monitoreo General de Asistencia de Turnos</h2>
-          <p class="text-xs text-[#E2E8F0]/75">El sistema registra automáticamente las entradas y salidas de los operadores con confirmación por correo y WhatsApp.</p>
+          <p class="text-xs text-[#E2E8F0]/75">Vista exclusiva de administrador para supervisar las entradas y salidas registradas por el equipo.</p>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
@@ -685,14 +685,18 @@
       ok.classList.remove('hidden');
       ok.innerHTML = '<b class="text-[#B8F2E6]">✓ ¡Bienvenido a nuestra comunidad de aviadores!</b> ' + name + ', tu reserva ' + code + ' en <b>' + res + '</b> ha sido registrada.<br/>🎁 <b>Gift Card 30% de descuento</b> aplicada para tu primera sesión (máx 2 hrs).<br/>Notificación enviada a administración (mquiroz@labmeter.cl ; arios@labmeter.cl ; vrios@labmeter.cl) y correo de bienvenida al piloto.';
 
-      // Enlace Google Calendar
+      // Enlace Google Calendar real
       var gcal = document.getElementById('gcal-link');
       var calTitle = encodeURIComponent('Simulador/Sala: ' + res + ' - ' + name);
       var calDetails = encodeURIComponent('Reserva ' + code + ' en Centro de Entrenamiento Labmeter. Dispositivo: ' + res);
       gcal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + calTitle + '&details=' + calDetails + '&dates=20261109T120000Z/20261109T140000Z';
       gcal.style.display = 'inline-flex';
 
-      notify('✅ Reserva confirmada. Correo de bienvenida y Gift Card 30% enviados.');
+      // Abrir gestor de correo real con los administradores
+      var mailtoUrl = 'mailto:mquiroz@labmeter.cl,arios@labmeter.cl,vrios@labmeter.cl?subject=Nueva Reserva ' + code + '&body=Piloto: ' + encodeURIComponent(name) + '%0ARecursos: ' + encodeURIComponent(res) + '%0AFecha: ' + date + ' ' + slot;
+      window.open(mailtoUrl, '_blank');
+
+      notify('✅ Reserva confirmada. Se abrió tu cliente de correo para notificar a administración.');
     }
 
     function handleOperatorCheckIn(e) {
@@ -705,14 +709,14 @@
 
       var box = document.getElementById('op-success-box');
       box.classList.remove('hidden');
-      box.innerHTML = '<b>✓ Asistencia registrada correctamente:</b><br/>Operador: <b>' + op + '</b><br/>Acción: <b>' + action + '</b> en ' + device + '<br/>Hora: <b>' + now + '</b><br/><span class="text-[#B8F2E6]">📧 Correo y 💬 WhatsApp de notificación enviados a administración.</span>';
+      box.innerHTML = '<b>✓ Asistencia registrada correctamente:</b><br/>Operador: <b>' + op + '</b><br/>Acción: <b>' + action + '</b> en ' + device + '<br/>Hora: <b>' + now + '</b><br/><a href="https://wa.me/56985561490?text=' + encodeURIComponent('Hola Matías, soy ' + op + ' y acabo de marcar ' + action + ' en ' + device + ' a las ' + now) + '" target="_blank" class="text-[#B8F2E6] underline font-bold mt-1 inline-block">📲 Enviar reporte por WhatsApp a Administración</a>';
 
-      // Agregar a la tabla general de turnos
+      // Agregar a la tabla general de turnos del Administrador
       var tr = document.createElement('tr');
       tr.innerHTML = '<td class="py-2 px-2 font-bold">' + op + '</td><td class="py-2 px-2 text-[#B8F2E6]">' + action + ' (' + device + ')</td><td class="py-2 px-2 font-mono">' + now + '</td><td class="py-2 px-2 font-mono text-[#B8F2E6]">' + tk + '</td>';
       document.getElementById('qr-logs-body').prepend(tr);
 
-      notify('📲 Asistencia registrada para ' + op + '. Notificación enviada.');
+      notify('📲 Asistencia registrada para ' + op + '.');
     }
 
     function addShiftRow(e) {
@@ -729,7 +733,7 @@
       var tr = document.createElement('tr');
       tr.innerHTML = '<td class="py-2.5 px-3 font-bold">' + day + '</td><td class="py-2.5 px-3">' + res + '</td><td class="py-2.5 px-3">' + op + '</td><td class="py-2.5 px-3 font-mono">' + tin + ' - ' + tout + '</td><td class="py-2.5 px-3 font-bold">10.0 hrs</td><td class="py-2.5 px-3 text-amber-300 font-bold">' + ext + '</td><td class="py-2.5 px-3">' + uber + '</td>';
       document.getElementById('shifts-body').prepend(tr);
-      notify('✅ Turno mensual asignado a ' + op + '. Notificación enviada.');
+      notify('✅ Turno mensual asignado a ' + op + '.');
     }
 
     function sendCampaign(e) {
